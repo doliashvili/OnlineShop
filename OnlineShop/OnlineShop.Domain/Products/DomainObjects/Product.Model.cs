@@ -22,7 +22,7 @@ namespace OnlineShop.Domain.Products.DomainObjects
         public bool? ForBaby { get; private set; }
         public string? Size { get; private set; }
         public float? Discount { get; private set; }
-        public decimal? DiscountPrice => Price - (Price * (decimal)Discount);
+        public decimal? DiscountPrice => Discount.HasValue ? Price - (Price * (decimal)Discount.Value) : null;
         public DateTime? CreateTime { get; private set; }
         public DateTime? Expiration { get; private set; }
         public List<ProductImage> Images { get; private set; }

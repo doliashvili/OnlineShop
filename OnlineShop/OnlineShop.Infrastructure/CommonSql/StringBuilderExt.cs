@@ -14,14 +14,14 @@ namespace OnlineShop.Infrastructure.CommonSql
             return self;
         }
 
-        public static string GetSqlFrom(this StringBuilder self, string sql)
+        public static StringBuilder AppendWhereIfHaveCondition(this StringBuilder self, string sql)
         {
             if (self.Length > 0)
             {
                 self.Insert(0, $"{Environment.NewLine}WHERE ");
             }
 
-            return self.Insert(0, sql).ToString();
+            return self.Insert(0, sql);
         }
     }
 }

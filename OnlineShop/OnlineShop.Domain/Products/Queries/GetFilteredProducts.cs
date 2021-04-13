@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using CoreModels.Messaging;
 using OnlineShop.Domain.Enums;
 using OnlineShop.Domain.Products.ReadModels;
@@ -18,8 +17,8 @@ namespace OnlineShop.Domain.Products.Queries
             Gender? gender,
             bool? forBaby,
             string size,
-            int? page,
-            int? pageSize)
+            int page,
+            int pageSize)
         {
             PriceFrom = priceFrom ?? decimal.MinValue;
             PriceTo = priceTo ?? decimal.MaxValue;
@@ -48,7 +47,7 @@ namespace OnlineShop.Domain.Products.Queries
         public Gender? Gender { get; set; }
         public bool? ForBaby { get; set; }
         public string Size { get; set; }
-        public int? Page { get; set; }
-        public int? PageSize { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
     }
 }

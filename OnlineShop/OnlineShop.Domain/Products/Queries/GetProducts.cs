@@ -8,7 +8,7 @@ namespace OnlineShop.Domain.Products.Queries
     public class GetProducts : IQuery<PagingProductModel>
     {
         [JsonConstructor]
-        public GetProducts(int? page, int? pageSize)
+        public GetProducts(int page, int pageSize)
         {
             Page = page;
             PageSize = pageSize;
@@ -17,7 +17,7 @@ namespace OnlineShop.Domain.Products.Queries
         {
             
         }
-        public int? Page { get; set; }
-        public int? PageSize { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
     }
 }
