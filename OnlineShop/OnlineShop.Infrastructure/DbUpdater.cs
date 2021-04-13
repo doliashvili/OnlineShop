@@ -33,7 +33,7 @@ namespace OnlineShop.Infrastructure
                 //currentDbVersion
                 foreach (var resource in resourceNames
                     .Where(x => x.StartsWith(prefix))
-                    .Select(x => new { ResourceName = x, DbVersion = GetDbVersionFromResourceName(x) })
+                    .Select(x => new {ResourceName = x, DbVersion = GetDbVersionFromResourceName(x)})
                     .Where(x => x.DbVersion > currentDbVersion)
                     .OrderBy(x => x.DbVersion))
                 {
@@ -53,29 +53,35 @@ namespace OnlineShop.Infrastructure
                     serverConnection.InfoMessage += ServerConnection_InfoMessage;
                     serverConnection.ServerMessage += ServerConnection_ServerMessage;
 
-                    sql = sql.Replace("$(DatabaseName)", serverConnection.DatabaseName, StringComparison.OrdinalIgnoreCase);
+                    sql = sql.Replace("$(DatabaseName)", serverConnection.DatabaseName,
+                        StringComparison.OrdinalIgnoreCase);
 
                     serverConnection.BeginTransaction();
                     try
                     {
                         // Try to obtain app lock
-                        var lockResult = (int)server.ConnectionContext.ExecuteScalar("DECLARE @r int;EXEC @r=sp_getapplock @Resource='$DbUpdate',@LockMode='Exclusive',@LockOwner='Transaction',@LockTimeout=-1;SELECT @r;");
+                        var lockResult = (int) server.ConnectionContext.ExecuteScalar(
+                            "DECLARE @r int;EXEC @r=sp_getapplock @Resource='$DbUpdate',@LockMode='Exclusive',@LockOwner='Transaction',@LockTimeout=-1;SELECT @r;");
                         if (lockResult < 0)
                             throw new ApplicationException("Cannot obtain database app lock");
 
                         // Check database version once again
                         strVersion = GetDbVersionFromDatabase(conn);
 
-                        if (resource.DbVersion > new Version(strVersion)) // If another service didn't update database already
+                        if (resource.DbVersion > new Version(strVersion)
+                        ) // If another service didn't update database already
                         {
                             server.ConnectionContext.ExecuteNonQuery(sql);
 
-                            server.ConnectionContext.ExecuteNonQuery($"EXEC [dbo].[SetSysSetting] @id = 'DbVersion', @value = {Quote(resource.DbVersion.ToString())};");
+                            server.ConnectionContext.ExecuteNonQuery(
+                                $"EXEC [dbo].[SetSysSetting] @id = 'DbVersion', @value = {Quote(resource.DbVersion.ToString())};");
                             serverConnection.CommitTransaction();
                         }
                         else
                         {
-                            Log.Warning("Skipped updating database to version {dbVersion}. Other service already updated", resource.DbVersion);
+                            Log.Warning(
+                                "Skipped updating database to version {dbVersion}. Other service already updated",
+                                resource.DbVersion);
                             serverConnection.RollBackTransaction();
                         }
                     }
@@ -91,6 +97,10 @@ namespace OnlineShop.Infrastructure
                 if (sqlEx.InnerException != null)
                     throw sqlEx.InnerException;
                 throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             Version GetDbVersionFromResourceName(string resourceName)
