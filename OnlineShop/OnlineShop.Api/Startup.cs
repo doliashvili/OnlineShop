@@ -1,0 +1,62 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using OnlineShop.Api.Extensions;
+using OnlineShop.Application.Services;
+using OnlineShop.Domain.AbstractRepository;
+using OnlineShop.Domain.Extensions;
+using OnlineShop.Infrastructure;
+
+namespace OnlineShop.Api
+{
+    public class Startup
+    {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.ConfigureSerilog(_configuration)
+                .ConfigureDatabase(_configuration);
+
+            RegisterServices(services);
+
+            services
+                .AddControllers(options =>
+                {
+                    options.Filters.Add(new ConsumesAttribute("application/json"));
+                    options.Filters.Add(new ProducesAttribute("application/json"));
+                })
+                .AddJsonOptions(o => o.JsonSerializerOptions.SetDefaultJsonSerializerOptions());
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
+            services.AddScoped<IProductReadRepository, ProductReadRepository>();
+            services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+            services.AddScoped<IFileService, FileService>();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+        }
+    }
+}

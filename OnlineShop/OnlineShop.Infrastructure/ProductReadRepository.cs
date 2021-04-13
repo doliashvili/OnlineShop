@@ -156,7 +156,7 @@ namespace OnlineShop.Infrastructure
 
         #region HelperMethods
 
-        private int CountPages(int pageSize, int totalCount)
+        private static int CountPages(int pageSize, int totalCount)
         {
             var total = totalCount / pageSize;
 
@@ -166,7 +166,7 @@ namespace OnlineShop.Infrastructure
             return total;
         }
 
-        private string GenerateSqlFromParameters(GetFilteredProducts query)
+        private static string GenerateSqlFromParameters(GetFilteredProducts query)
         {
             const string sql =
                 @"SELECT Id,Brand, Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size,img.Url,img.MainImage,img.Id as imgId,COUNT(Id)OVER() AS TotalCount

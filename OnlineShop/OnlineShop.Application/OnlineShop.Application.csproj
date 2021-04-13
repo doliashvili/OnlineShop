@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cqrs\Cqrs.csproj" />
     <ProjectReference Include="..\OnlineShop.Infrastructure\OnlineShop.Infrastructure.csproj" />
   </ItemGroup>
 

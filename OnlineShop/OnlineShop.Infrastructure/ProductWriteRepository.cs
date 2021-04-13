@@ -65,11 +65,11 @@ VALUES (@id,@mainImage,@url,@productId);";
                     await command2.ExecuteNonQueryAsync().ConfigureAwait(false);
                 }
 
-                await transaction.CommitAsync();
+                await transaction.CommitAsync().ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync().ConfigureAwait(false);
                 throw; //todo Exceptions
             }
         }

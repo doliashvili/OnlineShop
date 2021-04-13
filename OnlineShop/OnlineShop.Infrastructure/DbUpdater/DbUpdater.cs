@@ -59,7 +59,7 @@ namespace OnlineShop.Infrastructure.DbUpdater
                     try
                     {
                         // Try to obtain app lock
-                        var lockResult = (int)server.ConnectionContext.ExecuteScalar(@"DECLARE @r int;EXEC @r=sp_getapplock @Resource='$DbUpdate',@LockMode='Exclusive',@LockOwner='Transaction',@LockTimeout=-1;SELECT @r;");
+                        var lockResult = (int)server.ConnectionContext.ExecuteScalar("DECLARE @r int;EXEC @r=sp_getapplock @Resource='$DbUpdate',@LockMode='Exclusive',@LockOwner='Transaction',@LockTimeout=-1;SELECT @r;");
                         if (lockResult < 0)
                             throw new ApplicationException("Cannot obtain database app lock");
 
