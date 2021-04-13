@@ -38,7 +38,7 @@ namespace CoreModels.DomainObjects
 
             return fields.Select(field => field.GetValue(this))
                 .Where(value => value != null)
-                .Aggregate(startValue, (current, value) => current * multiplier + value.GetHashCode());
+                .Aggregate(startValue, (current, value) => (current * multiplier) + value.GetHashCode());
         }
 
         /// <summary>
@@ -156,8 +156,8 @@ namespace CoreModels.DomainObjects
         /// <returns>Returns true if two object are the same.</returns>
         public static bool operator ==(ValueObject<T> x, ValueObject<T> y)
         {
-            if (ReferenceEquals(x, null))
-                return ReferenceEquals(y, null);
+            if (x is null)
+                return y is null;
 
             return x.Equals(y);
         }

@@ -22,7 +22,7 @@ namespace Cqrs.Extensions
         /// <exception cref="InvalidOperationException">param: assemblies can't be empty</exception>
         public static IServiceCollection AddMediator(this IServiceCollection services, ApiGenOptions apiGenOptions = default, params Assembly[] assemblies)
         {
-            if(!assemblies.Any())
+            if(assemblies.Length == 0)
                 throw new InvalidOperationException($"[CQRS INSTALLER] assemblies to scan can not be empty");
 
             _apiGenOptions = apiGenOptions;
