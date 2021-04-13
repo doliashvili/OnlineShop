@@ -73,7 +73,6 @@ namespace Cqrs.ApiGenerator
             }
         }
 
-
         public void RegisterQueryEndpoints(List<Type> handlers)
         {
             foreach (var handler in handlers)
@@ -145,7 +144,6 @@ namespace Cqrs.ApiGenerator
                     Methods = new(),
                 };
 
-
                 var route = handlerAttr.ControllerRoute ??
                             MapHandlerNameToControllerName(handler.Name).Replace("Controller", "");
                 generatedClass.Attributes = new();
@@ -160,7 +158,6 @@ namespace Cqrs.ApiGenerator
 
             return generatedControllerIndex;
         }
-
 
         public void GenerateControllerFiles()
         {

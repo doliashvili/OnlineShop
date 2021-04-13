@@ -35,7 +35,6 @@ namespace OnlineShop.Domain.Products.Queries
 
         public GetFilteredProducts()
         {
-
         }
 
         public decimal? PriceFrom { get; set; } = decimal.MinValue;

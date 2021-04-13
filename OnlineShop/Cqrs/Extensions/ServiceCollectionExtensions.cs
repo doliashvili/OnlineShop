@@ -23,7 +23,7 @@ namespace Cqrs.Extensions
         public static IServiceCollection AddMediator(this IServiceCollection services, ApiGenOptions apiGenOptions = default, params Assembly[] assemblies)
         {
             if(assemblies.Length == 0)
-                throw new InvalidOperationException($"[CQRS INSTALLER] assemblies to scan can not be empty");
+                throw new InvalidOperationException("[CQRS INSTALLER] assemblies to scan can not be empty");
 
             _apiGenOptions = apiGenOptions;
             if(apiGenOptions != null)

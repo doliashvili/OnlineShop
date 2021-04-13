@@ -20,7 +20,7 @@ namespace Cqrs.Implementation
                 _serviceProvider.GetService(
                     typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResponse)));
             // ReSharper disable once PossibleNullReferenceException
-            return await (Task<TResponse>) service.HandleAsync((dynamic) query);
+            return await ((Task<TResponse>) service.HandleAsync((dynamic) query)).ConfigureAwait(false);
         }
 
         public async Task SendAsync<T>(T command)
@@ -30,7 +30,7 @@ namespace Cqrs.Implementation
                 throw new ArgumentNullException(nameof(command));
             
             var handler = _serviceProvider.GetRequiredService<ICommandHandler<T>>();
-            await handler.HandleAsync(command);
+            await handler.HandleAsync(command).ConfigureAwait(false);
         }
 
         public async Task PublishAsync<T>(T @event) where T : IEvent
@@ -40,8 +40,7 @@ namespace Cqrs.Implementation
             
             var handlers = _serviceProvider.GetServices<IInternalEventHandler<T>>();
             var tasks = handlers.Select(x => x.HandleAsync(@event));
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
-       
     }
 }
