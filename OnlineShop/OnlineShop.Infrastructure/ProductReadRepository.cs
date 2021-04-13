@@ -1,10 +1,8 @@
 ﻿using OnlineShop.Domain.AbstractRepository;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Threading.Tasks;
-using Babel;
 using Microsoft.Data.SqlClient;
 using OnlineShop.Domain.Enums;
 using OnlineShop.Domain.Products.Queries;
@@ -198,8 +196,8 @@ namespace OnlineShop.Infrastructure
             if (query.ProductType is not null)
                 sb.AppendWithAnd("ProductType=@productType");
 
-            sb.AppendWithAnd("Price >= @priceFrom || DiscountPrice >= @priceFrom");
-            sb.AppendWithAnd("Price <= @priceTo || DiscountPrice <= @priceTo");
+            sb.AppendWithAnd("Price >= @priceFrom OR DiscountPrice >= @priceFrom");
+            sb.AppendWithAnd("Price <= @priceTo OR DiscountPrice <= @priceTo");
             sb.AppendWhereIfHaveCondition(sql);
 
             var skip = (query.Page - 1) * query.PageSize;
