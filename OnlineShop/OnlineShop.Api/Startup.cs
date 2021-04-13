@@ -1,3 +1,4 @@
+using Cqrs.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -5,7 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OnlineShop.Api.Extensions;
+using OnlineShop.Application.CommandHandlers;
 using OnlineShop.Application.Services;
+using OnlineShop.Application.Settings;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Extensions;
 using OnlineShop.Infrastructure;
@@ -30,6 +33,8 @@ namespace OnlineShop.Api
 
             RegisterServices(services);
 
+            services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
+
             services
                 .AddControllers(options =>
                 {
@@ -44,6 +49,7 @@ namespace OnlineShop.Api
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<IFileService, FileService>();
+            services.AddMediator(null, typeof(ProductCommandHandler).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

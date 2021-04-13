@@ -7,7 +7,7 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Serilog;
 
-namespace OnlineShop.Infrastructure.DbUpdater
+namespace OnlineShop.Infrastructure
 {
     public static class DbUpdater
     {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Exceptions.ThrowHelper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using OnlineShop.Application.Exceptions;
 using OnlineShop.Application.Settings;
 using SixLabors.ImageSharp;
@@ -17,10 +18,10 @@ namespace OnlineShop.Application.Services
         private readonly AppSettings _settings;
         private readonly string _staticFilePath;
 
-        public FileService(AppSettings settings)
+        public FileService(IOptions<AppSettings> settings)
         {
-            _settings = settings;
-            _staticFilePath = settings.StaticFilePath;
+            _settings = settings.Value;
+            _staticFilePath = _settings.StaticFilePath;
         }
 
 

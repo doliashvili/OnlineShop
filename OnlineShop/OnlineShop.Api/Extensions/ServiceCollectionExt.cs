@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OnlineShop.Infrastructure;
 using OnlineShop.Infrastructure.CommonSql;
-using OnlineShop.Infrastructure.DbUpdater;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.Sinks.SystemConsole.Themes;
