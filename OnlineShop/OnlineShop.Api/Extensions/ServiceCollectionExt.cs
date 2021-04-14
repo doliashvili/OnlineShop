@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -50,6 +51,15 @@ namespace OnlineShop.Api.Extensions
             DbUpdater.CheckAndUpdateDatabaseVersion(connectionString);
 
             return services;
+        }
+
+        internal static void AddSwaggerXml(this Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions c)
+        {
+            var xmlFiles = Directory.GetFiles(System.AppContext.BaseDirectory, "*.xml");
+            foreach (var xmlFile in xmlFiles)
+            {
+                c.IncludeXmlComments(xmlFile);
+            }
         }
     }
 }

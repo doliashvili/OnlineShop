@@ -43,6 +43,8 @@ namespace OnlineShop.Api
                     options.Filters.Add(new ProducesAttribute("application/json"));
                 })
                 .AddJsonOptions(o => o.JsonSerializerOptions.SetDefaultJsonSerializerOptions());
+
+            services.AddSwaggerGen(x => x.AddSwaggerXml());
         }
 
         private static void RegisterServices(IServiceCollection services)
@@ -66,6 +68,9 @@ namespace OnlineShop.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnlineShop Api"));
 
             app.UseRouting();
 
