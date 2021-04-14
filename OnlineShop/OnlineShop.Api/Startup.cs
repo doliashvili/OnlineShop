@@ -1,3 +1,4 @@
+using Cqrs.ApiGenerator;
 using Cqrs.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,7 +50,13 @@ namespace OnlineShop.Api
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<IFileService, FileService>();
-            services.AddMediator(null, typeof(ProductCommandHandler).Assembly);
+            services.AddMediator(new ApiGenOptions()
+                {
+                    ControllersNamespace ="OnlineShop.Api.Controllers",
+                    ControllersPath = @"C:\OnlineShoping\OnlineShop\OnlineShop\OnlineShop.Api\Controllers",
+                    IgnoreGenerationIfControllerExists = true,
+                },
+                typeof(ProductCommandHandler).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

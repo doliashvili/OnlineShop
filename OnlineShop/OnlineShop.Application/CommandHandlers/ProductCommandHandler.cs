@@ -2,11 +2,13 @@
 using OnlineShop.Domain.Products.Commands;
 using System;
 using System.Threading.Tasks;
+using Cqrs.ApiGenerator;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Products.DomainObjects;
 
 namespace OnlineShop.Application.CommandHandlers
 {
+    [ApiGen]
     public sealed class ProductCommandHandler : ICommandHandler<CreateProductCommand>,
         ICommandHandler<AddProductImageCommand>,
         ICommandHandler<DeleteProductImageCommand>,

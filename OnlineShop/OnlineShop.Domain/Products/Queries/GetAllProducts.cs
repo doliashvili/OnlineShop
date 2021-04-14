@@ -4,7 +4,7 @@ using OnlineShop.Domain.Products.ReadModels;
 
 namespace OnlineShop.Domain.Products.Queries
 {
-    public class GetAllProducts : IQuery<IReadOnlyList<ProductReadModel>>, IQuery<List<ProductReadModel>>
+    public class GetAllProducts : IQuery<List<ProductReadModel>>
     {
 
     }

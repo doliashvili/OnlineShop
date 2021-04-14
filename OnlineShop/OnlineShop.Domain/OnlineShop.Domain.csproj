@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApiCommon\ApiCommon.csproj" />
     <ProjectReference Include="..\CoreModels\CoreModels.csproj" />
     <ProjectReference Include="..\Cqrs\Cqrs.csproj" />
     <ProjectReference Include="..\Exceptions\Exceptions.csproj" />
