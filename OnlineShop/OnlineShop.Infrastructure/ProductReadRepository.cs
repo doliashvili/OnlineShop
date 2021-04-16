@@ -76,7 +76,7 @@ namespace OnlineShop.Infrastructure
             return new PagingProductModel(products, pageCount, query.Page);
         }
 
-        public async Task<ProductReadModel> GetProductByIdAsync(GetProductById query)
+        public async Task<ProductReadModel?> GetProductByIdAsync(GetProductById query)
         {
             const string sql =
                 @"SELECT Id,Brand, Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size,img.Url,img.MainImage,img.Id as imgId
@@ -266,7 +266,7 @@ namespace OnlineShop.Infrastructure
         {
             var idx = 0;
             var id = reader.AsInt64(idx++);
-            var url = reader.AsStringOrNull(idx++);
+            var url = reader.AsString(idx++);
             var isMainImage = reader.AsBoolean(idx);
 
             var productImage = new ProductReadModelImage()

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Mime;
 using CoreModels.DomainObjects;
 using OnlineShop.Domain.Enums;
 using OnlineShop.Domain.Products.Records;
@@ -14,7 +13,7 @@ namespace OnlineShop.Domain.Products.DomainObjects
         public bool? IsDeleted { get; private set; }
         public string? Color { get; private set; }
         public string? Brand { get; private set; }
-        public string? ProductType { get; set; }
+        public string ProductType { get; set; }
         public Weight? Weight { get; private set; }
         public string? Name { get; private set; }
         public string? Description { get; private set; }

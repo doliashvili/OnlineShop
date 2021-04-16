@@ -18,7 +18,7 @@ namespace OnlineShop.Infrastructure
             _connectionString = connectionString.Value;
         }
 
-        public async Task CreateAsync(Product product)
+        public async Task CreateAsync(Product product)//Todo CancelationTokens
         {
             const string sql =
   @"INSERT INTO OnlineShop.Products (Id,Brand, Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size)
@@ -32,21 +32,21 @@ VALUES (@id,@mainImage,@url,@productId);";
 
             await using var command = new SqlCommand(sql, connection);
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = product.Id;
-            command.Parameters.Add("@brand", SqlDbType.NVarChar, ProductDbConstants.Brand).Value = product.Brand;
-            command.Parameters.Add("@color", SqlDbType.NVarChar, ProductDbConstants.Color).Value = product.Color;
-            command.Parameters.Add("@createTime", SqlDbType.DateTime).Value = product.CreateTime;
-            command.Parameters.Add("@description", SqlDbType.NVarChar, ProductDbConstants.Description).Value = product.Description;
-            command.Parameters.Add("@discount", SqlDbType.Float).Value = product.Discount;
-            command.Parameters.Add("@expiration", SqlDbType.DateTime).Value = product.Expiration;
-            command.Parameters.Add("@discountPrice", SqlDbType.Money).Value = product.DiscountPrice;
-            command.Parameters.Add("@forBaby", SqlDbType.Bit).Value = product.ForBaby;
-            command.Parameters.Add("@gender", SqlDbType.TinyInt).Value = product.Gender;
-            command.Parameters.Add("@isDeleted", SqlDbType.Bit).Value = product.IsDeleted;
-            command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.Name).Value = product.Name;
+            command.Parameters.Add("@brand", SqlDbType.NVarChar, ProductDbConstants.Brand).SetValue(product.Brand);
+            command.Parameters.Add("@color", SqlDbType.NVarChar, ProductDbConstants.Color).SetValue(product.Color);
+            command.Parameters.Add("@createTime", SqlDbType.DateTime).SetValue(product.CreateTime);
+            command.Parameters.Add("@description", SqlDbType.NVarChar, ProductDbConstants.Description).SetValue(product.Description);
+            command.Parameters.Add("@discount", SqlDbType.Float).SetValue(product.Discount);
+            command.Parameters.Add("@expiration", SqlDbType.DateTime).SetValue(product.Expiration);
+            command.Parameters.Add("@discountPrice", SqlDbType.Money).SetValue(product.DiscountPrice);
+            command.Parameters.Add("@forBaby", SqlDbType.Bit).SetValue(product.ForBaby);
+            command.Parameters.Add("@gender", SqlDbType.TinyInt).SetValue(product.Gender);
+            command.Parameters.Add("@isDeleted", SqlDbType.Bit).SetValue(product.IsDeleted);
+            command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.Name).SetValue(product.Name);
             command.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
             command.Parameters.Add("@productType", SqlDbType.NVarChar, ProductDbConstants.ProductType).Value = product.ProductType;
-            command.Parameters.Add("@weight", SqlDbType.NVarChar).Value = product.Weight.AsJson();
-            command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).Value = product.Size;
+            command.Parameters.Add("@weight", SqlDbType.NVarChar).SetValue(product.Weight.AsJson());
+            command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).SetValue(product.Size);
 
             await using var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted).ConfigureAwait(false);
 
@@ -60,14 +60,14 @@ VALUES (@id,@mainImage,@url,@productId);";
                     await using var command2 = new SqlCommand(sql2, connection);
                     command.Parameters.Add("@id", SqlDbType.BigInt).Value = item.Id;
                     command.Parameters.Add("@productId", SqlDbType.BigInt).Value = item.ProductId;
-                    command.Parameters.Add("@url", SqlDbType.VarChar).Value = item.Url;
+                    command.Parameters.Add("@url", SqlDbType.VarChar, ProductDbConstants.Url).Value = item.Url;
                     command.Parameters.Add("@mainImage", SqlDbType.Bit).Value = item.MainImage;
                     await command2.ExecuteNonQueryAsync().ConfigureAwait(false);
                 }
 
                 await transaction.CommitAsync().ConfigureAwait(false);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 await transaction.RollbackAsync().ConfigureAwait(false);
                 throw; //todo Exceptions

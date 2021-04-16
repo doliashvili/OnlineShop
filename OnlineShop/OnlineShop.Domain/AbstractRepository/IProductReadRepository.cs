@@ -9,7 +9,7 @@ namespace OnlineShop.Domain.AbstractRepository
     {
         public Task<List<ProductReadModel>> GetAllProductAsync(GetAllProducts query);
         public Task<PagingProductModel> GetProductsAsync(GetProducts query);
-        public Task<ProductReadModel> GetProductByIdAsync(GetProductById query);
+        public Task<ProductReadModel?> GetProductByIdAsync(GetProductById query);
         public Task<PagingProductModel> GetFilteredProductsAsync(GetFilteredProducts query);
         public Task<int> GetAllProductCountAsync(GetAllProductCount query);
     }

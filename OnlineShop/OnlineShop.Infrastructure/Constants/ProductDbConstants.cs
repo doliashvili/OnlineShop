@@ -14,5 +14,6 @@ namespace OnlineShop.Infrastructure.Constants
         public const short Name = 50;
         public const short ProductType = 30;
         public const short Size = 20;
+        public const short Url = 2048;
     }
 }
