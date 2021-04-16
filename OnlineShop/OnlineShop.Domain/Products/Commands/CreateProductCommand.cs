@@ -58,6 +58,5 @@ namespace OnlineShop.Domain.Products.Commands
             Images = images;
             Expiration = expiration;
         }
-
     }
 }

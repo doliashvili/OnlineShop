@@ -46,14 +46,14 @@ Gender tinyint NULL,
 IsDeleted bit NULL,
 [Name] nvarchar(50) NULL,
 Price money NOT NULL,
-ProductType nvarchar(30) NULL,
+ProductType nvarchar(30) NOT NULL,
 [Weight] varchar(max) NULL, -- JSON,
 Size varchar(20) NULL
 );
 
-CREATE TABLE [Image](
+CREATE TABLE [Images](
 Id bigint primary key,
-[Url] varchar(max) NOT NULL,
+[Url] varchar(2048) NOT NULL,
 MainImage bit NOT NULL,
 ProductId bigint,
 FOREIGN KEY (ProductId) REFERENCES Products(Id)
