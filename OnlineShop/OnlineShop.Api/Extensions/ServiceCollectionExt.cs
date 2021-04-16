@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OnlineShop.Infrastructure;
@@ -8,6 +6,8 @@ using OnlineShop.Infrastructure.CommonSql;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.Sinks.SystemConsole.Themes;
+using System;
+using System.IO;
 
 namespace OnlineShop.Api.Extensions
 {

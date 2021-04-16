@@ -53,11 +53,11 @@ namespace OnlineShop.Api
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<IFileService, FileService>();
             services.AddMediator(new ApiGenOptions()
-                {
-                    ControllersNamespace ="OnlineShop.Api.Controllers",
-                    ControllersPath = @"C:\OnlineShoping\OnlineShop\OnlineShop\OnlineShop.Api\Controllers",
-                    IgnoreGenerationIfControllerExists = true,
-                },
+            {
+                ControllersNamespace = "OnlineShop.Api.Controllers",
+                ControllersPath = @"C:\OnlineShoping\OnlineShop\OnlineShop\OnlineShop.Api\Controllers",
+                IgnoreGenerationIfControllerExists = true,
+            },
                 typeof(ProductCommandHandler).Assembly);
         }
 
