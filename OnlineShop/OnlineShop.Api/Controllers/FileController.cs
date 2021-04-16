@@ -7,6 +7,7 @@ using OnlineShop.Application.Settings;
 
 namespace OnlineShop.Api.Controllers
 {
+    [ApiController]
     [Route("api/v1/file")]
     public class FileController : ControllerBase
     {
@@ -31,7 +32,7 @@ namespace OnlineShop.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("upload-image")]
-        public IActionResult Image([FromForm] IFormFile file)
+        public IActionResult Image(IFormFile file)
         {
             var imagePath = _fileService.Image(file, "images");
             return Ok(Result<string>.Success(imagePath));
@@ -40,7 +41,7 @@ namespace OnlineShop.Api.Controllers
         [RequestSizeLimit(52428800)]
         [AllowAnonymous]
         [HttpPost("upload-video")]
-        public IActionResult Video([FromForm] IFormFile video)
+        public IActionResult Video(IFormFile video)
         {
             if (video.Length > 52428800)
                 return BadRequest(Result<string>.Fail("allowed file-size is 50mb."));
@@ -52,7 +53,7 @@ namespace OnlineShop.Api.Controllers
         
         [AllowAnonymous]
         [HttpPost("crop-image")]
-        public IActionResult CropImage([FromForm] CropperSetting cropperData, [FromForm] string path = "")
+        public IActionResult CropImage(CropperSetting cropperData, string path = "")
         {
             var imagePath = _fileService.CropImage(cropperData, path);
             return Ok(Result<string>.Success(imagePath));

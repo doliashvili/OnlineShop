@@ -1,6 +1,10 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ApiCommon.BaseControllers;
+using OnlineShop.Domain.Products.Commands;
+using OnlineShop.Domain.Products.Queries;
+using OnlineShop.Domain.Products.ReadModels;
 
 // **************************************************
 //                                                 //
@@ -10,123 +14,125 @@ using ApiCommon.BaseControllers;
 
 namespace OnlineShop.Api.Controllers
 {
+    [ApiController]
 	[Route("v1/Product")]
 	public class ProductController : BaseApiController
 	{
 		[HttpPost("CreateProduct")]
-		public async Task<IActionResult> CreateProduct([FromBody] OnlineShop.Domain.Products.Commands.CreateProductCommand command) 
+		public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
-		}	
+		}
 
 		[HttpPost("AddProductImage")]
-		public async Task<IActionResult> AddProductImage([FromBody] OnlineShop.Domain.Products.Commands.AddProductImageCommand command) 
+		public async Task<IActionResult> AddProductImageAsync([FromBody] AddProductImageCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
-		}	
+		}
 
 		[HttpPost("DeleteProductImage")]
-		public async Task<IActionResult> DeleteProductImage([FromBody] OnlineShop.Domain.Products.Commands.DeleteProductImageCommand command) 
+		public async Task<IActionResult> DeleteProductImageAsync([FromBody] DeleteProductImageCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
-		}	
+		}
 
-		[HttpPost("DeleteProduct")]
-		public async Task<IActionResult> DeleteProduct([FromBody] OnlineShop.Domain.Products.Commands.DeleteProductCommand command) 
-		{
-			await Mediator.SendAsync(command);
-			return Ok();
-		}	
+        [HttpPost("DeleteProduct")]
+        public async Task<IActionResult> DeleteProductAsync(
+            [FromBody] DeleteProductCommand command)
+        {
+            await Mediator.SendAsync(command).ConfigureAwait(false);
+            return Ok();
+        }
 
-		[HttpPost("ChangeProductName")]
-		public async Task<IActionResult> ChangeProductName([FromBody] OnlineShop.Domain.Products.Commands.ChangeProductNameCommand command) 
+        [HttpPost("ChangeProductName")]
+		public async Task<IActionResult> ChangeProductNameAsync([FromBody] ChangeProductNameCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
 		}	
 
 		[HttpPost("ChangeProductPrice")]
-		public async Task<IActionResult> ChangeProductPrice([FromBody] OnlineShop.Domain.Products.Commands.ChangeProductPriceCommand command) 
+		public async Task<IActionResult> ChangeProductPriceAsync([FromBody] ChangeProductPriceCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
 		}	
 
 		[HttpPost("ChangeProductBrand")]
-		public async Task<IActionResult> ChangeProductBrand([FromBody] OnlineShop.Domain.Products.Commands.ChangeProductBrandCommand command) 
+		public async Task<IActionResult> ChangeProductBrandAsync([FromBody] ChangeProductBrandCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
 		}
 
 		[HttpPost("ChangeProductColor")]
-		public async Task<IActionResult> ChangeProductColor([FromBody] OnlineShop.Domain.Products.Commands.ChangeProductColorCommand command) 
+		public async Task<IActionResult> ChangeProductColorAsync([FromBody] ChangeProductColorCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
 		}
 
 		[HttpPost("ChangeProductType")]
-		public async Task<IActionResult> ChangeProductType([FromBody] OnlineShop.Domain.Products.Commands.ChangeProductTypeCommand command) 
+		public async Task<IActionResult> ChangeProductTypeAsync([FromBody] ChangeProductTypeCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
 		}
 
 		[HttpPost("ChangeProductDiscount")]
-		public async Task<IActionResult> ChangeProductDiscount([FromBody] OnlineShop.Domain.Products.Commands.ChangeProductDiscountCommand command) 
+		public async Task<IActionResult> ChangeProductDiscountAsync([FromBody] ChangeProductDiscountCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
 		}
 
 		[HttpPost("ChangeProductForBaby")]
-		public async Task<IActionResult> ChangeProductForBaby([FromBody] OnlineShop.Domain.Products.Commands.ChangeProductForBabyCommand command) 
+		public async Task<IActionResult> ChangeProductForBabyAsync([FromBody] ChangeProductForBabyCommand command) 
 		{
-			await Mediator.SendAsync(command);
+			await Mediator.SendAsync(command).ConfigureAwait(false);
 			return Ok();
 		}
 
 		[HttpGet("GetAllProducts")]
-		[ProducesResponseType(typeof(System.Collections.Generic.List<OnlineShop.Domain.Products.ReadModels.ProductReadModel>), 200)]
-		public async Task<IActionResult> GetAllProducts([FromQuery] OnlineShop.Domain.Products.Queries.GetAllProducts query) 
+		[ProducesResponseType(typeof(List<ProductReadModel>), 200)]
+		public async Task<IActionResult> GetAllProductsAsync([FromQuery] GetAllProducts query) 
 		{
-			var data = await Mediator.QueryAsync(query);
+			var data = await Mediator.QueryAsync(query).ConfigureAwait(false);
 			return Ok(data);
 		}
 
 		[HttpGet("GetAllProductCount")]
-		[ProducesResponseType(typeof(System.Int32), 200)]
-		public async Task<IActionResult> GetAllProductCount([FromQuery] OnlineShop.Domain.Products.Queries.GetAllProductCount query) 
+		[ProducesResponseType(typeof(int), 200)]
+		public async Task<IActionResult> GetAllProductCountAsync([FromQuery] GetAllProductCount query) 
 		{
-			var data = await Mediator.QueryAsync(query);
+			var data = await Mediator.QueryAsync(query).ConfigureAwait(false);
 			return Ok(data);
 		}
 
 		[HttpGet("GetProducts")]
-		[ProducesResponseType(typeof(OnlineShop.Domain.Products.ReadModels.PagingProductModel), 200)]
-		public async Task<IActionResult> GetProducts([FromQuery] OnlineShop.Domain.Products.Queries.GetProducts query) 
+		[ProducesResponseType(typeof(PagingProductModel), 200)]
+		public async Task<IActionResult> GetProductsAsync([FromQuery] GetProducts query) 
 		{
-			var data = await Mediator.QueryAsync(query);
+			var data = await Mediator.QueryAsync(query).ConfigureAwait(false);
 			return Ok(data);
 		}
 
 		[HttpGet("GetFilteredProducts")]
-		[ProducesResponseType(typeof(OnlineShop.Domain.Products.ReadModels.PagingProductModel), 200)]
-		public async Task<IActionResult> GetFilteredProducts([FromQuery] OnlineShop.Domain.Products.Queries.GetFilteredProducts query) 
+		[ProducesResponseType(typeof(PagingProductModel), 200)]
+		public async Task<IActionResult> GetFilteredProductsAsync([FromQuery] GetFilteredProducts query) 
 		{
-			var data = await Mediator.QueryAsync(query);
+			var data = await Mediator.QueryAsync(query).ConfigureAwait(false);
 			return Ok(data);
 		}
 
 		[HttpGet("GetProductById")]
-		[ProducesResponseType(typeof(OnlineShop.Domain.Products.ReadModels.ProductReadModel), 200)]
-		public async Task<IActionResult> GetProductById([FromQuery] OnlineShop.Domain.Products.Queries.GetProductById query) 
+		[ProducesResponseType(typeof(ProductReadModel), 200)]
+		public async Task<IActionResult> GetProductByIdAsync([FromQuery] GetProductById query) 
 		{
-			var data = await Mediator.QueryAsync(query);
+			var data = await Mediator.QueryAsync(query).ConfigureAwait(false);
 			return Ok(data);
 		}
 	}
