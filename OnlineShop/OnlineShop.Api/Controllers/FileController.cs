@@ -32,7 +32,7 @@ namespace OnlineShop.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("upload-image")]
-        public IActionResult Image(IFormFile file)
+        public IActionResult Image([FromForm]IFormFile file)
         {
             var imagePath = _fileService.Image(file, "images");
             return Ok(Result<string>.Success(imagePath));
@@ -41,7 +41,7 @@ namespace OnlineShop.Api.Controllers
         [RequestSizeLimit(52428800)]
         [AllowAnonymous]
         [HttpPost("upload-video")]
-        public IActionResult Video(IFormFile video)
+        public IActionResult Video([FromForm]IFormFile video)
         {
             if (video.Length > 52428800)
                 return BadRequest(Result<string>.Fail("allowed file-size is 50mb."));
