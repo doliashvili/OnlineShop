@@ -10,20 +10,20 @@ namespace OnlineShop.Domain.Products.Commands
 {
     public class CreateProductCommand : Command
     {
-        public decimal Price { get; private set; }
-        public string? Color { get; private set; }
-        public string? Brand { get; private set; }
-        public string ProductType { get; set; }
-        public Weight? Weight { get; private set; }
-        public string? Name { get; private set; }
-        public string? Description { get; private set; }
-        public Gender? Gender { get; private set; }
-        public bool? ForBaby { get; private set; }
-        public string? Size { get; private set; }
-        public float? Discount { get; private set; }
-        public DateTime? CreateTime { get; private set; }
-        public List<ProductImage> Images { get; private set; }
-        public DateTime? Expiration { get; private set; }
+        public decimal Price { get; }
+        public string? Color { get; }
+        public string? Brand { get; }
+        public string ProductType { get; }
+        public Weight? Weight { get; }
+        public string? Name { get; }
+        public string? Description { get; }
+        public Gender? Gender { get; }
+        public bool? ForBaby { get; }
+        public string? Size { get; }
+        public float? Discount { get; }
+        public DateTime? CreateTime { get; }
+        public List<ProductImage> Images { get; }
+        public DateTime? Expiration { get; }
 
         [JsonConstructor]
         public CreateProductCommand(
@@ -41,7 +41,7 @@ namespace OnlineShop.Domain.Products.Commands
             DateTime? createTime,
             List<ProductImage> images,
             DateTime expiration,
-            CommandMeta commandMeta ) : base(commandMeta)
+            CommandMeta commandMeta) : base(commandMeta)
         {
             Price = price;
             Color = color;
