@@ -1,3 +1,4 @@
+using ApiCommon.Filters;
 using Cqrs.ApiGenerator;
 using Cqrs.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -32,8 +33,6 @@ namespace OnlineShop.Api
             services.ConfigureSerilog(_configuration)
                 .ConfigureDatabase(_configuration);
 
-            RegisterServices(services);
-
             services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
 
             services
@@ -41,10 +40,15 @@ namespace OnlineShop.Api
                 {
                     options.Filters.Add(new ConsumesAttribute("application/json"));
                     options.Filters.Add(new ProducesAttribute("application/json"));
+                    options.Filters.Add<InputValidatorFilter>();
+                    options.Filters.Add<ResponseExceptionFilter>();
                 })
                 .AddJsonOptions(o => o.JsonSerializerOptions.SetDefaultJsonSerializerOptions());
 
-            services.AddSwaggerGen(x => x.AddSwaggerXml());
+            services.AddSwaggerGen(x => x.AddSwaggerXml())
+                .AddSwaggerGenNewtonsoftSupport();
+
+            RegisterServices(services);
         }
 
         private static void RegisterServices(IServiceCollection services)

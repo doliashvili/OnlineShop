@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Api.Controllers
 {
-    [ApiController]
     [Route("v1/Product")]
     public class ProductController : BaseApiController
     {

@@ -8,9 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApiCommon\ApiCommon.csproj" />
-    <ProjectReference Include="..\CoreModels\CoreModels.csproj" />
-    <ProjectReference Include="..\Cqrs\Cqrs.csproj" />
-    <ProjectReference Include="..\Exceptions\Exceptions.csproj" />
     <ProjectReference Include="..\System.Date\System.Date.csproj" />
   </ItemGroup>
 
