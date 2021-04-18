@@ -40,8 +40,8 @@ namespace OnlineShop.Api
                 {
                     options.Filters.Add(new ConsumesAttribute("application/json"));
                     options.Filters.Add(new ProducesAttribute("application/json"));
-                    options.Filters.Add<InputValidatorFilter>();
-                    options.Filters.Add<ResponseExceptionFilter>();
+                    //options.Filters.Add<InputValidatorFilter>();
+                    //options.Filters.Add<ResponseExceptionFilter>();
                 })
                 .AddJsonOptions(o => o.JsonSerializerOptions.SetDefaultJsonSerializerOptions());
 

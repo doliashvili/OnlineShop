@@ -54,6 +54,19 @@ namespace OnlineShop.Domain.Extensions
                 return enumString.ToEnum<T>();
             }
 
+            if (token == JsonTokenType.Number)
+            {
+                try
+                {
+                    return Enum.GetValues<T>()[reader.GetByte()];
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    Console.WriteLine(e);
+                    throw new JsonException($"Unable to deserialize type {typeToConvert} {e.Message}");
+                }
+            }
+
             throw new JsonException($"Unable to deserialize type {typeToConvert}");
         }
 

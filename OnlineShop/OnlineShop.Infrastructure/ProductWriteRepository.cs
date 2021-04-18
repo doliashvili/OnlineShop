@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Threading.Tasks;
+using IdGeneration.GeneratorWrapper;
 using Microsoft.Data.SqlClient;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Extensions;
@@ -21,12 +22,12 @@ namespace OnlineShop.Infrastructure
         public async Task CreateAsync(Product product)//Todo CancelationTokens
         {
             const string sql =
-  @"INSERT INTO OnlineShop.Products (Id,Brand, Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size)
+  @"INSERT INTO Products (Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size)
 VALUES (@id,@brand,@color,@createTime,@description,@discount,@expiration,@discountPrice,@forBaby,@gender,@isDeleted,@name,@price,@productType,@weight,@size);";
 
             const string sql2 =
-  @"INSERT INTO OnlineShop.Images (Id,MainImage,Url,ProductId)
-VALUES (@id,@mainImage,@url,@productId);";
+  @"INSERT INTO Images (Id,MainImage,Url,ProductId)
+VALUES (@imgId,@mainImage,@url,@productId);";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -48,20 +49,21 @@ VALUES (@id,@mainImage,@url,@productId);";
             command.Parameters.Add("@weight", SqlDbType.NVarChar).SetValue(product.Weight.AsJson());
             command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).SetValue(product.Size);
 
-            await using var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted).ConfigureAwait(false);
 
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+            command.Transaction = transaction;
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
             try
             {
-                await connection.EnsureIsOpenAsync().ConfigureAwait(false);
-                await command.ExecuteNonQueryAsync().ConfigureAwait(false);
-
                 foreach (var item in product.Images)
                 {
                     await using var command2 = new SqlCommand(sql2, connection);
-                    command.Parameters.Add("@id", SqlDbType.BigInt).Value = item.Id;
-                    command.Parameters.Add("@productId", SqlDbType.BigInt).Value = item.ProductId;
-                    command.Parameters.Add("@url", SqlDbType.VarChar, ProductDbConstants.Url).Value = item.Url;
-                    command.Parameters.Add("@mainImage", SqlDbType.Bit).Value = item.MainImage;
+                    command2.Transaction = transaction;
+                    command2.Parameters.Add("@imgId", SqlDbType.BigInt).Value = IdGenerator.NewId;
+                    command2.Parameters.Add("@mainImage", SqlDbType.Bit).Value = item.MainImage;
+                    command2.Parameters.Add("@url", SqlDbType.VarChar, ProductDbConstants.Url).Value = item.Url;
+                    command2.Parameters.Add("@productId", SqlDbType.BigInt).Value = product.Id;
                     await command2.ExecuteNonQueryAsync().ConfigureAwait(false);
                 }
 
@@ -72,6 +74,7 @@ VALUES (@id,@mainImage,@url,@productId);";
                 await transaction.RollbackAsync().ConfigureAwait(false);
                 throw; //todo Exceptions
             }
+
         }
 
         public async Task UpdateNameAsync(string name, long id)

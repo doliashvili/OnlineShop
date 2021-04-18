@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using CoreModels.Messaging;
 using OnlineShop.Domain.Enums;
 using OnlineShop.Domain.Products.DomainObjects;
@@ -25,8 +24,7 @@ namespace OnlineShop.Domain.Products.Commands
         public List<ProductImage> Images { get; }
         public DateTime? Expiration { get; }
 
-        public CreateProductCommand(
-            CommandMeta commandMeta,
+        public CreateProductCommand(CommandMeta commandMeta,
             decimal price,
             string? color,
             string? brand,
@@ -40,7 +38,7 @@ namespace OnlineShop.Domain.Products.Commands
             float? discount,
             DateTime? createTime,
             List<ProductImage> images,
-            DateTime expiration) : base(commandMeta)
+            DateTime? expiration) : base(commandMeta)
         {
             Price = price;
             Color = color;
