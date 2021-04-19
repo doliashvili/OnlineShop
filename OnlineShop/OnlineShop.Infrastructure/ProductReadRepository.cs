@@ -1,6 +1,7 @@
 ﻿using OnlineShop.Domain.AbstractRepository;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
@@ -37,15 +38,9 @@ namespace OnlineShop.Infrastructure
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             var products = new List<ProductReadModel>(20);
-
-            while (await reader.ReadAsync().ConfigureAwait(false)) //Todo CancellationTokens
-            {
-                var product = await ReadProductAsync(reader).ConfigureAwait(false);
-                products.Add(product);
-            }
-
-            return products;
+            return await ProductListReaderAsync(reader, products).ConfigureAwait(false);
         }
+
 
         public async Task<PagingProductModel> GetProductsAsync(GetProducts query)
         {
@@ -64,11 +59,7 @@ namespace OnlineShop.Infrastructure
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             var products = new List<ProductReadModel>(20);
-            while (await reader.ReadAsync().ConfigureAwait(false)) //Todo CancellationTokens
-            {
-                var product = await ReadProductAsync(reader).ConfigureAwait(false);
-                products.Add(product);
-            }
+            products = await ProductListReaderAsync(reader, products).ConfigureAwait(false);
 
             var totalCount = (int)reader["TotalCount"];
 
@@ -126,11 +117,7 @@ namespace OnlineShop.Infrastructure
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             var products = new List<ProductReadModel>(20);
-            while (await reader.ReadAsync().ConfigureAwait(false)) //Todo CancellationTokens
-            {
-                var product = await ReadProductAsync(reader).ConfigureAwait(false);
-                products.Add(product);
-            }
+            products = await ProductListReaderAsync(reader, products).ConfigureAwait(false);
 
             var totalCount = (int)reader["TotalCount"];
 
@@ -208,76 +195,156 @@ namespace OnlineShop.Infrastructure
             return sb.ToString();
         }
 
-        private static async Task<ProductReadModel> ReadProductAsync(SqlDataReader reader)
+        private static async Task<List<ProductReadModel>> ProductListReaderAsync(SqlDataReader reader, List<ProductReadModel> products)
         {
-            var idx = 0;
-            var id = reader.AsInt64(idx++);
-            var brand = reader.AsStringOrNull(idx++);
-            var color = reader.AsStringOrNull(idx++);
-            var createTime = reader.AsDateTimeOrNull(idx++);
-            var description = reader.AsStringOrNull(idx++);
-            var discount = reader.AsFloatOrNull(idx++);
-            var expiration = reader.AsDateTimeOrNull(idx++);
-            var discountPrice = reader.AsDecimal(idx++);
-            var isBaby = reader.AsBooleanOrNull(idx++);
-            var gender = reader.AsEnumOrNull<Gender>(idx++);
-            var isDeleted = reader.AsBooleanOrNull(idx++);
-            var name = reader.AsStringOrNull(idx++);
-            var price = reader.AsDecimal(idx++);
-            var productType = reader.AsString(idx++);
-            var weight = reader.AsJsonOrNull<Weight>(idx++);
-            var size = reader.AsStringOrNull(idx++);
-            var images =  ReadProductImageList(reader,idx);
-
-            var product = new ProductReadModel()
+            while (await reader.ReadAsync().ConfigureAwait(false)) //Todo CancellationTokens
             {
-                Id = id,
-                Price = price,
-                IsDeleted = isDeleted,
-                Color = color,
-                Brand = brand,
-                ProductType = productType,
-                Weight = weight,
-                Name = name,
-                Description = description,
-                Gender = gender,
-                ForBaby = isBaby,
-                Size = size,
-                Discount = discount,
-                CreateTime = createTime,
-                DiscountPrice = discountPrice,
-                Expiration = expiration,
-                Images = images,
-            };
+                var idx = 0;
+                var id = reader.AsInt64(idx++);
+                var brand = reader.AsStringOrNull(idx++);
+                var color = reader.AsStringOrNull(idx++);
+                var createTime = reader.AsDateTimeOrNull(idx++);
+                var description = reader.AsStringOrNull(idx++);
+                var discount = reader.AsFloatOrNull(idx++);
+                var expiration = reader.AsDateTimeOrNull(idx++);
+                var discountPrice = reader.AsDecimal(idx++);
+                var isBaby = reader.AsBooleanOrNull(idx++);
+                var gender = reader.AsEnumOrNull<Gender>(idx++);
+                var isDeleted = reader.AsBooleanOrNull(idx++);
+                var name = reader.AsStringOrNull(idx++);
+                var price = reader.AsDecimal(idx++);
+                var productType = reader.AsString(idx++);
+                var weight = reader.AsJsonOrNull<Weight>(idx++);
+                var size = reader.AsStringOrNull(idx++);
+                var url = reader.AsString(idx++);
+                var isMainImage = reader.AsBoolean(idx++);
+                var imgId = reader.AsInt64(idx++);
+                var productId = reader.AsInt64(idx);
+
+                var product = products.Find(x => x.Id == productId);
+                if (product == null)
+                {
+                    product = new ProductReadModel()
+                    {
+                        Id = id,
+                        Price = price,
+                        IsDeleted = isDeleted,
+                        Color = color,
+                        Brand = brand,
+                        ProductType = productType,
+                        Weight = weight,
+                        Name = name,
+                        Description = description,
+                        Gender = gender,
+                        ForBaby = isBaby,
+                        Size = size,
+                        Discount = discount,
+                        CreateTime = createTime,
+                        DiscountPrice = discountPrice,
+                        Expiration = expiration,
+                        Images = new List<ProductReadModelImage>(6)
+                         {
+                          new () {
+                             Id = imgId,
+                             Url = url,
+                             MainImage = isMainImage,
+                             ProductId = productId,
+                          }
+                         }
+                    };
+                    products.Add(product);
+                }
+                else
+                {
+                    product.Images.Add(new()
+                    {
+                        Id = imgId,
+                        Url = url,
+                        MainImage = isMainImage,
+                        ProductId = productId
+                    });
+                }
+
+            }
+
+            return products;
+        }
+
+        private static async Task<ProductReadModel?> ReadProductAsync(SqlDataReader reader)
+        {
+            ProductReadModel? product = null;
+            while (await reader.ReadAsync().ConfigureAwait(false)) //Todo CancellationTokens
+            {
+                var idx = 0;
+                var id = reader.AsInt64(idx++);
+                var brand = reader.AsStringOrNull(idx++);
+                var color = reader.AsStringOrNull(idx++);
+                var createTime = reader.AsDateTimeOrNull(idx++);
+                var description = reader.AsStringOrNull(idx++);
+                var discount = reader.AsFloatOrNull(idx++);
+                var expiration = reader.AsDateTimeOrNull(idx++);
+                var discountPrice = reader.AsDecimal(idx++);
+                var isBaby = reader.AsBooleanOrNull(idx++);
+                var gender = reader.AsEnumOrNull<Gender>(idx++);
+                var isDeleted = reader.AsBooleanOrNull(idx++);
+                var name = reader.AsStringOrNull(idx++);
+                var price = reader.AsDecimal(idx++);
+                var productType = reader.AsString(idx++);
+                var weight = reader.AsJsonOrNull<Weight>(idx++);
+                var size = reader.AsStringOrNull(idx++);
+                var url = reader.AsString(idx++);
+                var isMainImage = reader.AsBoolean(idx++);
+                var imgId = reader.AsInt64(idx++);
+                var productId = reader.AsInt64(idx);
+
+
+                if (product is null)
+                {
+                    product = new ProductReadModel()
+                    {
+                        Id = id,
+                        Price = price,
+                        IsDeleted = isDeleted,
+                        Color = color,
+                        Brand = brand,
+                        ProductType = productType,
+                        Weight = weight,
+                        Name = name,
+                        Description = description,
+                        Gender = gender,
+                        ForBaby = isBaby,
+                        Size = size,
+                        Discount = discount,
+                        CreateTime = createTime,
+                        DiscountPrice = discountPrice,
+                        Expiration = expiration,
+                        Images = new List<ProductReadModelImage>(6)
+                         {
+                          new () {
+                             Id = imgId,
+                             Url = url,
+                             MainImage = isMainImage,
+                             ProductId = productId,
+                          }
+                         }
+                    };
+                }
+                else
+                {
+                    product.Images.Add(new()
+                    {
+                        Id = imgId,
+                        Url = url,
+                        MainImage = isMainImage,
+                        ProductId = productId
+                    });
+                }
+
+            }
 
             return product;
         }
 
-        private static List<ProductReadModelImage> ReadProductImageList(SqlDataReader reader,int idx)
-        {
-            var productImages = new List<ProductReadModelImage>(6);
-            
-                var image = ReadProductImage(reader,idx);
-                productImages.Add(image);
-
-            return productImages;
-        }
-
-        private static ProductReadModelImage ReadProductImage(SqlDataReader reader,int idx)
-        {
-            var url = reader.AsString(idx++);
-            var isMainImage = reader.AsBoolean(idx++);
-            var id = reader.AsInt64(idx++);
-
-            var productImage = new ProductReadModelImage()
-            {
-                Id = id,
-                Url = url,
-                MainImage = isMainImage,
-            };
-
-            return productImage;
-        }
         #endregion HelperMethods
     }
 }

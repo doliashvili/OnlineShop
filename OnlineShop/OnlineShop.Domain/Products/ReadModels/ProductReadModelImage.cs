@@ -11,5 +11,6 @@ namespace OnlineShop.Domain.Products.ReadModels
         public long Id { get; set; }
         public string Url { get; set; } = default!;
         public bool MainImage { get; set; }
+        public long ProductId { get; set; }
     }
 }
