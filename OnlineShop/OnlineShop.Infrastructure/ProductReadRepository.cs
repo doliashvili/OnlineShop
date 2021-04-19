@@ -25,9 +25,9 @@ namespace OnlineShop.Infrastructure
         public async Task<List<ProductReadModel>> GetAllProductAsync(GetAllProducts query)
         {
             const string sql =
-                @"SELECT Id,Brand, Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size,img.Url,img.MainImage,img.Id as imgId
+                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
-        LEFT JOIN Images img ON Id=img.ProductId;";
+        LEFT JOIN Images ON dbo.Products.Id=Images.ProductId;";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -37,6 +37,7 @@ namespace OnlineShop.Infrastructure
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             var products = new List<ProductReadModel>(20);
+
             while (await reader.ReadAsync().ConfigureAwait(false)) //Todo CancellationTokens
             {
                 var product = await ReadProductAsync(reader).ConfigureAwait(false);
@@ -50,9 +51,9 @@ namespace OnlineShop.Infrastructure
         {
             var skip = (query.Page - 1) * query.PageSize;
             string sql =
-                $@"SELECT Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size,img.Url,img.MainImage,img.Id as imgId,COUNT(Id)OVER() AS TotalCount
+                $@"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
-        LEFT JOIN Images img ON Id=img.ProductId
+        LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
         ORDER BY Id OFFSET {skip} ROWS FETCH NEXT {query.PageSize} ROWS ONLY;";
 
             await using var connection = new SqlConnection(_connectionString);
@@ -79,10 +80,10 @@ namespace OnlineShop.Infrastructure
         public async Task<ProductReadModel?> GetProductByIdAsync(GetProductById query)
         {
             const string sql =
-                @"SELECT Id,Brand, Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size,img.Url,img.MainImage,img.Id as imgId
+                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
-        LEFT JOIN Images img ON Id=img.ProductId
-        WHERE Id=@id;";
+        LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
+        WHERE dbo.Products.Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -169,9 +170,9 @@ namespace OnlineShop.Infrastructure
         private static string GenerateSqlFromParameters(GetFilteredProducts query)
         {
             const string sql =
-                @"SELECT Id,Brand, Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size,img.Url,img.MainImage,img.Id as imgId,COUNT(Id)OVER() AS TotalCount
+                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
-        LEFT JOIN Images img ON Id=img.ProductId";
+        LEFT JOIN Images ON dbo.Products.Id=Images.ProductId;";
 
             var sb = new StringBuilder();
 
@@ -211,21 +212,22 @@ namespace OnlineShop.Infrastructure
         {
             var idx = 0;
             var id = reader.AsInt64(idx++);
-            var price = reader.AsDecimal(idx++);
-            var isDeleted = reader.AsBooleanOrNull(idx++);
-            var color = reader.AsStringOrNull(idx++);
             var brand = reader.AsStringOrNull(idx++);
+            var color = reader.AsStringOrNull(idx++);
+            var createTime = reader.AsDateTimeOrNull(idx++);
+            var description = reader.AsStringOrNull(idx++);
+            var discount = reader.AsFloatOrNull(idx++);
+            var expiration = reader.AsDateTimeOrNull(idx++);
+            var discountPrice = reader.AsDecimal(idx++);
+            var isBaby = reader.AsBooleanOrNull(idx++);
+            var gender = reader.AsEnumOrNull<Gender>(idx++);
+            var isDeleted = reader.AsBooleanOrNull(idx++);
+            var name = reader.AsStringOrNull(idx++);
+            var price = reader.AsDecimal(idx++);
             var productType = reader.AsString(idx++);
             var weight = reader.AsJsonOrNull<Weight>(idx++);
-            var name = reader.AsStringOrNull(idx++);
-            var description = reader.AsStringOrNull(idx++);
-            var gender = reader.AsEnumOrNull<Gender>(idx++);
-            var isBaby = reader.AsBooleanOrNull(idx++);
             var size = reader.AsStringOrNull(idx++);
-            var discount = reader.AsFloatOrNull(idx++);
-            var createTime = reader.AsDateTimeOrNull(idx++);
-            var expiration = reader.AsDateTimeOrNull(idx);
-            var images = await ReadProductImageListAsync(reader).ConfigureAwait(false);
+            var images =  ReadProductImageList(reader,idx);
 
             var product = new ProductReadModel()
             {
@@ -243,6 +245,7 @@ namespace OnlineShop.Infrastructure
                 Size = size,
                 Discount = discount,
                 CreateTime = createTime,
+                DiscountPrice = discountPrice,
                 Expiration = expiration,
                 Images = images,
             };
@@ -250,24 +253,21 @@ namespace OnlineShop.Infrastructure
             return product;
         }
 
-        private static async Task<List<ProductReadModelImage>> ReadProductImageListAsync(SqlDataReader reader)
+        private static List<ProductReadModelImage> ReadProductImageList(SqlDataReader reader,int idx)
         {
             var productImages = new List<ProductReadModelImage>(6);
-            while (await reader.ReadAsync().ConfigureAwait(false))
-            {
-                var image = ReadProductImage(reader);
+            
+                var image = ReadProductImage(reader,idx);
                 productImages.Add(image);
-            }
 
             return productImages;
         }
 
-        private static ProductReadModelImage ReadProductImage(SqlDataReader reader)
+        private static ProductReadModelImage ReadProductImage(SqlDataReader reader,int idx)
         {
-            var idx = 0;
-            var id = reader.AsInt64(idx++);
             var url = reader.AsString(idx++);
-            var isMainImage = reader.AsBoolean(idx);
+            var isMainImage = reader.AsBoolean(idx++);
+            var id = reader.AsInt64(idx++);
 
             var productImage = new ProductReadModelImage()
             {

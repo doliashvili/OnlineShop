@@ -80,7 +80,7 @@ VALUES (@imgId,@mainImage,@url,@productId);";
         public async Task UpdateNameAsync(string name, long id)
         {
             const string sql =
-  @"UPDATE OnlineShop.Products
+  @"UPDATE Products
 SET Name=@name
 WHERE Id=@id;";
 
@@ -114,7 +114,7 @@ WHERE Id=@id;";
         public async Task UpdateDiscountAsync(float discount, long id)
         {
             const string sql =
-                @"UPDATE OnlineShop.Products
+  @"UPDATE Products
 SET Discount=@discount
 WHERE Id=@id;";
 
@@ -131,7 +131,7 @@ WHERE Id=@id;";
         public async Task UpdateBrandAsync(string brand, long id)
         {
             const string sql =
-                @"UPDATE OnlineShop.Products
+  @"UPDATE Products
 SET Brand=@brand
 WHERE Id=@id;";
 
@@ -148,7 +148,7 @@ WHERE Id=@id;";
         public async Task UpdateTypeAsync(string type, long id)
         {
             const string sql =
-                @"UPDATE OnlineShop.Products
+  @"UPDATE Products
 SET ProductType=@type
 WHERE Id=@id;";
 
@@ -165,7 +165,7 @@ WHERE Id=@id;";
         public async Task UpdateForBabyAsync(bool isBaby, long id)
         {
             const string sql =
-                @"UPDATE OnlineShop.Products
+  @"UPDATE Products
 SET ForBaby=@isBaby
 WHERE Id=@id;";
 
@@ -182,7 +182,7 @@ WHERE Id=@id;";
         public async Task UpdateColorAsync(string color, long id)
         {
             const string sql =
-                @"UPDATE OnlineShop.Products
+ @"UPDATE Products
 SET Color=@color
 WHERE Id=@id;";
 
