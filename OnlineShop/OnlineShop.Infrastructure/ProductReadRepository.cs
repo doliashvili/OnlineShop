@@ -1,7 +1,6 @@
 ﻿using OnlineShop.Domain.AbstractRepository;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
@@ -84,11 +83,6 @@ namespace OnlineShop.Infrastructure
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
-
-            if (!await reader.ReadAsync().ConfigureAwait(false))
-            {
-                return null;
-            }
 
             var product = await ReadProductAsync(reader).ConfigureAwait(false);
 
