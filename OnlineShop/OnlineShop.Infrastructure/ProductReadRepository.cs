@@ -45,10 +45,16 @@ namespace OnlineShop.Infrastructure
         {
             var skip = (query.Page - 1) * query.PageSize;
             string sql =
-                $@"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
+ $@"WITH pg AS
+  (SELECT Products.Id, c = COUNT(*) OVER()
+      FROM Products
+      ORDER BY Products.Id
+      OFFSET {query.PageSize} * {skip} ROWS
+      FETCH NEXT {query.PageSize} ROWS ONLY)
+SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
         LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
-        ORDER BY Id OFFSET {skip} ROWS FETCH NEXT {query.PageSize} ROWS ONLY;";
+		INNER JOIN pg ON pg.Id= dbo.Products.Id";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -60,7 +66,7 @@ namespace OnlineShop.Infrastructure
             var products = new List<ProductReadModel>(20);
             products = await ProductListReaderAsync(reader, products).ConfigureAwait(false);
 
-            var totalCount = (int)reader["TotalCount"];
+            var totalCount = await GetAllProductCountAsync(new GetAllProductCount()).ConfigureAwait(false);
 
             var pageCount = CountPages(query.PageSize, totalCount);
 
@@ -91,7 +97,7 @@ namespace OnlineShop.Infrastructure
 
         public async Task<PagingProductModel> GetFilteredProductsAsync(GetFilteredProducts query)
         {
-            string sql = GenerateSqlFromParameters(query);
+            string sql = GenerateSqlFromFilteredParameters(query);
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -113,7 +119,7 @@ namespace OnlineShop.Infrastructure
             var products = new List<ProductReadModel>(20);
             products = await ProductListReaderAsync(reader, products).ConfigureAwait(false);
 
-            var totalCount = (int)reader["TotalCount"];
+            var totalCount = 2;//todo
 
             var pageCount = CountPages(query.PageSize, totalCount);
 
@@ -133,7 +139,13 @@ namespace OnlineShop.Infrastructure
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
-            return reader.AsInt32(0);
+            if (!await reader.ReadAsync().ConfigureAwait(false))
+            {
+                return 0;
+            }
+
+            var count = reader.AsInt32(0);
+            return count;
         }
 
         #region HelperMethods
@@ -148,12 +160,20 @@ namespace OnlineShop.Infrastructure
             return total;
         }
 
-        private static string GenerateSqlFromParameters(GetFilteredProducts query)
+        private static string GenerateSqlFromFilteredParameters(GetFilteredProducts query)
         {
-            const string sql =
-                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
+            var skip = (query.Page - 1) * query.PageSize;
+            string sql =
+                $@"WITH pg AS
+  (SELECT Products.Id, c = COUNT(*) OVER()
+      FROM Products
+      ORDER BY Products.Id
+      OFFSET {query.PageSize} * {skip} ROWS
+      FETCH NEXT {query.PageSize} ROWS ONLY)
+SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
-        LEFT JOIN Images ON dbo.Products.Id=Images.ProductId;";
+        LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
+		INNER JOIN pg ON pg.Id= dbo.Products.Id";
 
             var sb = new StringBuilder();
 
@@ -181,10 +201,6 @@ namespace OnlineShop.Infrastructure
             sb.AppendWithAnd("Price >= @priceFrom OR DiscountPrice >= @priceFrom");
             sb.AppendWithAnd("Price <= @priceTo OR DiscountPrice <= @priceTo");
             sb.AppendWhereIfHaveCondition(sql);
-
-            var skip = (query.Page - 1) * query.PageSize;
-
-            sb.Append("ORDER BY Id OFFSET ").Append(skip).Append(" ROWS FETCH NEXT ").Append(query.PageSize).AppendLine(" ROWS ONLY");
 
             return sb.ToString();
         }
