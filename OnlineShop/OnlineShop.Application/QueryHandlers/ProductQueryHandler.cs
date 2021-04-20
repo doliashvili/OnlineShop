@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cqrs;
+using Microsoft.AspNetCore.Routing;
+using OnlineShop.Application.Constants;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Products.Queries;
 using OnlineShop.Domain.Products.ReadModels;
@@ -31,11 +33,41 @@ namespace OnlineShop.Application.QueryHandlers
 
         public Task<PagingProductModel> HandleAsync(GetProducts query)
         {
+            if (query.Page <= 0)
+            {
+                query.Page = 1;
+            }
+
+            if (query.PageSize <= 0)
+            {
+                query.PageSize = 10;
+            }
+
             return _readRepository.GetProductsAsync(query);
         }
 
         public Task<PagingProductModel> HandleAsync(GetFilteredProducts query)
         {
+            if (query.PriceFrom is null || query.PriceFrom < ProductConstants.MinPrice)
+            {
+                query.PriceFrom = ProductConstants.MinPrice;
+            }
+
+            if (query.PriceTo is null || query.PriceFrom > ProductConstants.MaxPrice)
+            {
+                query.PriceTo = ProductConstants.MaxPrice;
+            }
+
+            if (query.Page <= 0)
+            {
+                query.Page = 1;
+            }
+
+            if (query.PageSize <= 0)
+            {
+                query.PageSize = 10;
+            }
+
             return _readRepository.GetFilteredProductsAsync(query);
         }
 

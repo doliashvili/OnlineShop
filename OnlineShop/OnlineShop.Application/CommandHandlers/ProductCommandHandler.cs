@@ -34,14 +34,14 @@ namespace OnlineShop.Application.CommandHandlers
             await _writeRepository.CreateAsync(product).ConfigureAwait(false);
         }
 
-        public Task HandleAsync(AddProductImageCommand command)
+        public async Task HandleAsync(AddProductImageCommand command)
         {
-            throw new NotImplementedException();
+            await _writeRepository.AddImagesAsync(command.ProductImages).ConfigureAwait(false);
         }
 
-        public Task HandleAsync(DeleteProductImageCommand command)
+        public async Task HandleAsync(DeleteProductImageCommand command)
         {
-            throw new NotImplementedException();
+            await _writeRepository.DeleteImageAsync(command.ImageId).ConfigureAwait(false);
         }
 
         public Task HandleAsync(DeleteProductCommand command)

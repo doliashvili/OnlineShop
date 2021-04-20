@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using IdGeneration.GeneratorWrapper;
@@ -44,7 +45,7 @@ VALUES (@imgId,@mainImage,@url,@productId);";
             command.Parameters.Add("@gender", SqlDbType.TinyInt).SetValue(product.Gender);
             command.Parameters.Add("@isDeleted", SqlDbType.Bit).SetValue(product.IsDeleted);
             command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.Name).SetValue(product.Name);
-            command.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
+            command.Parameters.Add("@price", SqlDbType.SmallMoney).Value = product.Price;
             command.Parameters.Add("@productType", SqlDbType.NVarChar, ProductDbConstants.ProductType).Value = product.ProductType;
             command.Parameters.Add("@weight", SqlDbType.NVarChar).SetValue(product.Weight.AsJson());
             command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).SetValue(product.Size);
@@ -85,7 +86,7 @@ SET Name=@name
 WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql);
+            await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.Name).Value = name;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
@@ -102,9 +103,9 @@ SET Price=@price
 WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql);
+            await using var command = new SqlCommand(sql, connection);
 
-            command.Parameters.Add("@price", SqlDbType.Money).Value = price;
+            command.Parameters.Add("@price", SqlDbType.SmallMoney).Value = price;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
@@ -119,7 +120,7 @@ SET Discount=@discount
 WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql);
+            await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@discount", SqlDbType.Float).Value = discount;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
@@ -136,7 +137,7 @@ SET Brand=@brand
 WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql);
+            await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@brand", SqlDbType.NVarChar, ProductDbConstants.Brand).Value = brand;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
@@ -153,7 +154,7 @@ SET ProductType=@type
 WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql);
+            await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@type", SqlDbType.NVarChar, ProductDbConstants.Brand).Value = type;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
@@ -170,7 +171,7 @@ SET ForBaby=@isBaby
 WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql);
+            await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@isBaby", SqlDbType.Bit).Value = isBaby;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
@@ -187,13 +188,53 @@ SET Color=@color
 WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql);
+            await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@color", SqlDbType.NVarChar, ProductDbConstants.Brand).Value = color;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+
+        public async Task AddImagesAsync(List<ProductImage> images)
+        {
+            const string sql = @"
+  INSERT INTO [dbo].[Images]
+([Id],[Url],[MainImage],[ProductId])
+VALUES(@id,@url,@mainImage,@productId)";
+
+            await using var connection = new SqlConnection(_connectionString);
+
+            for (var i = 0; i < images.Count; i++)
+            {
+                await using var command = new SqlCommand(sql, connection);
+                command.Parameters.Add("@id", SqlDbType.BigInt).Value = IdGenerator.NewId;
+                command.Parameters.Add("@mainImage", SqlDbType.Bit).Value = images[i].MainImage;
+                command.Parameters.Add("@url", SqlDbType.VarChar, ProductDbConstants.Url).Value = images[i].Url;
+                command.Parameters.Add("@productId", SqlDbType.BigInt).Value = images[i].ProductId;
+                await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+                await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task DeleteImageAsync(long imageId)
+        {
+            const string sql = "DELETE FROM [dbo].[Images] WHERE Id=@id";
+
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(sql,connection);
+
+            command.Parameters.Add("@id", SqlDbType.BigInt).Value = imageId;
+
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+        }
+
+        public Task DeleteProductAsync(long id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

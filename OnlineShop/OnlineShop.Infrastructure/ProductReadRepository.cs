@@ -108,8 +108,8 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
             command.Parameters.Add("@forBaby", SqlDbType.Bit).SetValue(query.ForBaby);
             command.Parameters.Add("@gender", SqlDbType.TinyInt).SetValue(query.Gender);
             command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.Name).SetValue(query.Name);
-            command.Parameters.Add("@priceFrom", SqlDbType.Money).SetValue(query.PriceFrom);
-            command.Parameters.Add("@priceTo", SqlDbType.Money).SetValue(query.PriceTo);
+            command.Parameters.Add("@priceFrom", SqlDbType.SmallMoney).SetValue(query.PriceFrom);
+            command.Parameters.Add("@priceTo", SqlDbType.SmallMoney).SetValue(query.PriceTo);
             command.Parameters.Add("@productType", SqlDbType.NVarChar, ProductDbConstants.ProductType).SetValue(query.ProductType);
             command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).SetValue(query.Size);
 
@@ -198,8 +198,8 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
             if (query.ProductType is not null)
                 sb.AppendWithAnd("ProductType=@productType");
 
-            sb.AppendWithAnd("Price >= @priceFrom OR DiscountPrice >= @priceFrom");
-            sb.AppendWithAnd("Price <= @priceTo OR DiscountPrice <= @priceTo");
+            sb.AppendWithAnd("(Price >= @priceFrom OR DiscountPrice >= @priceFrom)");
+            sb.AppendWithAnd("(Price <= @priceTo OR DiscountPrice <= @priceTo)");
             sb.AppendWhereIfHaveCondition(sql);
 
             return sb.ToString();
