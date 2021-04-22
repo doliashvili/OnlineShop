@@ -8,6 +8,6 @@ namespace ApiCommon.BaseControllers
     {
         protected IMediator Mediator => (IMediator)HttpContext.RequestServices.GetService(typeof(IMediator));
         protected string CurrentUserId => "";
-        public string RemoteIpV4 => "";
+        public string RemoteIpV4 => HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
     }
 }
