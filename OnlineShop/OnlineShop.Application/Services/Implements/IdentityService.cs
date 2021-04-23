@@ -79,7 +79,7 @@ namespace OnlineShop.Application.Services.Implements
             response.RefreshToken = refreshToken.Token;
 
             user.RefreshToken = refreshToken;
-            await _userRepository.UpdateRefreshTokenAsync(user.RefreshToken).ConfigureAwait(false);
+            await _userRepository.UpdateRefreshTokenAsync(user.Email, user.RefreshToken).ConfigureAwait(false);
 
             apiResponse.Token = response;
             return apiResponse;
@@ -111,7 +111,7 @@ namespace OnlineShop.Application.Services.Implements
                 response.RefreshToken = refreshToken.Token;
 
                 user.RefreshToken = refreshToken;
-                await _userRepository.UpdateRefreshTokenAsync(user.RefreshToken).ConfigureAwait(false);
+                await _userRepository.UpdateRefreshTokenAsync(user.Email, user.RefreshToken).ConfigureAwait(false);
 
                 return Result<TokenResponse>.Success(response, "Authenticated");
             }

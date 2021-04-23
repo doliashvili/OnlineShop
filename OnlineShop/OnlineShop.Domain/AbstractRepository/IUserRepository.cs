@@ -9,7 +9,7 @@ namespace OnlineShop.Domain.AbstractRepository
 {
     public interface IUserRepository
     {
-        Task UpdateRefreshTokenAsync(RefreshToken refreshToken);
-        Task<ApplicationUser> FindUserByEmailAsync(string email);
+        Task UpdateRefreshTokenAsync(string email,RefreshToken refreshToken);
+        Task<ApplicationUser?> FindUserByEmailAsync(string email);
     }
 }

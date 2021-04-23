@@ -14,6 +14,7 @@
     [PhoneNumberConfirmed] BIT            NOT NULL,
     [Created]              DATETIME       NOT NULL,
     [DateOfBirth]          DATETIME       NULL,
+    [RefreshToken]         NVARCHAR (MAX) NULL,
     CONSTRAINT [PK__Applicat__3214EC079083AE7D] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
