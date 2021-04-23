@@ -34,13 +34,14 @@ namespace OnlineShop.Application.Services.Implements
         public IdentityService(UserManager<ApplicationUser> userManager,
             IOptions<JWTSettings> jwtSettings,
             SignInManager<ApplicationUser> signInManager,
-            AppSettings appSettings, ILogger<IdentityService> logger,
+            IOptions<AppSettings> appSettings, 
+            ILogger<IdentityService> logger,
             IUserRepository userRepository)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
-            _appSettings = appSettings;
+            _appSettings = appSettings.Value;
             _logger = logger;
             _userRepository = userRepository;
         }
@@ -235,6 +236,7 @@ namespace OnlineShop.Application.Services.Implements
         }
 
         #region Private Methods
+
         private async Task<string> GenerateVerificationEmailAsync(ApplicationUser user, string origin)
         {
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
