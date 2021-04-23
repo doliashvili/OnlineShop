@@ -10,7 +10,7 @@ using OnlineShop.Domain.Products.DomainObjects;
 using OnlineShop.Infrastructure.CommonSql;
 using OnlineShop.Infrastructure.Constants;
 
-namespace OnlineShop.Infrastructure
+namespace OnlineShop.Infrastructure.Repositories
 {
     public class ProductWriteRepository : IProductWriteRepository
     {
@@ -49,7 +49,6 @@ VALUES (@imgId,@mainImage,@url,@productId);";
             command.Parameters.Add("@productType", SqlDbType.NVarChar, ProductDbConstants.ProductType).Value = product.ProductType;
             command.Parameters.Add("@weight", SqlDbType.NVarChar).SetValue(product.Weight.AsJson());
             command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).SetValue(product.Size);
-
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);

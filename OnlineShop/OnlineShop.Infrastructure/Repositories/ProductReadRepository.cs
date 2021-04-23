@@ -1,9 +1,9 @@
-﻿using OnlineShop.Domain.AbstractRepository;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Enums;
 using OnlineShop.Domain.Products.Queries;
 using OnlineShop.Domain.Products.ReadModels;
@@ -11,7 +11,7 @@ using OnlineShop.Domain.Products.Records;
 using OnlineShop.Infrastructure.CommonSql;
 using OnlineShop.Infrastructure.Constants;
 
-namespace OnlineShop.Infrastructure
+namespace OnlineShop.Infrastructure.Repositories
 {
     public class ProductReadRepository : IProductReadRepository
     {

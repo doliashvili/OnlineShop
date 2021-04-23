@@ -5,15 +5,15 @@ using Exceptions.ThrowHelper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using OnlineShop.Application.Exceptions;
+using OnlineShop.Application.Services.Abstract;
 using OnlineShop.Application.Settings;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 
-
-namespace OnlineShop.Application.Services
+namespace OnlineShop.Application.Services.Implements
 {
-    public class FileService : IFileService
+    public sealed class FileService : IFileService
     {
         private readonly AppSettings _settings;
         private readonly string _staticFilePath;

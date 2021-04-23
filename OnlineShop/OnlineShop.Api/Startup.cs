@@ -10,10 +10,13 @@ using Microsoft.Extensions.Hosting;
 using OnlineShop.Api.Extensions;
 using OnlineShop.Application.CommandHandlers;
 using OnlineShop.Application.Services;
+using OnlineShop.Application.Services.Abstract;
+using OnlineShop.Application.Services.Implements;
 using OnlineShop.Application.Settings;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Extensions;
 using OnlineShop.Infrastructure;
+using OnlineShop.Infrastructure.Repositories;
 
 namespace OnlineShop.Api
 {

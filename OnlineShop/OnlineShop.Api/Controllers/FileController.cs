@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OnlineShop.Application.Services;
+using OnlineShop.Application.Services.Abstract;
 using OnlineShop.Application.Settings;
 
 namespace OnlineShop.Api.Controllers
