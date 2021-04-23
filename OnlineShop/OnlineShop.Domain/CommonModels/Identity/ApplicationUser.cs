@@ -7,7 +7,7 @@ namespace OnlineShop.Domain.CommonModels.Identity
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? PersonalNumber { get; set; }
         public string? Country { get; set; }
@@ -15,6 +15,6 @@ namespace OnlineShop.Domain.CommonModels.Identity
         public string? Address { get; set; }
         public string? IdentificationNumber { get; set; }
         public bool IsActive { get; set; } = false;
-        public RefreshToken RefreshToken { get; set; }
+        public RefreshToken? RefreshToken { get; set; }
     }
 }

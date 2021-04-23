@@ -89,12 +89,12 @@ namespace OnlineShop.Application.Services.Implements
         {
             var user = await _userRepository.FindUserByEmailAsync(request.Email).ConfigureAwait(false);
 
-            var isValidRequest = user != null && user.IsActive && user.EmailConfirmed;
+            var isValidRequest = user is not null && user.IsActive && user.EmailConfirmed;
             Throw.Exception.IfFalse(isValidRequest, "User not found or restricted action");
 
             // ReSharper disable once PossibleNullReferenceException
             var token = user.RefreshToken;
-            if (token != null
+            if (token is not null
                 && token.Token == request.RefreshToken
                 && token.ExpiresAt >= DateTime.UtcNow
                 && token.CreatedByIp == ipAddress)

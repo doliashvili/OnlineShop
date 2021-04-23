@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[User] (
+﻿CREATE TABLE [dbo].[Users] (
     [Id]                   INT            IDENTITY (1, 1) NOT NULL,
     [FirstName]            NVARCHAR (75)  NULL,
     [LastName]             NVARCHAR (75)  NULL,
@@ -14,12 +14,15 @@
     [PhoneNumberConfirmed] BIT            NOT NULL,
     [Created]              DATETIME       NOT NULL,
     [DateOfBirth]          DATETIME       NULL,
+    [LockoutEnd]           DATETIME       NULL,
+    [LockoutEnabled]       BIT            NOT NULL,
+    [AccessFailedCount]    TINYINT        NOT NULL,
     [RefreshToken]         NVARCHAR (MAX) NULL,
     CONSTRAINT [PK__Applicat__3214EC079083AE7D] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
 
-CREATE TABLE [dbo].[Role] (
+CREATE TABLE [dbo].[Roles] (
     [Id]             INT            IDENTITY (1, 1) NOT NULL,
     [Name]           NVARCHAR (256) NOT NULL,
     [Created]        DATETIME       NOT NULL,
@@ -36,7 +39,7 @@ CREATE TABLE [dbo].[UserRole] (
 );
 
 
-CREATE TABLE [dbo].[ExternalLogin] (
+CREATE TABLE [dbo].[ExternalLogins] (
     [LoginProvider]       NVARCHAR (450) NOT NULL,
     [ProviderKey]         NVARCHAR (450) NOT NULL,
     [ProviderDisplayName] NVARCHAR (450) NOT NULL,
