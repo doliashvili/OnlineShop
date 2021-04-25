@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Exceptions;
 using Exceptions.ThrowHelper;
 using Helpers.ReadResults;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +20,7 @@ using OnlineShop.Application.Services.Abstract;
 using OnlineShop.Application.Settings;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.CommonModels.Identity;
+using OnlineShop.Domain.CommonModels.Mail;
 
 namespace OnlineShop.Application.Services.Implements
 {
@@ -27,23 +29,26 @@ namespace OnlineShop.Application.Services.Implements
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly JWTSettings _jwtSettings;
-        private readonly AppSettings _appSettings;
+        private readonly IMailService _mailService;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<IdentityService> _logger;
+        private readonly AppSettings _appSettings;
 
         public IdentityService(UserManager<ApplicationUser> userManager,
             IOptions<JWTSettings> jwtSettings,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<AppSettings> appSettings, 
+            IUserRepository userRepository,
             ILogger<IdentityService> logger,
-            IUserRepository userRepository)
+            IOptions<AppSettings> appSettings,
+            IMailService mailService)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
+            _mailService = mailService;
+            _userRepository = userRepository;
             _appSettings = appSettings.Value;
             _logger = logger;
-            _userRepository = userRepository;
         }
 
         public async Task<AuthResult> GetTokenAsync(TokenRequest request, string ipAddress)
@@ -51,9 +56,8 @@ namespace OnlineShop.Application.Services.Implements
             var user = await _userManager.FindByEmailAsync(request.Email);
             var apiResponse = new AuthResult();
             Throw.Exception.IfNull(user, () => new ApiException(401, "Invalid credentials."));
-            var result =
-                await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false,
-                    lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false,
+                lockoutOnFailure: false);
             Throw.Exception.IfFalse(result.Succeeded, () => new ApiException(401, "Invalid credentials."));
             Throw.Exception.IfFalse(user.EmailConfirmed,
                 () => new ApiException(400, $"Email is not confirmed for '{request.Email}'."));
@@ -80,7 +84,7 @@ namespace OnlineShop.Application.Services.Implements
             response.RefreshToken = refreshToken.Token;
 
             user.RefreshToken = refreshToken;
-            await _userRepository.UpdateRefreshTokenAsync(user.Email, user.RefreshToken).ConfigureAwait(false);
+            await _userRepository.UpdateRefreshTokenAsync(user.Email, refreshToken).ConfigureAwait(false);
 
             apiResponse.Token = response;
             return apiResponse;
@@ -95,7 +99,7 @@ namespace OnlineShop.Application.Services.Implements
 
             // ReSharper disable once PossibleNullReferenceException
             var token = user.RefreshToken;
-            if (token is not null
+            if (token != null
                 && token.Token == request.RefreshToken
                 && token.ExpiresAt >= DateTime.UtcNow
                 && token.CreatedByIp == ipAddress)
@@ -112,12 +116,66 @@ namespace OnlineShop.Application.Services.Implements
                 response.RefreshToken = refreshToken.Token;
 
                 user.RefreshToken = refreshToken;
-                await _userRepository.UpdateRefreshTokenAsync(user.Email, user.RefreshToken).ConfigureAwait(false);
+                await _userRepository.UpdateRefreshTokenAsync(user.Email, refreshToken).ConfigureAwait(false);
 
                 return Result<TokenResponse>.Success(response, "Authenticated");
             }
 
             return Result<TokenResponse>.Fail("Refresh token validation failed");
+        }
+
+        private async Task<JwtSecurityToken> GenerateJwTokenAsync(ApplicationUser user, string ipAddress)
+        {
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleClaims = roles.Select(t => new Claim(ClaimTypes.Role, t)).ToList();
+            var claims = new[]
+                {
+                        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                        //new Claim("thumbnail", user.Thumbnail),
+                        new Claim("first_name", user.FirstName),
+                        new Claim("last_name", user.LastName),
+                    }
+                .Union(userClaims)
+                .Union(roleClaims);
+            return JwtGeneration(claims);
+        }
+
+        private JwtSecurityToken JwtGeneration(IEnumerable<Claim> claims)
+        {
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                signingCredentials: signingCredentials);
+            return jwtSecurityToken;
+        }
+
+        private string RandomTokenString()
+        {
+            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
+            var randomBytes = new byte[40];
+            rngCryptoServiceProvider.GetBytes(randomBytes);
+            // convert random bytes to hex string
+            return BitConverter.ToString(randomBytes).Replace("-", "");
+        }
+
+        private RefreshToken GenerateRefreshToken(string ipAddress)
+        {
+            return new RefreshToken
+            {
+                Token = RandomTokenString(),
+                ExpiresAt = DateTime.UtcNow.AddDays(7), //TODO from config?
+                CreatedAt = DateTime.UtcNow,
+                CreatedByIp = ipAddress
+            };
         }
 
         public async Task<Result<string>> RegisterAsync(RegisterRequest request, string origin)
@@ -148,19 +206,83 @@ namespace OnlineShop.Application.Services.Implements
             if (!result.Succeeded)
                 throw new ApiException($"{result.Errors}");
 
-            await _userManager.AddToRoleAsync(user, Roles.User.ToString());
-            //var verificationUri = await GenerateVerificationEmailAsync(user, origin);
+            await _userManager.AddToRoleAsync(user, nameof(Roles.Moderator)).ConfigureAwait(false);
+            var verificationUri = await GenerateVerificationEmailAsync(user, origin);
 
-            //var mailRequest = new MailRequest()
-            //{
-            //    To = user.Email,
-            //    Body = _appSettings.ConfirmEmailHtml.Replace("{verificationUri}", verificationUri),
-            //    Subject = _appSettings.ConfirmEmailSubject
-            //};
+            var mailRequest = new MailRequest()
+            {
+                To = user.Email,
+                Body = _appSettings.ConfirmEmailHtml.Replace("{verificationUri}", verificationUri),
+                Subject = _appSettings.ConfirmEmailSubject
+            };
 
-            //await _mailService.SendAsync(mailRequest); //TODO email service
+            await _mailService.SendAsync(mailRequest); //TODO we need resiliency
             return Result<string>.Success(user.Id,
                 "User Registered. Confirmation Mail has been delivered to your Mailbox.");
+        }
+
+        private async Task<string> GenerateVerificationEmailAsync(ApplicationUser user, string origin)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var route = _appSettings.ConfirmEmailPath;
+            var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            var verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.Id);
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+            return verificationUri;
+        }
+
+        public async Task<Result<string>> ConfirmEmailAsync(string userId, string code)
+        {
+            var user = await _userRepository.FindUserByIdAsync(userId).ConfigureAwait(false);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (!result.Succeeded)
+                throw new ApiException($"An error occurred while confirming {user.Email}.");
+
+            await _userRepository.UpdateActivatedAtAsync(userId, DateTime.UtcNow).ConfigureAwait(false);
+
+            return Result<string>.Success(user.Id,
+                message:
+                $"Account Confirmed for {user.Email}. You can now use the /api/identity/token endpoint to generate JWT.");
+        }
+
+
+        public async Task ForgotPasswordAsync(ForgotPasswordRequest model, string origin)
+        {
+            var account = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
+
+            // always return ok response to prevent email enumeration
+            if (account == null) return;
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(account);
+            //var route = "api/v1/identity/reset-password/"; //TODO from configuration?
+            //var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            var emailRequest = new MailRequest()
+            {
+                Body = _appSettings.ResetPasswordHtml.Replace("{token}", code),
+                To = model.Email,
+                Subject = _appSettings.ResetTokenSubject,
+            };
+            await _mailService.SendAsync(emailRequest);
+        }
+
+        public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model)
+        {
+            var account = await _userManager.FindByEmailAsync(model.Email);
+            if (account == null) throw new ApiException($"No Accounts Registered with {model.Email}.");
+            var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
+
+            if (!result.Succeeded)
+                throw new ApiException($"Error occurred while reset the password.");
+
+            return Result<string>.Success(model.Email, "Password renewed.");
         }
 
         public async Task<IResult> ChangePasswordAsync(ChangePasswordRequest request)
@@ -177,130 +299,5 @@ namespace OnlineShop.Application.Services.Implements
             var errors = result.Errors.ToDictionary(x => x.Code, e => e.Description);
             return Result.Fail(JsonConvert.SerializeObject(errors));
         }
-
-
-        public async Task<Result<string>> ConfirmEmailAsync(string userId, string code)
-        {
-            throw new NotImplementedException();
-            //var user = await _identityContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
-            //code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            //var result = await _userManager.ConfirmEmailAsync(user, code);
-            //if (!result.Succeeded)
-            //    throw new ApiException($"An error occurred while confirming {user.Email}.");
-
-            //try
-            //{
-            //    user.ActivatedAt = DateTime.UtcNow;
-            //    await _identityContext.SaveChangesAsync();
-            //}
-            //catch (Exception e)
-            //{
-            //    _logger.LogError(e.ToString());
-            //}
-
-            //return Result<string>.Success(user.Id,
-            //    message:
-            //    $"Account Confirmed for {user.Email}. You can now use the /api/identity/token endpoint to generate JWT.");
-        }
-
-        public async Task ForgotPasswordAsync(ForgotPasswordRequest model, string origin)
-        {
-            throw new NotImplementedException();
-            var account = await _userManager.FindByEmailAsync(model.Email);
-
-            // always return ok response to prevent email enumeration
-            if (account == null) return;
-
-            var code = await _userManager.GeneratePasswordResetTokenAsync(account);
-            //var route = "api/v1/identity/reset-password/"; //TODO from configuration?
-            //var endpointUri = new Uri(string.Concat($"{origin}/", route));
-            //var emailRequest = new MailRequest()
-            //{
-            //    Body = _appSettings.ResetPasswordHtml.Replace("{token}", code),
-            //    To = model.Email,
-            //    Subject = _appSettings.ResetTokenSubject,
-            //};
-            //await _mailService.SendAsync(emailRequest);
-        }
-
-        public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model)
-        {
-            var account = await _userManager.FindByEmailAsync(model.Email);
-            if (account == null) throw new ApiException($"No Accounts Registered with {model.Email}.");
-            var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
-
-            if (!result.Succeeded)
-                throw new ApiException($"Error occurred while reset the password.");
-
-            return Result<string>.Success(model.Email, "Password renewed.");
-        }
-
-        #region Private Methods
-
-        private async Task<string> GenerateVerificationEmailAsync(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = _appSettings.ConfirmEmailPath;
-            var endpointUri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
-            return verificationUri;
-        }
-        private async Task<JwtSecurityToken> GenerateJwTokenAsync(ApplicationUser user, string ipAddress)
-        {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var roles = await _userManager.GetRolesAsync(user);
-            var roleClaims = roles.Select(t => new Claim(ClaimTypes.Role, t)).ToList();
-            var claims = new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    //new Claim("thumbnail", user.Thumbnail),
-                    new Claim("first_name", user.FirstName),
-                    new Claim("last_name", user.LastName),
-                }
-                .Union(userClaims)
-                .Union(roleClaims);
-            return JwtGeneration(claims);
-        }
-
-        private JwtSecurityToken JwtGeneration(IEnumerable<Claim> claims)
-        {
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-            var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
-                claims: claims,
-                notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-                signingCredentials: signingCredentials);
-            return jwtSecurityToken;
-        }
-
-        private static string RandomTokenString()
-        {
-            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
-            var randomBytes = new byte[40];
-            rngCryptoServiceProvider.GetBytes(randomBytes);
-            // convert random bytes to hex string
-            return BitConverter.ToString(randomBytes).Replace("-", "");
-        }
-
-        private static RefreshToken GenerateRefreshToken(string ipAddress)
-        {
-            return new RefreshToken
-            {
-                Token = RandomTokenString(),
-                ExpiresAt = DateTime.UtcNow.AddDays(7), //TODO from config?
-                CreatedAt = DateTime.UtcNow,
-                CreatedByIp = ipAddress
-            };
-        }
-        #endregion
-
     }
 }

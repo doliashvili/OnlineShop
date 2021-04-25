@@ -51,37 +51,31 @@ namespace OnlineShop.Api.Controllers
             return Ok(token);
         }
 
-        /*
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync(RegisterRequest request)
         {
             var origin = Request.Headers["origin"];
-            return Ok(await _identityService.RegisterAsync(request, origin));
+            return Ok(await _identityService.RegisterAsync(request, origin).ConfigureAwait(false));
         }
 
-        
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
         {
-            return Ok(await _identityService.ConfirmEmailAsync(userId, code));
+            return Ok(await _identityService.ConfirmEmailAsync(userId, code).ConfigureAwait(false));
         }
-        
-        
+
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
+        public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordRequest model)
         {
-            await _identityService.ForgotPassword(model, Request.Headers["origin"]);
+            await _identityService.ForgotPasswordAsync(model, Request.Headers["origin"]).ConfigureAwait(false);
             return Ok();
         }
 
-        
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequest model)
         {
-            return Ok(await _identityService.ResetPassword(model));
+            return Ok(await _identityService.ResetPasswordAsync(model).ConfigureAwait(false));
         }
-        */
-
 
         /// <summary>
         /// Change password

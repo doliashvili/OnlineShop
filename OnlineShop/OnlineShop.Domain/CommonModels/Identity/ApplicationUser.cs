@@ -16,5 +16,6 @@ namespace OnlineShop.Domain.CommonModels.Identity
         public string? IdentificationNumber { get; set; }
         public bool IsActive { get; set; } = false;
         public RefreshToken? RefreshToken { get; set; }
+        public DateTime? ActivatedAt { get; set; }
     }
 }

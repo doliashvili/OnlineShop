@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using OnlineShop.Domain.AbstractRepository;
@@ -40,9 +37,9 @@ WHERE Email=@email;";
         public async Task<ApplicationUser?> FindUserByEmailAsync(string email)
         {
             const string sql =
- @"SELECT [FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[IdentificationNumber],[Email],[Created],[DateOfBirth],[RefreshToken]
+ @"SELECT [Id][FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[IdentificationNumber],[Email],[Created],[DateOfBirth],[RefreshToken]
 FROM Users
-WHERE Email=@email;";
+WHERE Email=@email AND RefreshToken != NULL;";
             await using var connection = new SqlConnection(_connectionString);
             await using var command = new SqlCommand(sql, connection);
 
@@ -59,10 +56,52 @@ WHERE Email=@email;";
             return ReadApplicationUser(reader);
         }
 
+        public async Task<ApplicationUser?> FindUserByIdAsync(string userId)
+        {
+            const string sql =
+ @"SELECT [Id][FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[IdentificationNumber],[Email],[Created],[DateOfBirth],[RefreshToken]
+FROM Users
+WHERE Id=@id;";
+
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(sql, connection);
+
+            command.Parameters.Add("@id", SqlDbType.VarChar).Value = userId;
+
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
+            if (!await reader.ReadAsync().ConfigureAwait(false))
+            {
+                return null;
+            }
+
+            return ReadApplicationUser(reader);
+        }
+
+
+        public async Task UpdateActivatedAtAsync(string userId, DateTime dateTime)
+        {
+            const string sql =
+ @"UPDATE Users
+      SET [ActivatedAt] = @datetime
+ WHERE Id=@id
+GO";
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(sql, connection);
+
+            command.Parameters.Add("@id", SqlDbType.VarChar).Value = userId;
+            command.Parameters.Add("@datetime", SqlDbType.DateTime).Value = dateTime;
+
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
+
         private static ApplicationUser ReadApplicationUser(SqlDataReader reader)
         {
             var idx = 0;
 
+            var id = reader.AsString(idx++);
             var firstName = reader.AsStringOrNull(idx++);
             var lastName = reader.AsStringOrNull(idx++);
             var personalNumber = reader.AsStringOrNull(idx++);
@@ -77,6 +116,7 @@ WHERE Email=@email;";
 
             return new ApplicationUser()
             {
+                Id = id,
                 FirstName = firstName,
                 LastName = lastName,
                 PersonalNumber = personalNumber,

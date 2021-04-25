@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -61,6 +62,11 @@ namespace OnlineShop.Api
             services.AddSwaggerGen(x => x.AddSwaggerXml())
                 .AddSwaggerGenNewtonsoftSupport();
 
+            services.AddDbContext<IdentityContext>(options =>
+            {
+                options.UseSqlServer(_configuration["Database:ConnectionString"]);
+            });
+
             RegisterServices(services);
         }
 
@@ -70,7 +76,8 @@ namespace OnlineShop.Api
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFileService, FileService>();
-            services.AddScoped<IIdentityService, IdentityService>();
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IMailService, SmtpMailService>();
 
             services.AddMediator(new ApiGenOptions()
             {
@@ -88,6 +95,7 @@ namespace OnlineShop.Api
                     options.Password.RequireUppercase = true;
                     options.Password.RequiredLength = 6;
                 })
+                .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
 
             services.Configure<JWTSettings>(_configuration.GetSection("JWTSettings"));
