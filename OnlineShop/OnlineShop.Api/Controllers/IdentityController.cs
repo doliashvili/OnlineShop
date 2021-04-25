@@ -51,6 +51,7 @@ namespace OnlineShop.Api.Controllers
             return Ok(token);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync(RegisterRequest request)
         {

@@ -50,5 +50,10 @@ namespace OnlineShop.Domain.CommonModels.Identity
             DateOfBirth = dateOfBirth;
             IdentificationNumber = identificationNumber;
         }
+
+        public RegisterRequest()
+        {
+            
+        }
     }
 }
