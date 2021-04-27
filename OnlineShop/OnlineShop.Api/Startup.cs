@@ -27,6 +27,7 @@ using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.Extensions;
 using OnlineShop.Infrastructure;
+using OnlineShop.Infrastructure.IdentityEF;
 using OnlineShop.Infrastructure.Repositories;
 
 namespace OnlineShop.Api

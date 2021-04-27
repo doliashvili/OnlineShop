@@ -4,13 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.Extensions;
 
-namespace OnlineShop.Infrastructure
+namespace OnlineShop.Infrastructure.IdentityEF
 {
     public class IdentityContext : IdentityDbContext<ApplicationUser>
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
-        {
-        }
+        { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -24,7 +23,6 @@ namespace OnlineShop.Infrastructure
                         v=> v.AsJson(),
                         v => v.FromJson<RefreshToken>(false)
                     );
-
             });
 
             builder.Entity<IdentityRole>(entity =>
@@ -55,6 +53,9 @@ namespace OnlineShop.Infrastructure
             {
                 entity.ToTable("UserTokens");
             });
+
+            DefaultRoles.Seed(builder);
+            DefaultAdmin.Seed(builder);
         }
     }
 }
