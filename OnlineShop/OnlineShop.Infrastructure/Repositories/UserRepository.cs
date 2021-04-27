@@ -20,7 +20,7 @@ namespace OnlineShop.Infrastructure.Repositories
         public async Task UpdateRefreshTokenAsync(string email, RefreshToken refreshToken)
         {
             const string sql =
- @"UPDATE User
+ @"UPDATE Users
 SET RefreshToken=@refreshToken
 WHERE Email=@email;";
 
@@ -28,7 +28,7 @@ WHERE Email=@email;";
             await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@email", SqlDbType.NVarChar).Value = email;
-            command.Parameters.Add("@RefreshToken", SqlDbType.NVarChar).Value = refreshToken.AsJson();
+            command.Parameters.Add("@RefreshToken", SqlDbType.NVarChar).Value = refreshToken.AsJsonOrNull();
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -112,7 +112,7 @@ GO";
             var email = reader.AsString(idx++);
             var cratedAt = reader.AsDateTime(idx++);
             var dateOfBirth = reader.AsDateTimeOrNull(idx++);
-            var refreshToken = reader.AsJson<RefreshToken>(idx);
+            var refreshToken = reader.AsJsonOrNull<RefreshToken>(idx);
 
             return new ApplicationUser()
             {
