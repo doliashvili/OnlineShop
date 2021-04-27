@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.CommonModels.Identity;
@@ -16,17 +17,17 @@ namespace OnlineShop.Infrastructure.IdentityEF
             var defaultAdmin = new ApplicationUser
             {
                 Id = IdentityDbConstants.AdminUserId,
-                UserName = "admin",
+                UserName = "admin@gmail.com",
+                NormalizedUserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
                 NormalizedEmail = "ADMIN@GMAIL.COM",
-                FirstName = "Levan",
-                LastName = "Doliashvili",
+                FirstName = "levan",
+                LastName = "doliashvili",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
                 IsActive = true,
-                PasswordHash = CryptoHelper.HashPassword("doliashvili"),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString()
+                PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "doliashvili"),
+                SecurityStamp = string.Empty,
             };
 
             modelBuilder.Entity<ApplicationUser>().HasData(defaultAdmin);

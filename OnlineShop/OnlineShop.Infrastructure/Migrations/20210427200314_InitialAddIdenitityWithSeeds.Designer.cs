@@ -5,14 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OnlineShop.Infrastructure;
 using OnlineShop.Infrastructure.IdentityEF;
 
 namespace OnlineShop.Infrastructure.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20210425200304_initial")]
-    partial class initial
+    [Migration("20210427200314_InitialAddIdenitityWithSeeds")]
+    partial class InitialAddIdenitityWithSeeds
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,6 +46,29 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "f68ef0f8-1dfe-401b-89b6-8298fd827299",
+                            ConcurrencyStamp = "dc4f3abd-5f1c-4248-9a54-60bc138978f3",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "3a93386e-133e-40da-aed7-bd2efd793fa8",
+                            ConcurrencyStamp = "1501a5e7-a8d8-4b0a-8157-1bb9fc84be59",
+                            Name = "Moderator",
+                            NormalizedName = "MODERATOR"
+                        },
+                        new
+                        {
+                            Id = "c5f7682f-3598-4a33-98b6-2a3fa7d89ead",
+                            ConcurrencyStamp = "99c2e0ec-0a0d-4ec8-9f9f-ef54535bcc76",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -132,6 +154,13 @@ namespace OnlineShop.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "3f34424b-40c8-435b-85ea-064ac4534c9b",
+                            RoleId = "f68ef0f8-1dfe-401b-89b6-8298fd827299"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -252,6 +281,28 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "3f34424b-40c8-435b-85ea-064ac4534c9b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "4d2395d8-a95a-4e30-b376-2589865cf896",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "levan",
+                            IsActive = true,
+                            LastName = "doliashvili",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "admin@gmail.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIHe1z/f+vZg1+4GfbvRr+P1taaJCiKDVrKmLb/4snI+DlQiqs47f8arNF7Y0lNPKw==",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

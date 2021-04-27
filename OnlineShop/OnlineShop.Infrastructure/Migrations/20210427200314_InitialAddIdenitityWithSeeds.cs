@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OnlineShop.Infrastructure.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialAddIdenitityWithSeeds : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -163,6 +163,26 @@ namespace OnlineShop.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "f68ef0f8-1dfe-401b-89b6-8298fd827299", "dc4f3abd-5f1c-4248-9a54-60bc138978f3", "Admin", "ADMIN" },
+                    { "3a93386e-133e-40da-aed7-bd2efd793fa8", "1501a5e7-a8d8-4b0a-8157-1bb9fc84be59", "Moderator", "MODERATOR" },
+                    { "c5f7682f-3598-4a33-98b6-2a3fa7d89ead", "99c2e0ec-0a0d-4ec8-9f9f-ef54535bcc76", "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "AccessFailedCount", "ActivatedAt", "Address", "City", "ConcurrencyStamp", "Country", "CreatedAt", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "IdentificationNumber", "IsActive", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PersonalNumber", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "3f34424b-40c8-435b-85ea-064ac4534c9b", 0, null, null, null, "4d2395d8-a95a-4e30-b376-2589865cf896", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "admin@gmail.com", true, "levan", null, true, "doliashvili", false, null, "ADMIN@GMAIL.COM", "admin@gmail.com", "AQAAAAEAACcQAAAAEIHe1z/f+vZg1+4GfbvRr+P1taaJCiKDVrKmLb/4snI+DlQiqs47f8arNF7Y0lNPKw==", null, null, true, null, "", false, "admin@gmail.com" });
+
+            migrationBuilder.InsertData(
+                table: "UserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "f68ef0f8-1dfe-401b-89b6-8298fd827299", "3f34424b-40c8-435b-85ea-064ac4534c9b" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",

@@ -49,21 +49,21 @@ namespace OnlineShop.Infrastructure.Migrations
                         new
                         {
                             Id = "f68ef0f8-1dfe-401b-89b6-8298fd827299",
-                            ConcurrencyStamp = "d2b75e32-cdea-4148-90b9-98e55e23c768",
+                            ConcurrencyStamp = "dc4f3abd-5f1c-4248-9a54-60bc138978f3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "3a93386e-133e-40da-aed7-bd2efd793fa8",
-                            ConcurrencyStamp = "fbb1a294-8a76-459f-810e-39deea9b0379",
+                            ConcurrencyStamp = "1501a5e7-a8d8-4b0a-8157-1bb9fc84be59",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
                             Id = "c5f7682f-3598-4a33-98b6-2a3fa7d89ead",
-                            ConcurrencyStamp = "da73b1ef-daa2-4bad-b7e4-aecbb043aedf",
+                            ConcurrencyStamp = "99c2e0ec-0a0d-4ec8-9f9f-ef54535bcc76",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -285,20 +285,21 @@ namespace OnlineShop.Infrastructure.Migrations
                         {
                             Id = "3f34424b-40c8-435b-85ea-064ac4534c9b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "53b0cc50-961d-4555-9ce8-67c0f26c3284",
+                            ConcurrencyStamp = "4d2395d8-a95a-4e30-b376-2589865cf896",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
-                            FirstName = "Levan",
+                            FirstName = "levan",
                             IsActive = true,
-                            LastName = "Doliashvili",
+                            LastName = "doliashvili",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AKrQqC4zxZzNrvdHWfPLR4GKXXt9GvnNZIFZrtaPqzL5VS3VzD+QnT09iAEW1eakLQ==",
+                            NormalizedUserName = "admin@gmail.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIHe1z/f+vZg1+4GfbvRr+P1taaJCiKDVrKmLb/4snI+DlQiqs47f8arNF7Y0lNPKw==",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "029d1a40-57c5-48d8-99c3-38d0cfeff4b4",
+                            SecurityStamp = "",
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "admin@gmail.com"
                         });
                 });
 
