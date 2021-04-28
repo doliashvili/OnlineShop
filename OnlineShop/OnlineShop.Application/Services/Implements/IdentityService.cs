@@ -53,11 +53,11 @@ namespace OnlineShop.Application.Services.Implements
 
         public async Task<AuthResult> GetTokenAsync(TokenRequest request, string ipAddress)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByEmailAsync(request.Email).ConfigureAwait(false);
             var apiResponse = new AuthResult();
             Throw.Exception.IfNull(user, () => new ApiException(401, "Invalid credentials."));
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false,
-                lockoutOnFailure: false);
+                lockoutOnFailure: false).ConfigureAwait(false);
             Throw.Exception.IfFalse(result.Succeeded, () => new ApiException(401, "Invalid credentials."));
             Throw.Exception.IfFalse(user.EmailConfirmed,
                 () => new ApiException(400, $"Email is not confirmed for '{request.Email}'."));
@@ -73,7 +73,7 @@ namespace OnlineShop.Application.Services.Implements
                 Succeeded = result.Succeeded
             };
 
-            var jwtSecurityToken = await GenerateJwTokenAsync(user, ipAddress);
+            var jwtSecurityToken = await GenerateJwTokenAsync(user, ipAddress).ConfigureAwait(false);
             var response = new TokenResponse
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
@@ -104,7 +104,7 @@ namespace OnlineShop.Application.Services.Implements
                 && token.ExpiresAt >= DateTime.UtcNow
                 && token.CreatedByIp == ipAddress)
             {
-                var jwtSecurityToken = await GenerateJwTokenAsync(user, ipAddress);
+                var jwtSecurityToken = await GenerateJwTokenAsync(user, ipAddress).ConfigureAwait(false);
                 var response = new TokenResponse
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
@@ -124,10 +124,121 @@ namespace OnlineShop.Application.Services.Implements
             return Result<TokenResponse>.Fail("Refresh token validation failed");
         }
 
+        public async Task<Result<string>> RegisterAsync(RegisterRequest request, string origin)
+        {
+            var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email).ConfigureAwait(false);
+            if (userWithSameEmail != null)
+            {
+                throw new ApiException(400, $"Email '{request.Email}' is already taken.");
+            }
+
+            var user = new ApplicationUser
+            {
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                UserName = request.Email,
+                DateOfBirth = request.DateOfBirth,
+                Address = request.Address,
+                CreatedAt = DateTime.UtcNow,
+                IdentificationNumber = request.IdentificationNumber,
+                City = request.City,
+                Country = request.Country,
+                PersonalNumber = request.PersonalNumber,
+                PhoneNumber = request.PhoneNumber
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password).ConfigureAwait(false);
+            if (!result.Succeeded)
+                throw new ApiException($"{result.Errors}");
+
+            await _userManager.AddToRoleAsync(user, nameof(Roles.User)).ConfigureAwait(false);
+            var verificationUri = await GenerateVerificationEmailAsync(user, origin).ConfigureAwait(false);
+
+            var mailRequest = new MailRequest()
+            {
+                To = user.Email,
+                Body = _appSettings.ConfirmEmailHtml.Replace("{verificationUri}", verificationUri),
+                Subject = _appSettings.ConfirmEmailSubject
+            };
+
+            await _mailService.SendAsync(mailRequest).ConfigureAwait(false); //TODO we need resiliency
+            return Result<string>.Success(user.Id,
+                "User Registered. Confirmation Mail has been delivered to your Mailbox.");
+        }
+
+        public async Task<Result<string>> ConfirmEmailAsync(string userId, string code)
+        {
+            var user = await _userRepository.FindUserByIdAsync(userId).ConfigureAwait(false);
+            if (user == null)
+            {
+                throw new NotFoundException();
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code).ConfigureAwait(false);
+            if (!result.Succeeded)
+                throw new ApiException($"An error occurred while confirming {user.Email}.");
+
+            await _userRepository.UpdateActivatedAtAsync(userId, DateTime.UtcNow).ConfigureAwait(false);
+
+            return Result<string>.Success(user.Id,
+                message:
+                $"Account Confirmed for {user.Email}. You can now use the /api/identity/token endpoint to generate JWT.");
+        }
+
+        public async Task ForgotPasswordAsync(ForgotPasswordRequest model, string origin)
+        {
+            var account = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
+
+            // always return ok response to prevent email enumeration
+            if (account == null) return;
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(account).ConfigureAwait(false);
+            //var route = "api/v1/identity/reset-password/"; //TODO from configuration?
+            //var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            var emailRequest = new MailRequest()
+            {
+                Body = _appSettings.ResetPasswordHtml.Replace("{token}", code),
+                To = model.Email,
+                Subject = _appSettings.ResetTokenSubject,
+            };
+            await _mailService.SendAsync(emailRequest).ConfigureAwait(false);
+        }
+
+        public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model)
+        {
+            var account = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
+            if (account == null) throw new ApiException($"No Accounts Registered with {model.Email}.");
+            var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password).ConfigureAwait(false);
+
+            if (!result.Succeeded)
+                throw new ApiException($"Error occurred while reset the password.");
+
+            return Result<string>.Success(model.Email, "Password renewed.");
+        }
+
+        public async Task<IResult> ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.UserId).ConfigureAwait(false);
+            Throw.Exception.IfNotNull(user, "User not found");
+
+            var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword).ConfigureAwait(false);
+            if (result.Succeeded)
+            {
+                return Result.Success("Password changed successfully");
+            }
+
+            var errors = result.Errors.ToDictionary(x => x.Code, e => e.Description);
+            return Result.Fail(JsonConvert.SerializeObject(errors));
+        }
+
+        #region PrivateMethods
+
         private async Task<JwtSecurityToken> GenerateJwTokenAsync(ApplicationUser user, string ipAddress)
         {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var roles = await _userManager.GetRolesAsync(user);
+            var userClaims = await _userManager.GetClaimsAsync(user).ConfigureAwait(false);
+            var roles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
             var roleClaims = roles.Select(t => new Claim(ClaimTypes.Role, t)).ToList();
             var claims = new[]
                 {
@@ -167,6 +278,17 @@ namespace OnlineShop.Application.Services.Implements
             return BitConverter.ToString(randomBytes).Replace("-", "");
         }
 
+        private async Task<string> GenerateVerificationEmailAsync(ApplicationUser user, string origin)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var route = _appSettings.ConfirmEmailPath;
+            var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            var verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.Id);
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+            return verificationUri;
+        }
+
         private RefreshToken GenerateRefreshToken(string ipAddress)
         {
             return new RefreshToken
@@ -178,126 +300,6 @@ namespace OnlineShop.Application.Services.Implements
             };
         }
 
-        public async Task<Result<string>> RegisterAsync(RegisterRequest request, string origin)
-        {
-            var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
-            if (userWithSameEmail != null)
-            {
-                throw new ApiException(400, $"Email '{request.Email}' is already taken.");
-            }
-
-            var user = new ApplicationUser
-            {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                UserName = request.Email,
-                DateOfBirth = request.DateOfBirth,
-                Address = request.Address,
-                CreatedAt = DateTime.UtcNow,
-                IdentificationNumber = request.IdentificationNumber,
-                City = request.City,
-                Country = request.Country,
-                PersonalNumber = request.PersonalNumber,
-                PhoneNumber = request.PhoneNumber
-            };
-
-            var result = await _userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded)
-                throw new ApiException($"{result.Errors}");
-
-            await _userManager.AddToRoleAsync(user, nameof(Roles.Moderator)).ConfigureAwait(false);
-            var verificationUri = await GenerateVerificationEmailAsync(user, origin);
-
-            var mailRequest = new MailRequest()
-            {
-                To = user.Email,
-                Body = _appSettings.ConfirmEmailHtml.Replace("{verificationUri}", verificationUri),
-                Subject = _appSettings.ConfirmEmailSubject
-            };
-
-            await _mailService.SendAsync(mailRequest); //TODO we need resiliency
-            return Result<string>.Success(user.Id,
-                "User Registered. Confirmation Mail has been delivered to your Mailbox.");
-        }
-
-        private async Task<string> GenerateVerificationEmailAsync(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = _appSettings.ConfirmEmailPath;
-            var endpointUri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
-            return verificationUri;
-        }
-
-        public async Task<Result<string>> ConfirmEmailAsync(string userId, string code)
-        {
-            var user = await _userRepository.FindUserByIdAsync(userId).ConfigureAwait(false);
-            if (user == null)
-            {
-                throw new NotFoundException();
-            }
-
-
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (!result.Succeeded)
-                throw new ApiException($"An error occurred while confirming {user.Email}.");
-
-            await _userRepository.UpdateActivatedAtAsync(userId, DateTime.UtcNow).ConfigureAwait(false);
-
-            return Result<string>.Success(user.Id,
-                message:
-                $"Account Confirmed for {user.Email}. You can now use the /api/identity/token endpoint to generate JWT.");
-        }
-
-
-        public async Task ForgotPasswordAsync(ForgotPasswordRequest model, string origin)
-        {
-            var account = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
-
-            // always return ok response to prevent email enumeration
-            if (account == null) return;
-
-            var code = await _userManager.GeneratePasswordResetTokenAsync(account);
-            //var route = "api/v1/identity/reset-password/"; //TODO from configuration?
-            //var endpointUri = new Uri(string.Concat($"{origin}/", route));
-            var emailRequest = new MailRequest()
-            {
-                Body = _appSettings.ResetPasswordHtml.Replace("{token}", code),
-                To = model.Email,
-                Subject = _appSettings.ResetTokenSubject,
-            };
-            await _mailService.SendAsync(emailRequest);
-        }
-
-        public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model)
-        {
-            var account = await _userManager.FindByEmailAsync(model.Email);
-            if (account == null) throw new ApiException($"No Accounts Registered with {model.Email}.");
-            var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
-
-            if (!result.Succeeded)
-                throw new ApiException($"Error occurred while reset the password.");
-
-            return Result<string>.Success(model.Email, "Password renewed.");
-        }
-
-        public async Task<IResult> ChangePasswordAsync(ChangePasswordRequest request)
-        {
-            var user = await _userManager.FindByIdAsync(request.UserId);
-            Throw.Exception.IfNotNull(user, "User not found");
-
-            var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
-            if (result.Succeeded)
-            {
-                return Result.Success("Password changed successfully");
-            }
-
-            var errors = result.Errors.ToDictionary(x => x.Code, e => e.Description);
-            return Result.Fail(JsonConvert.SerializeObject(errors));
-        }
+        #endregion PrivateMethods
     }
 }

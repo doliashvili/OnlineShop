@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -32,13 +33,13 @@ namespace OnlineShop.Application.Services.Implements
                     Body = request.Body,
                 };
                 mailMessage.To.Add(new MailAddress(request.To));
-                
+
                 using var smtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port)
                 {
                     UseDefaultCredentials = false,
                     Credentials = new NetworkCredential(_mailSettings.UserName, _mailSettings.Password),
                     DeliveryMethod = SmtpDeliveryMethod.Network,
-                    EnableSsl = false
+                    EnableSsl = true //TODO maybe false in production and change port
                 };
 
                 await smtp.SendMailAsync(mailMessage);
@@ -46,6 +47,7 @@ namespace OnlineShop.Application.Services.Implements
             catch (System.Exception ex)
             {
                 _logger.LogError(ex.Message, ex); //TODO: Remove try catch and implement resiliency with polly
+                Console.WriteLine("errorMail");
             }
         }
     }

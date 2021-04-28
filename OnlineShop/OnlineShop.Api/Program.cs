@@ -2,7 +2,7 @@ using System;
 using IdGeneration.GeneratorWrapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-
+//Todo write whenall analayze all project
 namespace OnlineShop.Api
 {
     public static class Program

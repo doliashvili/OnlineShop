@@ -49,6 +49,7 @@ namespace OnlineShop.Api
                 .ConfigureDatabase(_configuration);
 
             services.Configure<AppSettings>(_configuration.GetSection("AppSettings"));
+            services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
 
             services
                 .AddControllers(options =>
