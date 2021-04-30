@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using ApiCommon.Filters;
 using Cqrs.ApiGenerator;
 using Cqrs.Extensions;
 using Helpers.ReadResults;
@@ -15,18 +14,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.SqlServer.Management.SqlParser.Metadata;
 using Newtonsoft.Json;
 using OnlineShop.Api.Extensions;
 using OnlineShop.Application.CommandHandlers;
-using OnlineShop.Application.Services;
 using OnlineShop.Application.Services.Abstract;
 using OnlineShop.Application.Services.Implements;
 using OnlineShop.Application.Settings;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.Extensions;
-using OnlineShop.Infrastructure;
 using OnlineShop.Infrastructure.IdentityEF;
 using OnlineShop.Infrastructure.Repositories;
 
@@ -61,7 +57,11 @@ namespace OnlineShop.Api
                 })
                 .AddJsonOptions(o => o.JsonSerializerOptions.SetDefaultJsonSerializerOptions());
 
-            services.AddSwaggerGen(x => x.AddSwaggerXml())
+            services.AddSwaggerGen(x =>
+                {
+                    x.AddSwaggerXml();
+                    x.AddSwaggerAuthorizeBearer();
+                })
                 .AddSwaggerGenNewtonsoftSupport();
 
             services.AddDbContext<IdentityContext>(options =>

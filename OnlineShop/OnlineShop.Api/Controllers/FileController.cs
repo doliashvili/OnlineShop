@@ -11,6 +11,7 @@ namespace OnlineShop.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/file")]
+    [Authorize(Roles = "Moderator,Admin")]
     public class FileController : ControllerBase
     {
         private readonly IFileService _fileService;
@@ -31,8 +32,6 @@ namespace OnlineShop.Api.Controllers
                 }
         */
 
-
-        [AllowAnonymous]
         [HttpPost("upload-image")]
         public IActionResult Image(IFormFile file)
         {
@@ -41,7 +40,6 @@ namespace OnlineShop.Api.Controllers
         }
 
         [RequestSizeLimit(52428800)]
-        [AllowAnonymous]
         [HttpPost("upload-video")]
         public IActionResult Video(IFormFile video)
         {
@@ -52,14 +50,11 @@ namespace OnlineShop.Api.Controllers
             return Ok(Result<string>.Success(imagePath));
         }
 
-
-        [AllowAnonymous]
         [HttpPost("crop-image")]
         public IActionResult CropImage(CropperSetting cropperData, string path = "")
         {
             var imagePath = _fileService.CropImage(cropperData, path);
             return Ok(Result<string>.Success(imagePath));
         }
-
     }
 }

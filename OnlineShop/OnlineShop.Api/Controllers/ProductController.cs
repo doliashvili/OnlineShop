@@ -5,6 +5,7 @@ using OnlineShop.Domain.Products.Queries;
 using OnlineShop.Domain.Products.ReadModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 // **************************************************
 //                                                 //
@@ -17,6 +18,7 @@ namespace OnlineShop.Api.Controllers
     [Route("v1/Product")]
     public class ProductController : BaseApiController
     {
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("CreateProduct")]
         public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductCommand command)
         {
@@ -24,6 +26,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("AddProductImage")]
         public async Task<IActionResult> AddProductImageAsync([FromBody] AddProductImageCommand command)
         {
@@ -31,6 +34,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("DeleteProductImage")]
         public async Task<IActionResult> DeleteProductImageAsync([FromBody] DeleteProductImageCommand command)
         {
@@ -38,6 +42,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("DeleteProduct")]
         public async Task<IActionResult> DeleteProductAsync(
             [FromBody] DeleteProductCommand command)
@@ -46,6 +51,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("ChangeProductName")]
         public async Task<IActionResult> ChangeProductNameAsync([FromBody] ChangeProductNameCommand command)
         {
@@ -53,6 +59,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("ChangeProductPrice")]
         public async Task<IActionResult> ChangeProductPriceAsync([FromBody] ChangeProductPriceCommand command)
         {
@@ -60,6 +67,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("ChangeProductBrand")]
         public async Task<IActionResult> ChangeProductBrandAsync([FromBody] ChangeProductBrandCommand command)
         {
@@ -67,6 +75,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("ChangeProductColor")]
         public async Task<IActionResult> ChangeProductColorAsync([FromBody] ChangeProductColorCommand command)
         {
@@ -74,6 +83,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("ChangeProductType")]
         public async Task<IActionResult> ChangeProductTypeAsync([FromBody] ChangeProductTypeCommand command)
         {
@@ -81,6 +91,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("ChangeProductDiscount")]
         public async Task<IActionResult> ChangeProductDiscountAsync([FromBody] ChangeProductDiscountCommand command)
         {
@@ -88,6 +99,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("ChangeProductForBaby")]
         public async Task<IActionResult> ChangeProductForBabyAsync([FromBody] ChangeProductForBabyCommand command)
         {
@@ -95,6 +107,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpGet("GetAllProducts")]
         [ProducesResponseType(typeof(List<ProductReadModel>), 200)]
         public async Task<IActionResult> GetAllProductsAsync([FromQuery] GetAllProducts query)

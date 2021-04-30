@@ -12,6 +12,7 @@ namespace OnlineShop.Infrastructure.Repositories
     public sealed class UserRepository : IUserRepository
     {
         private readonly string _connectionString;
+
         public UserRepository(DatabaseConnectionString connectionString)
         {
             _connectionString = connectionString.Value;
@@ -37,7 +38,7 @@ WHERE Email=@email;";
         public async Task<ApplicationUser?> FindUserByEmailAsync(string email)
         {
             const string sql =
- @"SELECT [Id][FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[IdentificationNumber],[Email],[Created],[DateOfBirth],[RefreshToken]
+ @"SELECT [Id],[FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[EmailConfirmed],[IdentificationNumber],[Email],[CreatedAt],[DateOfBirth],[RefreshToken]
 FROM Users
 WHERE Email=@email AND RefreshToken != NULL;";
             await using var connection = new SqlConnection(_connectionString);
@@ -59,7 +60,7 @@ WHERE Email=@email AND RefreshToken != NULL;";
         public async Task<ApplicationUser?> FindUserByIdAsync(string userId)
         {
             const string sql =
- @"SELECT [Id][FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[IdentificationNumber],[Email],[Created],[DateOfBirth],[RefreshToken]
+ @"SELECT [Id],[FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[EmailConfirmed],[IdentificationNumber],[Email],[CreatedAt],[DateOfBirth],[RefreshToken]
 FROM Users
 WHERE Id=@id;";
 
@@ -79,14 +80,12 @@ WHERE Id=@id;";
             return ReadApplicationUser(reader);
         }
 
-
         public async Task UpdateActivatedAtAsync(string userId, DateTime dateTime)
         {
             const string sql =
  @"UPDATE Users
       SET [ActivatedAt] = @datetime
- WHERE Id=@id
-GO";
+ WHERE Id=@id;";
             await using var connection = new SqlConnection(_connectionString);
             await using var command = new SqlCommand(sql, connection);
 
@@ -108,6 +107,7 @@ GO";
             var country = reader.AsStringOrNull(idx++);
             var city = reader.AsStringOrNull(idx++);
             var address = reader.AsStringOrNull(idx++);
+            var emailConfirmed = reader.AsBoolean(idx++);
             var identificationNumber = reader.AsStringOrNull(idx++);
             var email = reader.AsString(idx++);
             var cratedAt = reader.AsDateTime(idx++);
@@ -123,6 +123,7 @@ GO";
                 Country = country,
                 City = city,
                 Address = address,
+                EmailConfirmed = emailConfirmed,
                 IdentificationNumber = identificationNumber,
                 Email = email,
                 CreatedAt = cratedAt,

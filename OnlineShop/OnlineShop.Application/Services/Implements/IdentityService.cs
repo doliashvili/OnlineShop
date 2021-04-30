@@ -11,6 +11,7 @@ using Exceptions.ThrowHelper;
 using Helpers.ReadResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +22,7 @@ using OnlineShop.Application.Settings;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.CommonModels.Mail;
+using OnlineShop.Infrastructure.IdentityEF;
 
 namespace OnlineShop.Application.Services.Implements
 {
@@ -61,9 +63,9 @@ namespace OnlineShop.Application.Services.Implements
             Throw.Exception.IfFalse(result.Succeeded, () => new ApiException(401, "Invalid credentials."));
             Throw.Exception.IfFalse(user.EmailConfirmed,
                 () => new ApiException(400, $"Email is not confirmed for '{request.Email}'."));
-            Throw.Exception.IfFalse(user.IsActive,
-                () => new ApiException(400,
-                    $"Account for '{request.Email}' is not active. Please contact the Administrator."));
+            //Throw.Exception.IfFalse(user.IsActive,
+            //    () => new ApiException(400,
+            //        $"Account for '{request.Email}' is not active. Please contact the Administrator."));
 
             apiResponse.Result = new SignInResultCustom()
             {
@@ -169,7 +171,8 @@ namespace OnlineShop.Application.Services.Implements
 
         public async Task<Result<string>> ConfirmEmailAsync(string userId, string code)
         {
-            var user = await _userRepository.FindUserByIdAsync(userId).ConfigureAwait(false);
+            //var user = await _userRepository.FindUserByIdAsync(userId).ConfigureAwait(false);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 throw new NotFoundException();
