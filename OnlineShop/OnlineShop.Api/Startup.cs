@@ -25,6 +25,7 @@ using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.Extensions;
 using OnlineShop.Infrastructure.IdentityEF;
 using OnlineShop.Infrastructure.Repositories;
+using StackExchange.Redis;
 
 namespace OnlineShop.Api
 {
@@ -68,6 +69,9 @@ namespace OnlineShop.Api
             {
                 options.UseSqlServer(_configuration["Database:ConnectionString"]);
             });
+
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(_configuration["RedisConnection"]));
+            services.AddScoped<ICartService, CartService>();
 
             RegisterServices(services);
         }
