@@ -19,6 +19,7 @@ namespace OnlineShop.Domain.Products.Commands
         public Gender? Gender { get; }
         public bool? ForBaby { get; }
         public string? Size { get; }
+        public byte Quantity { get; }
         public float? Discount { get; }
         public DateTime? CreateTime { get; }
         public List<ProductImage> Images { get; }
@@ -35,6 +36,7 @@ namespace OnlineShop.Domain.Products.Commands
             Gender? gender,
             bool? forBaby,
             string? size,
+            byte quantity,
             float? discount,
             DateTime? createTime,
             List<ProductImage> images,
@@ -50,6 +52,7 @@ namespace OnlineShop.Domain.Products.Commands
             Gender = gender;
             ForBaby = forBaby;
             Size = size;
+            Quantity = quantity;
             Discount = discount;
             CreateTime = createTime;
             Images = images;

@@ -19,6 +19,7 @@ namespace OnlineShop.Domain.Products.ReadModels
         public Gender? Gender { get; set; }
         public bool? ForBaby { get; set; }
         public string? Size { get; set; }
+        public byte Quantity { get; set; }
         public float? Discount { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? Expiration { get; set; }

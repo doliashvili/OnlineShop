@@ -60,6 +60,14 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
+        [HttpPost("ChangeProductQuantity")]
+        public async Task<IActionResult> UpdateProductQuantityAsync([FromBody] ChangeProductQuantityCommand command)
+        {
+            await Mediator.SendAsync(command).ConfigureAwait(false);
+            return Ok();
+        }
+
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost("ChangeProductPrice")]
         public async Task<IActionResult> ChangeProductPriceAsync([FromBody] ChangeProductPriceCommand command)
         {

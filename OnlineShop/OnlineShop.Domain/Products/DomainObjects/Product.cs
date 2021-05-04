@@ -7,7 +7,6 @@ namespace OnlineShop.Domain.Products.DomainObjects
     {
         public Product(long id) : base(id)
         {
-
         }
 
         public Product(CreateProductCommand command) : this(IdGenerator.NewId)
@@ -22,6 +21,7 @@ namespace OnlineShop.Domain.Products.DomainObjects
             Gender = command.Gender;
             ForBaby = command.ForBaby;
             Size = command.Size;
+            Quantity = command.Quantity;
             Discount = command.Discount;
             CreateTime = command.CreateTime;
             Expiration = command.Expiration;

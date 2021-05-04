@@ -15,6 +15,7 @@ namespace OnlineShop.Infrastructure.Repositories
     public class ProductWriteRepository : IProductWriteRepository
     {
         private readonly string _connectionString;
+
         public ProductWriteRepository(DatabaseConnectionString connectionString)
         {
             _connectionString = connectionString.Value;
@@ -23,8 +24,8 @@ namespace OnlineShop.Infrastructure.Repositories
         public async Task CreateAsync(Product product)//Todo CancelationTokens
         {
             const string sql =
-  @"INSERT INTO Products (Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,ProductType,Weight,Size)
-VALUES (@id,@brand,@color,@createTime,@description,@discount,@expiration,@discountPrice,@forBaby,@gender,@isDeleted,@name,@price,@productType,@weight,@size);";
+  @"INSERT INTO Products (Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,Name,Price,Quantity,ProductType,Weight,Size)
+VALUES (@id,@brand,@color,@createTime,@description,@discount,@expiration,@discountPrice,@forBaby,@gender,@isDeleted,@name,@price,@quantity,@productType,@weight,@size);";
 
             const string sql2 =
   @"INSERT INTO Images (Id,MainImage,Url,ProductId)
@@ -46,6 +47,7 @@ VALUES (@imgId,@mainImage,@url,@productId);";
             command.Parameters.Add("@isDeleted", SqlDbType.Bit).SetValue(product.IsDeleted);
             command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.Name).SetValue(product.Name);
             command.Parameters.Add("@price", SqlDbType.SmallMoney).Value = product.Price;
+            command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = product.Quantity;
             command.Parameters.Add("@productType", SqlDbType.NVarChar, ProductDbConstants.ProductType).Value = product.ProductType;
             command.Parameters.Add("@weight", SqlDbType.NVarChar).SetValue(product.Weight.AsJson());
             command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).SetValue(product.Size);
@@ -74,7 +76,6 @@ VALUES (@imgId,@mainImage,@url,@productId);";
                 await transaction.RollbackAsync().ConfigureAwait(false);
                 throw; //todo Exceptions
             }
-
         }
 
         public async Task UpdateNameAsync(string name, long id)
@@ -222,18 +223,34 @@ VALUES(@id,@url,@mainImage,@productId)";
             const string sql = "DELETE FROM [dbo].[Images] WHERE Id=@id";
 
             await using var connection = new SqlConnection(_connectionString);
-            await using var command = new SqlCommand(sql,connection);
+            await using var command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = imageId;
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
-
         }
 
         public Task DeleteProductAsync(long id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task UpdateQuantityAsync(byte quantity, long id)
+        {
+            const string sql =
+                @"UPDATE Products
+SET Quantity=@quantity
+WHERE Id=@id;";
+
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(sql, connection);
+
+            command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = quantity;
+            command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
+
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

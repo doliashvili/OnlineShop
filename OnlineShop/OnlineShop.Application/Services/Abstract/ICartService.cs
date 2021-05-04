@@ -9,10 +9,10 @@ namespace OnlineShop.Application.Services.Abstract
 {
     public interface ICartService
     {
-        Task<bool> AddCartAsync(Cart cart, TimeSpan expire);
+        Task<bool> AddCartAsync(CartGuest cart, TimeSpan expire);
 
         Task<bool> RemoveAsync(string key);
 
-        Task<Cart> GetCartAsync(string key);
+        Task<CartGuest> GetCartAsync(string key);
     }
 }

@@ -25,7 +25,7 @@ namespace OnlineShop.Infrastructure.Repositories
         public async Task<List<ProductReadModel>> GetAllProductAsync(GetAllProducts query)
         {
             const string sql =
-                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
+                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,Quantity,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
         LEFT JOIN Images ON dbo.Products.Id=Images.ProductId;";
 
@@ -40,7 +40,6 @@ namespace OnlineShop.Infrastructure.Repositories
             return await ProductListReaderAsync(reader, products).ConfigureAwait(false);
         }
 
-
         public async Task<PagingProductModel> GetProductsAsync(GetProducts query)
         {
             var skip = (query.Page - 1) * query.PageSize;
@@ -51,7 +50,7 @@ namespace OnlineShop.Infrastructure.Repositories
       ORDER BY Products.Id
       OFFSET {query.PageSize} * {skip} ROWS
       FETCH NEXT {query.PageSize} ROWS ONLY)
-SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
+SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,Quantity,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
         LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
 		INNER JOIN pg ON pg.Id= dbo.Products.Id";
@@ -76,7 +75,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
         public async Task<ProductReadModel?> GetProductByIdAsync(GetProductById query)
         {
             const string sql =
-                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
+                @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,Quantity,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
         LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
         WHERE dbo.Products.Id=@id;";
@@ -170,7 +169,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
       ORDER BY Products.Id
       OFFSET {query.PageSize} * {skip} ROWS
       FETCH NEXT {query.PageSize} ROWS ONLY)
-SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
+SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,Quantity,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
         LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
 		INNER JOIN pg ON pg.Id= dbo.Products.Id";
@@ -223,6 +222,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                 var isDeleted = reader.AsBooleanOrNull(idx++);
                 var name = reader.AsStringOrNull(idx++);
                 var price = reader.AsDecimal(idx++);
+                var quantity = reader.AsByte(idx++);
                 var productType = reader.AsString(idx++);
                 var weight = reader.AsJsonOrNull<Weight>(idx++);
                 var size = reader.AsStringOrNull(idx++);
@@ -249,6 +249,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                         ForBaby = isBaby,
                         Size = size,
                         Discount = discount,
+                        Quantity = quantity,
                         CreateTime = createTime,
                         DiscountPrice = discountPrice,
                         Expiration = expiration,
@@ -274,7 +275,6 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                         ProductId = productId
                     });
                 }
-
             }
 
             return products;
@@ -299,6 +299,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                 var isDeleted = reader.AsBooleanOrNull(idx++);
                 var name = reader.AsStringOrNull(idx++);
                 var price = reader.AsDecimal(idx++);
+                var quantity = reader.AsByte(idx++);
                 var productType = reader.AsString(idx++);
                 var weight = reader.AsJsonOrNull<Weight>(idx++);
                 var size = reader.AsStringOrNull(idx++);
@@ -306,7 +307,6 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                 var isMainImage = reader.AsBoolean(idx++);
                 var imgId = reader.AsInt64(idx++);
                 var productId = reader.AsInt64(idx);
-
 
                 if (product is null)
                 {
@@ -325,6 +325,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                         ForBaby = isBaby,
                         Size = size,
                         Discount = discount,
+                        Quantity = quantity,
                         CreateTime = createTime,
                         DiscountPrice = discountPrice,
                         Expiration = expiration,
@@ -349,7 +350,6 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                         ProductId = productId
                     });
                 }
-
             }
 
             return product;

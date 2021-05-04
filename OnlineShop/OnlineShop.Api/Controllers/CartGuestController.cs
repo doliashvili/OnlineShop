@@ -9,13 +9,13 @@ using OnlineShop.Domain.CommonModels.Carts;
 
 namespace OnlineShop.Api.Controllers
 {
-    [Route("api/v1/cart")]
-    public class CartController : BaseApiController
+    [Route("api/v1/cartGuest")]
+    public class CartGuestController : BaseApiController
     {
         private readonly ICartService _cartService;
         private static readonly TimeSpan ExpireTime = TimeSpan.FromMinutes(40);
 
-        public CartController(ICartService cartService)
+        public CartGuestController(ICartService cartService)
         {
             _cartService = cartService;
         }
@@ -28,7 +28,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCartAsync([FromBody] Cart cart)//todo create dtos (avtom security ambaviao)
+        public async Task<IActionResult> AddCartAsync([FromBody] CartGuest cart)//todo create dtos (avtom security ambaviao)
         {
             cart.Ip = RemoteIpV4;
             var data = await _cartService.AddCartAsync(cart, ExpireTime).ConfigureAwait(false); //todo add config expire time

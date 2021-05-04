@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Domain.CommonModels.Carts
 {
-    public class Cart
+    public class CartGuest
     {
         public string Ip { get; set; }
 

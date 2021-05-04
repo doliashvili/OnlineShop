@@ -19,7 +19,8 @@ namespace OnlineShop.Application.CommandHandlers
         ICommandHandler<ChangeProductColorCommand>,
         ICommandHandler<ChangeProductTypeCommand>,
         ICommandHandler<ChangeProductDiscountCommand>,
-        ICommandHandler<ChangeProductForBabyCommand>
+        ICommandHandler<ChangeProductForBabyCommand>,
+        ICommandHandler<ChangeProductQuantityCommand>
     {
         private readonly IProductWriteRepository _writeRepository;
 
@@ -27,21 +28,22 @@ namespace OnlineShop.Application.CommandHandlers
         {
             _writeRepository = writeRepository;
         }
-        public async Task HandleAsync(CreateProductCommand command)
+
+        public Task HandleAsync(CreateProductCommand command)
         {
             var product = new Product(command);
 
-            await _writeRepository.CreateAsync(product).ConfigureAwait(false);
+            return _writeRepository.CreateAsync(product);
         }
 
-        public async Task HandleAsync(AddProductImageCommand command)
+        public Task HandleAsync(AddProductImageCommand command)
         {
-            await _writeRepository.AddImagesAsync(command.ProductImages).ConfigureAwait(false);
+            return _writeRepository.AddImagesAsync(command.ProductImages);
         }
 
-        public async Task HandleAsync(DeleteProductImageCommand command)
+        public Task HandleAsync(DeleteProductImageCommand command)
         {
-            await _writeRepository.DeleteImageAsync(command.ImageId).ConfigureAwait(false);
+            return _writeRepository.DeleteImageAsync(command.ImageId);
         }
 
         public Task HandleAsync(DeleteProductCommand command)
@@ -49,39 +51,44 @@ namespace OnlineShop.Application.CommandHandlers
             throw new NotImplementedException();
         }
 
-        public async Task HandleAsync(ChangeProductNameCommand command)
+        public Task HandleAsync(ChangeProductNameCommand command)
         {
-            await _writeRepository.UpdateNameAsync(command.Name, command.Id).ConfigureAwait(false);
+            return _writeRepository.UpdateNameAsync(command.Name, command.Id);
         }
 
-        public async Task HandleAsync(ChangeProductPriceCommand command)
+        public Task HandleAsync(ChangeProductPriceCommand command)
         {
-            await _writeRepository.UpdatePriceAsync(command.Price, command.Id).ConfigureAwait(false);
+            return _writeRepository.UpdatePriceAsync(command.Price, command.Id);
         }
 
-        public async Task HandleAsync(ChangeProductBrandCommand command)
+        public Task HandleAsync(ChangeProductBrandCommand command)
         {
-            await _writeRepository.UpdateBrandAsync(command.Brand, command.Id).ConfigureAwait(false);
+            return _writeRepository.UpdateBrandAsync(command.Brand, command.Id);
         }
 
-        public async Task HandleAsync(ChangeProductColorCommand command)
+        public Task HandleAsync(ChangeProductColorCommand command)
         {
-            await _writeRepository.UpdateColorAsync(command.Color, command.Id).ConfigureAwait(false);
+            return _writeRepository.UpdateColorAsync(command.Color, command.Id);
         }
 
-        public async Task HandleAsync(ChangeProductTypeCommand command)
+        public Task HandleAsync(ChangeProductTypeCommand command)
         {
-            await _writeRepository.UpdateTypeAsync(command.ProductType, command.Id).ConfigureAwait(false);
+            return _writeRepository.UpdateTypeAsync(command.ProductType, command.Id);
         }
 
-        public async Task HandleAsync(ChangeProductDiscountCommand command)
+        public Task HandleAsync(ChangeProductDiscountCommand command)
         {
-           await _writeRepository.UpdateDiscountAsync(command.Discount, command.Id).ConfigureAwait(false);
+            return _writeRepository.UpdateDiscountAsync(command.Discount, command.Id);
         }
 
-        public async Task HandleAsync(ChangeProductForBabyCommand command)
+        public Task HandleAsync(ChangeProductForBabyCommand command)
         {
-           await _writeRepository.UpdateForBabyAsync(command.ForBaby, command.Id).ConfigureAwait(false);
+            return _writeRepository.UpdateForBabyAsync(command.ForBaby, command.Id);
+        }
+
+        public Task HandleAsync(ChangeProductQuantityCommand command)
+        {
+            return _writeRepository.UpdateQuantityAsync(command.Quantity, command.Id);
         }
     }
 }

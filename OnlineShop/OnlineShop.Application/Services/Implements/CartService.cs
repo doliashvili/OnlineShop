@@ -20,7 +20,7 @@ namespace OnlineShop.Application.Services.Implements
             _multiplexer = multiplexer;
         }
 
-        public Task<bool> AddCartAsync(Cart cart, TimeSpan expire)
+        public Task<bool> AddCartAsync(CartGuest cart, TimeSpan expire)
         {
             if (cart is null)
             {
@@ -37,7 +37,7 @@ namespace OnlineShop.Application.Services.Implements
             return db.KeyDeleteAsync(key);
         }
 
-        public async Task<Cart> GetCartAsync(string key)
+        public async Task<CartGuest> GetCartAsync(string key)
         {
             var db = _multiplexer.GetDatabase(0);
             var result = await db.StringGetAsync(key).ConfigureAwait(false);
@@ -46,7 +46,7 @@ namespace OnlineShop.Application.Services.Implements
                 return null;
             }
 
-            return JsonSerializer.Deserialize<Cart>(result);
+            return JsonSerializer.Deserialize<CartGuest>(result);
         }
     }
 }
