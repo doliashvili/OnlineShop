@@ -6,7 +6,7 @@ using OnlineShop.Domain.Products.Records;
 
 namespace OnlineShop.Domain.Products.DomainObjects
 {
-    public partial class Product : AggregateRoot
+    public sealed partial class Product : AggregateRoot
     {
         public override long Id { get; protected set; }
         public decimal Price { get; private set; }

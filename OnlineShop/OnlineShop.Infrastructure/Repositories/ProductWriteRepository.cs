@@ -12,7 +12,7 @@ using OnlineShop.Infrastructure.Constants;
 
 namespace OnlineShop.Infrastructure.Repositories
 {
-    public class ProductWriteRepository : IProductWriteRepository
+    public sealed class ProductWriteRepository : IProductWriteRepository
     {
         private readonly string _connectionString;
 

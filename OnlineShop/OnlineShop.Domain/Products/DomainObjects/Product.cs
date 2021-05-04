@@ -3,7 +3,7 @@ using OnlineShop.Domain.Products.Commands;
 
 namespace OnlineShop.Domain.Products.DomainObjects
 {
-    public partial class Product
+    public sealed partial class Product
     {
         public Product(long id) : base(id)
         {

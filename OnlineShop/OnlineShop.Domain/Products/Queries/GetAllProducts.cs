@@ -6,6 +6,5 @@ namespace OnlineShop.Domain.Products.Queries
 {
     public class GetAllProducts : IQuery<List<ProductReadModel>>
     {
-
     }
 }

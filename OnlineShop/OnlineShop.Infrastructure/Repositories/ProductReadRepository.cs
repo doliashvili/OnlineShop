@@ -13,7 +13,7 @@ using OnlineShop.Infrastructure.Constants;
 
 namespace OnlineShop.Infrastructure.Repositories
 {
-    public class ProductReadRepository : IProductReadRepository
+    public sealed class ProductReadRepository : IProductReadRepository
     {
         private readonly string _connectionString;
 
