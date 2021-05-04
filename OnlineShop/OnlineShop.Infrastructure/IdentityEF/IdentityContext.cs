@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Management.Assessment.Configuration;
 using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.Extensions;
 
 namespace OnlineShop.Infrastructure.IdentityEF
 {
-    public class IdentityContext : IdentityDbContext<ApplicationUser>
+    public sealed class IdentityContext : IdentityDbContext<ApplicationUser>
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
-        { }
+        {
+            Database.EnsureCreatedAsync();
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -18,9 +21,9 @@ namespace OnlineShop.Infrastructure.IdentityEF
             builder.Entity<ApplicationUser>(entity =>
             {
                 entity.ToTable(name: "Users");
-                entity.Property(x=> x.RefreshToken)
+                entity.Property(x => x.RefreshToken)
                     .HasConversion(
-                        v=> v.AsJson(),
+                        v => v.AsJson(),
                         v => v.FromJson<RefreshToken>(false)
                     );
             });

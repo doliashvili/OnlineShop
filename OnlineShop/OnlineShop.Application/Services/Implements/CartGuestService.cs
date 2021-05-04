@@ -5,17 +5,17 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using OnlineShop.Application.Services.Abstract;
-using OnlineShop.Domain.CommonModels.Carts;
+using OnlineShop.Domain.CommonModels.CartsGuests;
 using OnlineShop.Domain.Extensions;
 using StackExchange.Redis;
 
 namespace OnlineShop.Application.Services.Implements
 {
-    public class CartService : ICartService
+    public class CartGuestService : ICartGuestService
     {
         private readonly IConnectionMultiplexer _multiplexer;
 
-        public CartService(IConnectionMultiplexer multiplexer)
+        public CartGuestService(IConnectionMultiplexer multiplexer)
         {
             _multiplexer = multiplexer;
         }

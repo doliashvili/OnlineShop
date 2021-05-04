@@ -71,7 +71,7 @@ namespace OnlineShop.Api
             });
 
             services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(_configuration["RedisConnection"]));
-            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICartGuestService, CartGuestService>();
 
             RegisterServices(services);
         }

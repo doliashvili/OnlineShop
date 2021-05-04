@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OnlineShop.Domain.CommonModels.Carts;
+using OnlineShop.Domain.CommonModels.CartsGuests;
 
 namespace OnlineShop.Application.Services.Abstract
 {
-    public interface ICartService
+    public interface ICartGuestService
     {
         Task<bool> AddCartAsync(CartGuest cart, TimeSpan expire);
 

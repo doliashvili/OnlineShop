@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OnlineShop.Domain.CommonModels.Carts
+namespace OnlineShop.Domain.CommonModels.CartsGuests
 {
     public class CartGuest
     {

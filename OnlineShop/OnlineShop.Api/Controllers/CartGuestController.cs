@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 using ApiCommon.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Application.Services.Abstract;
-using OnlineShop.Domain.CommonModels.Carts;
+using OnlineShop.Domain.CommonModels.CartsGuests;
 
 namespace OnlineShop.Api.Controllers
 {
     [Route("api/v1/cartGuest")]
     public class CartGuestController : BaseApiController
     {
-        private readonly ICartService _cartService;
+        private readonly ICartGuestService _cartService;
         private static readonly TimeSpan ExpireTime = TimeSpan.FromMinutes(40);
 
-        public CartGuestController(ICartService cartService)
+        public CartGuestController(ICartGuestService cartService)
         {
             _cartService = cartService;
         }
