@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Domain.CommonModels.Carts
 {
-    public record CartItem
+    public record CartGuestItem
     {
         public long Id { get; set; }
         public decimal Price { get; set; }

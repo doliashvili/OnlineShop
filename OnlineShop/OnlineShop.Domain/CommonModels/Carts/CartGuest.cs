@@ -6,6 +6,6 @@ namespace OnlineShop.Domain.CommonModels.Carts
     {
         public string Ip { get; set; }
 
-        public HashSet<CartItem> CartItems { get; set; }
+        public HashSet<CartGuestItem> CartItems { get; set; }
     }
 }
