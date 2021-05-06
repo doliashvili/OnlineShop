@@ -9,6 +9,6 @@ namespace OnlineShop.Domain.AbstractRepository
 {
     public interface ICartReadRepository
     {
-        Task<List<CartReadModel>> GetCartsAsync(List<long> productIds, string userId);
+        Task<List<CartReadModel>> GetCartsAsync(string userId);
     }
 }

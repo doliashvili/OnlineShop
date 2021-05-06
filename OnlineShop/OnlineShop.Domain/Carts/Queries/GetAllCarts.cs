@@ -10,12 +10,10 @@ namespace OnlineShop.Domain.Carts.Queries
 {
     public class GetAllCarts : IQuery<List<CartReadModel>>
     {
-        public List<long> CartIds { get; set; }
         public long UserId { get; set; }
 
-        public GetAllCarts(List<long> cartIds, long userId)
+        public GetAllCarts(long userId)
         {
-            CartIds = cartIds;
             UserId = userId;
         }
     }

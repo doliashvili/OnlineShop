@@ -41,7 +41,7 @@ VALUES (@imgId,@mainImage,@url,@productId);";
             command.Parameters.Add("@description", SqlDbType.NVarChar, ProductDbConstants.Description).SetValue(product.Description);
             command.Parameters.Add("@discount", SqlDbType.Float).SetValue(product.Discount);
             command.Parameters.Add("@expiration", SqlDbType.DateTime).SetValue(product.Expiration);
-            command.Parameters.Add("@discountPrice", SqlDbType.Money).SetValue(product.DiscountPrice);
+            command.Parameters.Add("@discountPrice", SqlDbType.SmallMoney).SetValue(product.DiscountPrice);
             command.Parameters.Add("@forBaby", SqlDbType.Bit).SetValue(product.ForBaby);
             command.Parameters.Add("@gender", SqlDbType.TinyInt).SetValue(product.Gender);
             command.Parameters.Add("@isDeleted", SqlDbType.Bit).SetValue(product.IsDeleted);

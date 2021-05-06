@@ -49,21 +49,21 @@ namespace OnlineShop.Infrastructure.Migrations
                         new
                         {
                             Id = "f68ef0f8-1dfe-401b-89b6-8298fd827299",
-                            ConcurrencyStamp = "dc4f3abd-5f1c-4248-9a54-60bc138978f3",
+                            ConcurrencyStamp = "61466488-36a2-40c2-93f1-f59e51e7cd57",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "3a93386e-133e-40da-aed7-bd2efd793fa8",
-                            ConcurrencyStamp = "1501a5e7-a8d8-4b0a-8157-1bb9fc84be59",
+                            ConcurrencyStamp = "f12fc5d9-3b8e-45df-af17-1f6f3b9f00b3",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
                             Id = "c5f7682f-3598-4a33-98b6-2a3fa7d89ead",
-                            ConcurrencyStamp = "99c2e0ec-0a0d-4ec8-9f9f-ef54535bcc76",
+                            ConcurrencyStamp = "80f6a873-0e70-4ff2-8490-fbacf8221358",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -192,9 +192,11 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -202,6 +204,7 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -218,6 +221,7 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentificationNumber")
@@ -227,6 +231,7 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -285,7 +290,10 @@ namespace OnlineShop.Infrastructure.Migrations
                         {
                             Id = "3f34424b-40c8-435b-85ea-064ac4534c9b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4d2395d8-a95a-4e30-b376-2589865cf896",
+                            Address = "sadgac",
+                            City = "sadgac",
+                            ConcurrencyStamp = "93628260-2d54-4e14-8f23-16ff6dba4189",
+                            Country = "sadgac",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -295,7 +303,8 @@ namespace OnlineShop.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIHe1z/f+vZg1+4GfbvRr+P1taaJCiKDVrKmLb/4snI+DlQiqs47f8arNF7Y0lNPKw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKzYljg/aKRf87zwPeegx/uZbsxlmNCd5+MnFLJFLfb/O0ggk4l0wHGrFDMfs7WepQ==",
+                            PhoneNumber = "598788875",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

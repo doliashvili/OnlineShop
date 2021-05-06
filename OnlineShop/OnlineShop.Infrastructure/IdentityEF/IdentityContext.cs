@@ -11,7 +11,6 @@ namespace OnlineShop.Infrastructure.IdentityEF
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
         {
-            Database.EnsureCreatedAsync();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
