@@ -14,5 +14,6 @@ namespace OnlineShop.Domain.CommonModels.Identity
 
         public SignInResultCustom Result { get; set; }
         public TokenResponse Token { get; set; }
+        public string UserId { get; set; }
     }
 }

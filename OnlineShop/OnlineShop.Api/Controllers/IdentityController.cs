@@ -30,7 +30,7 @@ namespace OnlineShop.Api.Controllers
             var ipAddress = RemoteIpV4;
             var response = await _identityService.GetTokenAsync(tokenRequest, ipAddress).ConfigureAwait(false);
             if (response.Result.Succeeded)
-                return Ok(response.Token);
+                return Ok(response);
 
             return StatusCode(response.Result.IsLockedOut
                 ? StatusCodes.Status403Forbidden

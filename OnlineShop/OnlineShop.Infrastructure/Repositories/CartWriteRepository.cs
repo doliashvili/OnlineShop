@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using OnlineShop.Domain.AbstractRepository;
@@ -21,16 +18,12 @@ namespace OnlineShop.Infrastructure.Repositories
             _connectionString = connectionString.Value;
         }
 
-        public async Task AddCartAsync(Cart cart, string userId)
+        public async Task AddCartAsync(Cart cart)
         {
-            const string sql =
- @"BEGIN TRAN;
- INSERT INTO Carts (Id,ProductId,DiscountPrice,Name,Price,Quantity,ImageUrl)
-VALUES (@id,@productId,@discountPrice,@name,@price,@quantity,@imageUrl);
-
- INSERT INTO UsersCarts (UserId,CartId)
-VALUES (@userId,@id);
-COMMIT TRAN;";
+            string sql =
+ $@"IF({cart.Quantity} <= (SELECT Quantity FROM Products WHERE Id = {cart.ProductId}))
+INSERT INTO Carts (Id,ProductId,UserId,Quantity)
+VALUES (@id,@productId,@userId,@quantity)";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -38,12 +31,8 @@ COMMIT TRAN;";
 
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = cart.Id;
             command.Parameters.Add("@productId", SqlDbType.BigInt).Value = cart.ProductId;
-            command.Parameters.Add("@discountPrice", SqlDbType.SmallMoney).SetValue(cart.DiscountPrice);
-            command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.CartName).Value = cart.Name;
-            command.Parameters.Add("@price", SqlDbType.SmallMoney).Value = cart.Price;
+            command.Parameters.Add("@userId", SqlDbType.NVarChar, IdentityDbConstants.UserIdLength).Value = cart.UserId;
             command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = cart.Quantity;
-            command.Parameters.Add("@imageUrl", SqlDbType.VarChar, ProductDbConstants.Url).Value = cart.ImageUrl;
-            command.Parameters.Add("@userId", SqlDbType.NVarChar, IdentityDbConstants.UserIdLength).Value = userId;
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -51,12 +40,7 @@ COMMIT TRAN;";
 
         public async Task RemoveCartAsync(long id)
         {
-            const string sql =
-@"BEGIN TRAN;
-  DELETE Carts WHERE Id=@id;
-
-  DELETE UsersCarts CartId=@id;
- COMMIT TRAN;";
+            const string sql = "DELETE Carts WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -68,9 +52,24 @@ COMMIT TRAN;";
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
-        public Task UpdateCartQuantityAsync(long id, long productId, byte quantity)
+        public async Task UpdateCartQuantityAsync(long id, long productId, byte quantity)
         {
-            throw new NotImplementedException();
+            string sql =
+ $@"IF({quantity} <= (SELECT Quantity FROM Products WHERE Id = {productId}))
+UPDATE Carts
+SET Quantity=@quantity
+WHERE Id=@id";
+
+            await using var connection = new SqlConnection(_connectionString);
+
+            await using var command = new SqlCommand(sql, connection);
+
+            command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
+            command.Parameters.Add("@productId", SqlDbType.BigInt).Value = productId;
+            command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = quantity;
+
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
     }
 }

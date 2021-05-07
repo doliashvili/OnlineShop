@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Cqrs;
 using Cqrs.ApiGenerator;
+using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Carts.Commands;
+using OnlineShop.Domain.Carts.DomainObjects;
 
 namespace OnlineShop.Application.CommandHandlers
 {
@@ -14,19 +12,27 @@ namespace OnlineShop.Application.CommandHandlers
         ICommandHandler<DeleteCartCommand>,
         ICommandHandler<UpdateCartQuantityCommand>
     {
+        private readonly ICartWriteRepository _cartWriteRepository;
+
+        public CartCommandHandler(ICartWriteRepository cartWriteRepository)
+        {
+            _cartWriteRepository = cartWriteRepository;
+        }
+
         public Task HandleAsync(AddCartCommand command)
         {
-            throw new NotImplementedException();
+            var cart = new Cart(command);
+            return _cartWriteRepository.AddCartAsync(cart);
         }
 
         public Task HandleAsync(DeleteCartCommand command)
         {
-            throw new NotImplementedException();
+            return _cartWriteRepository.RemoveCartAsync(command.Id);
         }
 
         public Task HandleAsync(UpdateCartQuantityCommand command)
         {
-            throw new NotImplementedException();
+            return _cartWriteRepository.UpdateCartQuantityAsync(command.Id, command.ProductId, command.Quantity);
         }
     }
 }

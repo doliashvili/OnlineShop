@@ -89,6 +89,7 @@ namespace OnlineShop.Application.Services.Implements
             await _userRepository.UpdateRefreshTokenAsync(user.Email, refreshToken).ConfigureAwait(false);
 
             apiResponse.Token = response;
+            apiResponse.UserId = user.Id;
             return apiResponse;
         }
 

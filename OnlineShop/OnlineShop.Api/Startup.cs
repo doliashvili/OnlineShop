@@ -70,8 +70,8 @@ namespace OnlineShop.Api
                 options.UseSqlServer(_configuration["Database:ConnectionString"]);
             });
 
-            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(_configuration["RedisConnection"]));
-            services.AddScoped<ICartGuestService, CartGuestService>();
+            //services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(_configuration["RedisConnection"]));
+            //services.AddScoped<ICartGuestService, CartGuestService>();
 
             RegisterServices(services);
         }
@@ -80,6 +80,8 @@ namespace OnlineShop.Api
         {
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+            services.AddScoped<ICartWriteRepository, CartWriteRepository>();
+            services.AddScoped<ICartReadRepository, CartReadRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFileService, FileService>();
             services.AddTransient<IIdentityService, IdentityService>();

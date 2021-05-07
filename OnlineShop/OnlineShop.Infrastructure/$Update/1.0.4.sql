@@ -1,16 +1,19 @@
 ﻿CREATE TABLE Carts(
 Id bigint NOT NULL,
 ProductId bigint NOT NULL,
-Price smallmoney NOT NULL,
-DiscountPrice smallmoney NULL,
-[Name] nvarchar(50) NOT NULL,
+UserId nvarchar(450) NOT NULL,
 Quantity tinyint NOT NULL,
-ImageUrl nvarchar(2048) NOT NULL,
-CONSTRAINT PK_Carts PRIMARY KEY (Id)
+
+CONSTRAINT PK_Carts PRIMARY KEY (Id),
+
+CONSTRAINT FK_Carts_ProductId FOREIGN KEY (ProductId)
+      REFERENCES Products (Id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+CONSTRAINT FK_Carts_UserId FOREIGN KEY (UserId)
+      REFERENCES Users (Id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
 );
 
-CREATE TABLE UsersCarts(
-	UserId nvarchar(36) NOT NULL,
-	CartId bigint NOT NULL,
-	CONSTRAINT PK_UsersCarts PRIMARY KEY (UserId,CartId)
-);
