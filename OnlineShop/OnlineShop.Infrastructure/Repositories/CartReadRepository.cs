@@ -24,12 +24,11 @@ namespace OnlineShop.Infrastructure.Repositories
         public async Task<List<CartReadModel>> GetCartsAsync(string userId) //TODO დროებითია ეს ქვერები ოპტიმიზაციას საჭიროებს
         {
             const string sql =
-  @"SELECT dbo.Products.Id,Price,[Name],DiscountPrice,Quantity,Images.[Url],(SELECT Id FROM Carts WHERE UserId=@userId) CartId
+  @"SELECT dbo.Products.Id,Price,[Name],DiscountPrice,Images.[Url],c.Id,c.Quantity
       FROM Products
-        CROSS APPLY (
-		 SELECT Images.ProductId ,Images.[Url] FROM Images
-		  WHERE Images.ProductId=dbo.Products.Id AND Images.MainImage=1) Images
-		   WHERE dbo.Products.Id=(SELECT ProductId FROM Carts WHERE UserId=@userId)";
+      LEFT JOIN Carts c ON Products.Id=c.ProductId
+	  LEFT JOIN Images ON Products.Id=Images.ProductId
+	  WHERE Images.MainImage=1 AND c.UserId=@userId";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -58,9 +57,9 @@ namespace OnlineShop.Infrastructure.Repositories
             var price = reader.AsDecimal(idx++);
             var name = reader.AsString(idx++);
             var discountPrice = reader.AsDecimalOrNull(idx++);
-            var quantity = reader.AsByte(idx++);
             var imageUrl = reader.AsString(idx++);
-            var id = reader.AsInt64(idx);
+            var id = reader.AsInt64(idx++);
+            var quantity = reader.AsByte(idx);
 
             var cartReadModel = new CartReadModel()
             {

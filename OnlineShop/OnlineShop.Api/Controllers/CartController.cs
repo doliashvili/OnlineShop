@@ -24,7 +24,7 @@ namespace OnlineShop.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("DeleteCart")]
+        [HttpDelete("DeleteCart")]
         public async Task<IActionResult> DeleteCartAsync([FromBody] Domain.Carts.Commands.DeleteCartCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);

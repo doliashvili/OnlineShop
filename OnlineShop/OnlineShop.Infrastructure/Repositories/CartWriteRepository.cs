@@ -21,7 +21,7 @@ namespace OnlineShop.Infrastructure.Repositories
         public async Task AddCartAsync(Cart cart)
         {
             string sql =
- $@"IF({cart.Quantity} <= (SELECT Quantity FROM Products WHERE Id = {cart.ProductId}))
+ @"IF(@quantity <= (SELECT Quantity FROM Products WHERE Id = @productId))
 INSERT INTO Carts (Id,ProductId,UserId,Quantity)
 VALUES (@id,@productId,@userId,@quantity)";
 
@@ -54,8 +54,8 @@ VALUES (@id,@productId,@userId,@quantity)";
 
         public async Task UpdateCartQuantityAsync(long id, long productId, byte quantity)
         {
-            string sql =
- $@"IF({quantity} <= (SELECT Quantity FROM Products WHERE Id = {productId}))
+            const string sql =
+  @"IF(@quantity <= (SELECT Quantity FROM Products WHERE Id = @productId))
 UPDATE Carts
 SET Quantity=@quantity
 WHERE Id=@id";
