@@ -2,6 +2,8 @@ using System;
 using System.Text;
 using Cqrs.ApiGenerator;
 using Cqrs.Extensions;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Helpers.ReadResults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OnlineShop.Api.Extensions;
@@ -24,6 +27,7 @@ using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.Extensions;
 using OnlineShop.Infrastructure.IdentityEF;
+using OnlineShop.Infrastructure.Jobs;
 using OnlineShop.Infrastructure.Repositories;
 using StackExchange.Redis;
 
@@ -72,6 +76,15 @@ namespace OnlineShop.Api
 
             //services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(_configuration["RedisConnection"]));
             //services.AddScoped<ICartGuestService, CartGuestService>();
+
+            // Add Hangfire services.
+            services.AddHangfire(configuration =>
+            {
+                configuration.UseMemoryStorage();
+            });
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
 
             RegisterServices(services);
         }
@@ -170,6 +183,13 @@ namespace OnlineShop.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHangfireDashboard();
+
+            var path = app.ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value.StaticFilePath;
+
+            RecurringJob.AddOrUpdate<ProductDeleteJob>(x => x.ExecuteAsync(), Cron.Minutely);
+            RecurringJob.AddOrUpdate<DeleteImagesInFolder>(x => x.ExecuteAsync(path), Cron.Minutely);
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }

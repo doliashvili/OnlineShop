@@ -48,7 +48,7 @@ namespace OnlineShop.Application.CommandHandlers
 
         public Task HandleAsync(DeleteProductCommand command)
         {
-            throw new NotImplementedException();
+            return _writeRepository.DeleteProductAsync(command.Id);
         }
 
         public Task HandleAsync(ChangeProductNameCommand command)

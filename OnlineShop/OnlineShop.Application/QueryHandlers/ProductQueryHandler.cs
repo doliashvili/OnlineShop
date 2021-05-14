@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cqrs;
-using Microsoft.AspNetCore.Routing;
 using OnlineShop.Application.Constants;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Products.Queries;
@@ -21,6 +20,7 @@ namespace OnlineShop.Application.QueryHandlers
         {
             _readRepository = readRepository;
         }
+
         public Task<List<ProductReadModel>> HandleAsync(GetAllProducts query)
         {
             return _readRepository.GetAllProductAsync(query);

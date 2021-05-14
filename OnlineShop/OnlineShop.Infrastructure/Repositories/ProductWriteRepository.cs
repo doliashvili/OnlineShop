@@ -98,7 +98,7 @@ WHERE Id=@id;";
         public async Task UpdatePriceAsync(decimal price, long id)
         {
             const string sql =
-                @"UPDATE OnlineShop.Products
+  @"UPDATE OnlineShop.Products
 SET Price=@price
 WHERE Id=@id;";
 
@@ -231,15 +231,26 @@ VALUES(@id,@url,@mainImage,@productId)";
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
-        public Task DeleteProductAsync(long id)
+        public async Task DeleteProductAsync(long id)
         {
-            throw new NotImplementedException();
+            const string sql =
+ @"UPDATE Products
+SET IsDeleted=1
+WHERE Id=@id;";
+
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(sql, connection);
+
+            command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
+
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
         public async Task UpdateQuantityAsync(byte quantity, long id)
         {
             const string sql =
-                @"UPDATE Products
+ @"UPDATE Products
 SET Quantity=@quantity
 WHERE Id=@id;";
 

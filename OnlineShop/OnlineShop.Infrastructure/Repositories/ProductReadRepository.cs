@@ -53,7 +53,8 @@ namespace OnlineShop.Infrastructure.Repositories
 SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,Quantity,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
         LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
-		INNER JOIN pg ON pg.Id= dbo.Products.Id";
+		INNER JOIN pg ON pg.Id= dbo.Products.Id
+        WHERE IsDeleted=0;";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -78,7 +79,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                 @"SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,DiscountPrice,ForBaby,Gender,IsDeleted,[Name],Price,Quantity,ProductType,[Weight],Size,Images.[Url],Images.MainImage,Images.Id AS ImgId,Images.ProductId
         FROM Products
         LEFT JOIN Images ON dbo.Products.Id=Images.ProductId
-        WHERE dbo.Products.Id=@id;";
+        WHERE dbo.Products.Id=@id AND IsDeleted=0;";
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -176,6 +177,9 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
 
             var sb = new StringBuilder();
 
+            sb.AppendLine(sql);
+            sb.AppendLine("WHERE IsDeleted=0");
+
             if (query.Brand is not null)
                 sb.AppendWithAnd("Brand=@brand");
 
@@ -199,7 +203,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
 
             sb.AppendWithAnd("(Price >= @priceFrom OR DiscountPrice >= @priceFrom)");
             sb.AppendWithAnd("(Price <= @priceTo OR DiscountPrice <= @priceTo)");
-            sb.AppendWhereIfHaveCondition(sql);
+            // sb.AppendWhereIfHaveCondition(sql);
 
             return sb.ToString();
         }

@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ApiCommon.BaseControllers;
 using Microsoft.AspNetCore.Authorization;
-using OnlineShop.Domain.CommonModels.Identity;
-using OnlineShop.Domain.Extensions;
 
 // **************************************************
 //                                                 //

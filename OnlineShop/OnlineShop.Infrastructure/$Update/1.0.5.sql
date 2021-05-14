@@ -1,0 +1,7 @@
+﻿ALTER TABLE Products
+ADD CONSTRAINT df_IsDeleted DEFAULT 0 FOR IsDeleted;
+
+UPDATE Products SET IsDeleted = 0 WHERE IsDeleted IS NULL;
+
+ALTER TABLE Products
+ALTER COLUMN IsDeleted BIT NOT NULL;
