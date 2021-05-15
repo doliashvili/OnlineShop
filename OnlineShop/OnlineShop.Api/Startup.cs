@@ -188,8 +188,8 @@ namespace OnlineShop.Api
 
             var path = app.ApplicationServices.GetRequiredService<IOptions<AppSettings>>().Value.StaticFilePath;
 
-            RecurringJob.AddOrUpdate<ProductDeleteJob>(x => x.ExecuteAsync(), Cron.Minutely);
-            RecurringJob.AddOrUpdate<DeleteImagesInFolder>(x => x.ExecuteAsync(path), Cron.Minutely);
+            RecurringJob.AddOrUpdate<ProductDeleteJob>(x => x.ExecuteAsync(), Cron.Weekly);
+            RecurringJob.AddOrUpdate<DeleteImagesInFolder>(x => x.ExecuteAsync(path), Cron.Weekly);
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }

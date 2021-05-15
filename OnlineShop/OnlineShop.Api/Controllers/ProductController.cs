@@ -27,7 +27,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpDelete("AddProductImage")]
+        [HttpPost("AddProductImage")]
         public async Task<IActionResult> AddProductImageAsync([FromBody] AddProductImageCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -43,7 +43,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("DeleteProduct")]
+        [HttpDelete("DeleteProduct")]
         public async Task<IActionResult> DeleteProductAsync(
             [FromBody] DeleteProductCommand command)
         {
