@@ -3,7 +3,7 @@ using Cqrs;
 using Cqrs.ApiGenerator;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.Carts.Commands;
-using OnlineShop.Domain.Carts.DomainObjects;
+using OnlineShop.Domain.Carts.Entity;
 
 namespace OnlineShop.Application.CommandHandlers
 {

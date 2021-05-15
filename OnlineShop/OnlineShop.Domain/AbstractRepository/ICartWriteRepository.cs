@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using OnlineShop.Domain.Carts.DomainObjects;
+using OnlineShop.Domain.Carts.Entity;
 
 namespace OnlineShop.Domain.AbstractRepository
 {

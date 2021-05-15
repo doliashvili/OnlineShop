@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IdGeneration.GeneratorWrapper;
+﻿using IdGeneration.GeneratorWrapper;
 using OnlineShop.Domain.Carts.Commands;
 
-namespace OnlineShop.Domain.Carts.DomainObjects
+namespace OnlineShop.Domain.Carts.Entity
 {
     public sealed partial class Cart
     {

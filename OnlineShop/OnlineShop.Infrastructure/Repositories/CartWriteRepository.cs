@@ -3,7 +3,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using OnlineShop.Domain.AbstractRepository;
-using OnlineShop.Domain.Carts.DomainObjects;
+using OnlineShop.Domain.Carts.Entity;
 using OnlineShop.Infrastructure.CommonSql;
 using OnlineShop.Infrastructure.Constants;
 
