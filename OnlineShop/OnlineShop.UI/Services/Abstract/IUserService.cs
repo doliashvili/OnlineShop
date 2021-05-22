@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OnlineShop.UI.Models.NewFolder;
 using OnlineShop.UI.Models.User;
 
 namespace OnlineShop.UI.Services.Abstract

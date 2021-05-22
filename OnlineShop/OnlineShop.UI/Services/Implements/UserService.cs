@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using OnlineShop.UI.Models.NewFolder;
 using OnlineShop.UI.Models.User;
 using OnlineShop.UI.Services.Abstract;
 

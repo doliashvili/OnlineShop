@@ -9,9 +9,11 @@ namespace OnlineShop.UI.Models.Product
     public class GetProductsRequest
     {
         [Required]
+        [Range(1, 120)]
         public int Page { get; set; }
 
         [Required]
+        [Range(1, 10)]
         public int PageSize { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineShop.Domain.Enums
+namespace OnlineShop.UI.Enums
 {
     [Flags]
     public enum Gender : byte

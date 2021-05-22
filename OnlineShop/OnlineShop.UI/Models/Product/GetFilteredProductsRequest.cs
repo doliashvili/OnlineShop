@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using OnlineShop.Domain.Enums;
+using OnlineShop.UI.Enums;
 
 namespace OnlineShop.UI.Models.Product
 {
