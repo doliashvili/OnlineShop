@@ -30,28 +30,36 @@ namespace OnlineShop.UI.Services.Implements
             return response;
         }
 
-        public Task<ProductsViewModel> GetFilteredProductsAsync(GetFilteredProductsRequest getFilteredProductsRequest, CancellationToken cancellationToken)
+        public async Task<ProductsViewModel> GetFilteredProductsAsync(GetFilteredProductsRequest getFilteredProductsRequest, CancellationToken cancellationToken)
         {
             var qpc = new QueryParamCollection
             {
                 {"pageSize", getFilteredProductsRequest.PageSize},
                 {"page", getFilteredProductsRequest.Page},
-                {"Brand", getFilteredProductsRequest.Brand},
-                {"Color", getFilteredProductsRequest.Color},
-                {"ForBaby", getFilteredProductsRequest.ForBaby},
-                {"Gender", getFilteredProductsRequest.Gender},
-                {"Name", getFilteredProductsRequest.Name},
-                {"PriceFrom", getFilteredProductsRequest.PriceFrom},
-                {"PriceTo", getFilteredProductsRequest.PriceTo},
-                {"ProductType", getFilteredProductsRequest.ProductType},
+                {"brand", getFilteredProductsRequest.Brand},
+                {"color", getFilteredProductsRequest.Color},
+                {"forBaby", getFilteredProductsRequest.ForBaby},
+                {"gender", getFilteredProductsRequest.Gender},
+                {"name", getFilteredProductsRequest.Name},
+                {"priceFrom", getFilteredProductsRequest.PriceFrom},
+                {"priceTo", getFilteredProductsRequest.PriceTo},
+                {"productType", getFilteredProductsRequest.ProductType},
                 {"size", getFilteredProductsRequest.Size},
             };
-            throw new NotImplementedException();
+
+            var response = await _httpClient.SendAsync<ProductsViewModel>(HttpMethod.Get, $"v1/Product/GetFilteredProducts?{qpc}", null, cancellationToken);
+            return response;
         }
 
-        public Task<ProductViewModel> GetProductByIdAsync(GetProductByIdRequest getProductByIdRequest, CancellationToken cancellationToken)
+        public async Task<ProductViewModel> GetProductByIdAsync(GetProductByIdRequest getProductByIdRequest, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var qpc = new QueryParamCollection
+            {
+                {"id", getProductByIdRequest.Id},
+            };
+
+            var response = await _httpClient.SendAsync<ProductViewModel>(HttpMethod.Get, $"v1/Product/GetProductById?{qpc}", null, cancellationToken);
+            return response;
         }
     }
 }
