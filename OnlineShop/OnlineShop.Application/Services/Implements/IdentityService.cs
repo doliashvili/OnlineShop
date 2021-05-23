@@ -11,7 +11,6 @@ using Exceptions.ThrowHelper;
 using Helpers.ReadResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -22,7 +21,6 @@ using OnlineShop.Application.Settings;
 using OnlineShop.Domain.AbstractRepository;
 using OnlineShop.Domain.CommonModels.Identity;
 using OnlineShop.Domain.CommonModels.Mail;
-using OnlineShop.Infrastructure.IdentityEF;
 
 namespace OnlineShop.Application.Services.Implements
 {
@@ -217,7 +215,7 @@ namespace OnlineShop.Application.Services.Implements
             var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password).ConfigureAwait(false);
 
             if (!result.Succeeded)
-                throw new ApiException($"Error occurred while reset the password.");
+                throw new ApiException("Error occurred while reset the password.");
 
             return Result<string>.Success(model.Email, "Password renewed.");
         }
