@@ -2,27 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using OnlineShop.UI.Models.User;
 using OnlineShop.UI.Services.Abstract;
 using OnlineShop.UI.Extensions;
+using OnlineShop.UI.Helpers;
 
 namespace OnlineShop.UI.Services.Implements
 {
     public class UserService : IUserService
     {
         private readonly HttpClient _httpClient;
+        private readonly ILocalStorageService _localStorage;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public UserService(HttpClient httpClient)
+        public UserService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
+            _localStorage = localStorage;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
         {
             var response = await _httpClient.SendAsync<LoginResponse>(HttpMethod.Post, "Login", loginRequest.AsJson(),
                 CancellationToken.None);
+
+            var token = response.Token.TokenValue;
+
+            await _localStorage.SetItemAsync("authToken", token.AsJson());
+            await _localStorage.SetItemAsync("userId", response.UserId);
+            await _localStorage.SetItemAsync("loginResult", response.Result.AsJson());
+
+            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginRequest.Email);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             return response;
         }
@@ -57,6 +75,15 @@ namespace OnlineShop.UI.Services.Implements
                 changePasswordRequest.AsJson(), CancellationToken.None);
 
             return response;
+        }
+
+        public async Task LogOutAsync()
+        {
+            await _localStorage.RemoveItemAsync("authToken");
+
+            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
+
+            _httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

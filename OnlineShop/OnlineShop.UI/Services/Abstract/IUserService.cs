@@ -10,6 +10,8 @@ namespace OnlineShop.UI.Services.Abstract
     {
         Task<LoginResponse> LoginAsync(LoginRequest loginRequest);
 
+        Task LogOutAsync();
+
         Task<RegisterResponse> RegistrationAsync(RegisterRequest registerRequest);
 
         Task<string> ForgetPasswordAsync(ForgotPasswordRequest forgotPasswordRequest);
