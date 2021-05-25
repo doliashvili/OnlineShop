@@ -20,19 +20,19 @@ namespace OnlineShop.UI.Services.Implements
 
         public async Task<Result> AddCartAsync(AddCartRequest addCartRequest, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "v1/Cart/AddCart", addCartRequest.AsJson(), cancellationToken);
+            var response = await _httpClient.SendAsync<Result>(HttpMethod.Post, "v1/Cart/AddCart", addCartRequest.AsJson(), cancellationToken);
             return response;
         }
 
         public async Task<Result> DeleteCartAsync(long cartId, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Delete, "v1/Cart/DeleteCart", new { Id = cartId }.AsJson(), cancellationToken);
+            var response = await _httpClient.SendAsync<Result>(HttpMethod.Delete, "v1/Cart/DeleteCart", new { Id = cartId }.AsJson(), cancellationToken);
             return response;
         }
 
         public async Task<Result> UpdateCartAsync(UpdateCartRequest updateCartRequest, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "v1/Cart/UpdateCartQuantity", updateCartRequest.AsJson(), cancellationToken);
+            var response = await _httpClient.SendAsync<Result>(HttpMethod.Post, "v1/Cart/UpdateCartQuantity", updateCartRequest.AsJson(), cancellationToken);
             return response;
         }
 
