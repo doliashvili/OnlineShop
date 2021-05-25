@@ -103,7 +103,7 @@ namespace OnlineShop.Api
             services.AddMediator(new ApiGenOptions()
             {
                 ControllersNamespace = "OnlineShop.Api.Controllers",
-                ControllersPath = @"C:\OnlineShoping\OnlineShop\OnlineShop\OnlineShop.Api\Controllers",
+                ControllersPath = @"C:\Users\user\Source\Repos\OnlineShop\OnlineShop\OnlineShop.Api\Controllers",
                 IgnoreGenerationIfControllerExists = true,
             },
                 typeof(ProductCommandHandler).Assembly);

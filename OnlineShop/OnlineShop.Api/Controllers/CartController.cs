@@ -43,5 +43,13 @@ namespace OnlineShop.Api.Controllers
             var data = await Mediator.QueryAsync(query).ConfigureAwait(false);
             return Ok(data);
         }
+
+        [HttpGet("GetCartsCount")]
+        [ProducesResponseType(typeof(int), 200)]
+        public async Task<IActionResult> GetCartsCountAsync([FromQuery] Domain.Carts.Queries.GetCartsCount query)
+        {
+            var data = await Mediator.QueryAsync(query);
+            return Ok(data);
+        }
     }
 }

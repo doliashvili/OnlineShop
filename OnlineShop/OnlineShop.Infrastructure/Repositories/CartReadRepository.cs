@@ -21,6 +21,27 @@ namespace OnlineShop.Infrastructure.Repositories
             _connectionString = connectionString.Value;
         }
 
+        public async Task<int> GetCartsCountAsync(string userId)
+        {
+            const string sql = "SELECT Count(Id) FROM Carts WHERE UserId = @userId";
+
+            await using var connection = new SqlConnection(_connectionString);
+
+            await using var command = new SqlCommand(sql, connection);
+
+            command.Parameters.Add("@userId", SqlDbType.NVarChar, IdentityDbConstants.UserIdLength).Value = userId;
+
+            await connection.EnsureIsOpenAsync().ConfigureAwait(false);
+            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            if (!await reader.ReadAsync().ConfigureAwait(false))
+            {
+                return 0;
+            }
+
+            var count = reader.AsInt32(0);
+            return count;
+        }
+
         public async Task<List<CartReadModel>> GetCartsAsync(string userId) //TODO დროებითია ეს ქვერები ოპტიმიზაციას საჭიროებს
         {
             const string sql =

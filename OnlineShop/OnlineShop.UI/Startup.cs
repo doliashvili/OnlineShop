@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
+using OnlineShop.UI.Helpers;
 using OnlineShop.UI.Services.Abstract;
 using OnlineShop.UI.Services.Implements;
 
@@ -29,9 +32,21 @@ namespace OnlineShop.UI
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddBlazoredLocalStorage();
+            // services.AddBlazoredToast();
+
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ApiAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+
+            services.AddTransient<AuthenticationHeaderHandler>();
+
+            services.AddHttpClient(
+                "OnlineShop",
+                client => client.BaseAddress = new Uri(Configuration["BaseAddress"]))
+            .AddHttpMessageHandler<AuthenticationHeaderHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

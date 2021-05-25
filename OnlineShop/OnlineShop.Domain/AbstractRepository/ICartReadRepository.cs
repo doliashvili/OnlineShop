@@ -10,5 +10,7 @@ namespace OnlineShop.Domain.AbstractRepository
     public interface ICartReadRepository
     {
         Task<List<CartReadModel>> GetCartsAsync(string userId);
+
+        Task<int> GetCartsCountAsync(string userId);
     }
 }

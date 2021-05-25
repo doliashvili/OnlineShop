@@ -10,7 +10,8 @@ using OnlineShop.Domain.Carts.ReadModels;
 
 namespace OnlineShop.Application.QueryHandlers
 {
-    public class CartQueryHandler : IQueryHandler<GetAllCarts, List<CartReadModel>>
+    public class CartQueryHandler : IQueryHandler<GetAllCarts, List<CartReadModel>>,
+        IQueryHandler<GetCartsCount, int>
     {
         private readonly ICartReadRepository _cartReadRepository;
 
@@ -22,6 +23,11 @@ namespace OnlineShop.Application.QueryHandlers
         public Task<List<CartReadModel>> HandleAsync(GetAllCarts query)
         {
             return _cartReadRepository.GetCartsAsync(query.UserId);
+        }
+
+        public Task<int> HandleAsync(GetCartsCount query)
+        {
+            return _cartReadRepository.GetCartsCountAsync(query.UserId);
         }
     }
 }
