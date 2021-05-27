@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ApiCommon.BaseControllers;
+using Microsoft.AspNetCore.Authorization;
 
 // **************************************************
 //                                                 //
@@ -10,30 +11,31 @@ using ApiCommon.BaseControllers;
 
 namespace OnlineShop.Api.Controllers
 {
-	[Route("v1/Category")]
-	public class CategoryController : BaseApiController
-	{	
+    [Route("v1/Category")]
+    public class CategoryController : BaseApiController
+    {
+        [Authorize(Roles = "Moderator,Admin")]
+        [HttpPost("CreateCategory")]
+        public async Task<IActionResult> CreateCategoryAsync([FromBody] Domain.Categories.Commands.CreateCategoryCommand command)
+        {
+            await Mediator.SendAsync(command).ConfigureAwait(false);
+            return Ok();
+        }
 
-		[HttpPost("CreateCategory")]
-		public async Task<IActionResult> CreateCategory([FromBody] OnlineShop.Domain.Categories.Commands.CreateCategoryCommand command) 
-		{
-			await Mediator.SendAsync(command);
-			return Ok();
-		}	
+        [Authorize(Roles = "Moderator,Admin")]
+        [HttpPost("DeleteCategory")]
+        public async Task<IActionResult> DeleteCategoryAsync([FromBody] Domain.Categories.Commands.DeleteCategoryCommand command)
+        {
+            await Mediator.SendAsync(command).ConfigureAwait(false);
+            return Ok();
+        }
 
-		[HttpPost("DeleteCategory")]
-		public async Task<IActionResult> DeleteCategory([FromBody] OnlineShop.Domain.Categories.Commands.DeleteCategoryCommand command) 
-		{
-			await Mediator.SendAsync(command);
-			return Ok();
-		}	
-
-		[HttpGet("GetCategories")]
-		[ProducesResponseType(typeof(System.Collections.Generic.List<OnlineShop.Domain.Categories.ReadModels.CategoryReadModel>), 200)]
-		public async Task<IActionResult> GetCategories([FromQuery] OnlineShop.Domain.Categories.Queries.GetCategories query) 
-		{
-			var data = await Mediator.QueryAsync(query);
-			return Ok(data);
-		}
-	}
+        [HttpGet("GetCategories")]
+        [ProducesResponseType(typeof(System.Collections.Generic.List<Domain.Categories.ReadModels.CategoryReadModel>), 200)]
+        public async Task<IActionResult> GetCategoriesAsync([FromQuery] Domain.Categories.Queries.GetCategories query)
+        {
+            var data = await Mediator.QueryAsync(query).ConfigureAwait(false);
+            return Ok(data);
+        }
+    }
 }
