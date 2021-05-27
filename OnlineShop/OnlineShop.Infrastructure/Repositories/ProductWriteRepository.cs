@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using IdGeneration.GeneratorWrapper;
 using Microsoft.Data.SqlClient;
 using OnlineShop.Domain.AbstractRepository;
+using OnlineShop.Domain.Categories.Commands;
+using OnlineShop.Domain.Categories.DomainObjects;
 using OnlineShop.Domain.Extensions;
 using OnlineShop.Domain.Products.DomainObjects;
 using OnlineShop.Infrastructure.CommonSql;
@@ -14,10 +16,12 @@ namespace OnlineShop.Infrastructure.Repositories
 {
     public sealed class ProductWriteRepository : IProductWriteRepository
     {
+        private readonly ICategoryWriteRepository _categoryRepository;
         private readonly string _connectionString;
 
-        public ProductWriteRepository(DatabaseConnectionString connectionString)
+        public ProductWriteRepository(DatabaseConnectionString connectionString, ICategoryWriteRepository categoryRepository)
         {
+            _categoryRepository = categoryRepository;
             _connectionString = connectionString.Value;
         }
 
@@ -70,6 +74,7 @@ VALUES (@imgId,@mainImage,@url,@productId);";
                 }
 
                 await transaction.CommitAsync().ConfigureAwait(false);
+                await _categoryRepository.AddCategoryAsync(new Category(new CreateCategoryCommand(null!, product.ProductType))).ConfigureAwait(false);
             }
             catch (Exception)
             {

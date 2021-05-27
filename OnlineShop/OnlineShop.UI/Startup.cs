@@ -43,10 +43,16 @@ namespace OnlineShop.UI
 
             services.AddTransient<AuthenticationHeaderHandler>();
 
+            var url = Configuration["BaseAddress"];
+
             services.AddHttpClient(
                 "OnlineShop",
-                client => client.BaseAddress = new Uri(Configuration["BaseAddress"]))
-            .AddHttpMessageHandler<AuthenticationHeaderHandler>();
+                client => client.BaseAddress = new Uri(url));
+
+            services.AddHttpClient(
+                    "OnlineShopAuth",
+                    client => client.BaseAddress = new Uri(url))
+                .AddHttpMessageHandler<AuthenticationHeaderHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

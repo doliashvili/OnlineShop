@@ -20,9 +20,9 @@ namespace OnlineShop.UI.Services.Implements
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public UserService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider)
+        public UserService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("OnlineShop");
             _localStorage = localStorage;
             _authenticationStateProvider = authenticationStateProvider;
         }

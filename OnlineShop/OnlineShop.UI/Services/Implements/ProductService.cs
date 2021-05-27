@@ -13,9 +13,9 @@ namespace OnlineShop.UI.Services.Implements
     {
         private readonly HttpClient _httpClient;
 
-        public ProductService(HttpClient httpClient)
+        public ProductService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("OnlineShop");
         }
 
         public async Task<ProductsViewModel> GetProductsAsync(GetProductsRequest getProductsRequest, CancellationToken cancellationToken)

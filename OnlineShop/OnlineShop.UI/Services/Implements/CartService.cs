@@ -13,9 +13,9 @@ namespace OnlineShop.UI.Services.Implements
     {
         private readonly HttpClient _httpClient;
 
-        public CartService(HttpClient httpClient)
+        public CartService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("OnlineShopAuth");
         }
 
         public async Task<Result> AddCartAsync(AddCartRequest addCartRequest, CancellationToken cancellationToken)

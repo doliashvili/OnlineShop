@@ -95,7 +95,10 @@ namespace OnlineShop.Api
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<ICartWriteRepository, CartWriteRepository>();
             services.AddScoped<ICartReadRepository, CartReadRepository>();
+            services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+            services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddScoped<IFileService, FileService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<IMailService, SmtpMailService>();
