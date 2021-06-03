@@ -1,16 +1,16 @@
-﻿<h3>Component</h3>
+﻿@*<h3>Component</h3>
 
-@{
-    //OnAfterRenderAsync(true);
+    @{
+        //OnAfterRenderAsync(true);
 
-    if (products != null)
-    {
-
-        foreach (var product in products.Products)
+        if (products != null)
         {
-            <li>@product.Name</li>
-            <li>@product.Price</li>
-        }
-    }
 
-}
+            foreach (var product in products.Products)
+            {
+                <li>@product.Name</li>
+                <li>@product.Price</li>
+            }
+        }
+
+    }*@

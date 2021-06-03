@@ -2,7 +2,9 @@ using System;
 using IdGeneration.GeneratorWrapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+
 //Todo write whenall analayze all project
+//Todo use [MethodImpl(MethodImplOptions.AggressiveInlining)]
 namespace OnlineShop.Api
 {
     public static class Program

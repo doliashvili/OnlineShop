@@ -10,7 +10,7 @@ namespace OnlineShop.Domain.Products.DomainObjects
     {
         public override long Id { get; protected set; }
         public decimal Price { get; private set; }
-        public bool? IsDeleted { get; private set; }
+        public bool IsDeleted { get; private set; }
         public string? Color { get; private set; }
         public string? Brand { get; private set; }
         public string ProductType { get; set; }
