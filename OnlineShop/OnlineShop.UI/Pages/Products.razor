@@ -1,0 +1,38 @@
+﻿@page "/products"
+@using System.Security.Cryptography.X509Certificates
+
+@if (products.Products is null)
+{
+    <h1>loading todo</h1>
+}
+else
+{
+    <img src="C:\Users\user\Desktop\error.PNG" />
+
+    foreach (var product in products.Products)
+    {
+        var image = product.Images.FirstOrDefault();
+        var result = image?.Url.Insert(0, @"file://desktop-r41jsot/"); //todo
+
+        <div class="card" style="width: 18rem;">
+            <img src="@result" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@product.Name</h5>
+                <p class="card-text">@product.Description</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">@product.Price</li>
+                <li class="list-group-item">@product.DiscountPrice ფასდაკლება</li>
+            </ul>
+            <div class="card-body">
+                <a href="#" class="card-link">ნახეთ ვრცლად</a>
+                <a href="#" class="card-link">Another link</a>
+            </div>
+        </div>
+
+    }
+}
+
+@code {
+
+}
