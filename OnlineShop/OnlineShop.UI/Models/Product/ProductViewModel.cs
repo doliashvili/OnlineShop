@@ -27,6 +27,12 @@ namespace OnlineShop.UI.Models.Product
         public List<Image> Images { get; set; }
     }
 
-    public record Image(long Id, string Url, bool IsMainImage);
+    public class Image
+    {
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public bool IsMainImage { get; set; }
+    }
+
     public record Weight(WeightType WeightType, float Value);
 }

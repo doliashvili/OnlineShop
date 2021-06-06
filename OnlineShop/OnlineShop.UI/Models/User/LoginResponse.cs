@@ -6,7 +6,7 @@ namespace OnlineShop.UI.Models.User
     {
         public Result Result { get; set; }
 
-        public Token Token { get; set; }
+        public TokenResponse Token { get; set; }
 
         public string UserId { get; set; }
     }
@@ -22,14 +22,11 @@ namespace OnlineShop.UI.Models.User
         public bool IsNotAllowed { get; set; }
     }
 
-    public class Token
+    public class TokenResponse
     {
-        public string TokenValue { get; set; }
-
+        public string Token { get; set; }
         public DateTime IssuedOn { get; set; }
-
         public DateTime ExpiresOn { get; set; }
-
         public string RefreshToken { get; set; }
     }
 }

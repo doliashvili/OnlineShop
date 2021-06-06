@@ -1,8 +1,9 @@
 ﻿@page "/header"
+@using System.Runtime.CompilerServices
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-image: linear-gradient(180deg,rgb(5, 39, 103) 0%, #3a0647 70%);">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">Online Shop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -41,6 +42,63 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-primary" type="submit" style="margin-left: 2px">Search</button>
             </form>
+            <div class="col-lg-5 col-xl-5 col-sm-8 col-md-4 col-7">
+                <div class="d-flex justify-content-end" style="margin-top: 5px">
+                    <AuthorizeView>
+                        <NotAuthorized>
+                            <div class="widget-header mr-3">
+                                <a href="/account/login" class="icon icon-sm rounded-circle border">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+                                <span class="badge badge-pill badge-danger notify">0</span>
+                            </div>
+
+                            <div class="widget-header icontext" style="display: flex">
+                                <a href="#" class="icon icon-sm rounded-circle border">
+                                    <i class="fa fa-user"></i>
+                                </a>
+                                <div class="text" style="margin-left: 4px;margin-bottom: 4px">
+                                    <span class="text-muted" style="font-size: 17.5px;
+                                                                    margin-left: 4px;
+                                                                    color: #9a15ff !important;">მოგესალმებით!</span>
+                                    <div>
+                                        <a class="login-reg" href="/account/login">შესვლა</a> <span style="color: #592a7d; font-size: 14px; ">|</span>
+                                        <a class="login-reg" href="/account/register"> რეგისტრაცია</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </NotAuthorized>
+                        <Authorized>
+                            <NavCart />
+
+                            @*<a href="/wishlist" class="widget-header mr-3">
+                                    <div class="icon">
+                                        <i class="icon-sm rounded-circle border fa fa-heart"></i>
+                                    </div>
+                                </a>*@
+
+                            <div class="widget-header dropdown">
+                                <a @onclick:preventDefault
+                                   href="#"
+                                   data-toggle="dropdown"
+                                   class="dropdown-toggle"
+                                   data-offset="20,10">
+                                    <div class="icon icon-sm rounded-circle border ">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <span class="sr-only">Profile actions</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="/account/settings">Profile setting</a>
+                                    <a class="dropdown-item" href="/orders/mine">My orders</a>
+                                    <hr class="dropdown-divider">
+                                    <Logout />
+                                </div>
+                            </div>
+                        </Authorized>
+                    </AuthorizeView>
+                </div>
+            </div>
         </div>
     </div>
 </nav>

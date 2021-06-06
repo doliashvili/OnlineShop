@@ -15,8 +15,15 @@ namespace OnlineShop.UI.Pages
         protected override async Task OnInitializedAsync()
         {
             var productsRequest = new GetProductsRequest() { Page = 1, PageSize = 10 };
-
-            products = await ProductService.GetProductsAsync(productsRequest, CancellationToken.None);
+            products = await _productService.GetProductsAsync(productsRequest, CancellationToken.None);
+            foreach (var productViewModel in products.Products)
+            {
+                var images = productViewModel.Images;
+                for (int i = 0; i < images.Count; i++)
+                {
+                    images[i].Url = images[i].Url.Insert(0, "http://127.0.0.1:8887/").Replace(@"images\", "");
+                }
+            }
         }
     }
 }

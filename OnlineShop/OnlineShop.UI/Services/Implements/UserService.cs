@@ -29,12 +29,13 @@ namespace OnlineShop.UI.Services.Implements
 
         public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
         {
-            var response = await _httpClient.SendAsync<LoginResponse>(HttpMethod.Post, "Login", loginRequest.AsJson(),
+            var response = await _httpClient.SendAsync<LoginResponse>(HttpMethod.Post, "api/Account/Login", loginRequest.AsJson(),
                 CancellationToken.None);
 
-            var token = response.Token.TokenValue;
+            var token = response.Token.Token;
 
-            await _localStorage.SetItemAsync("authToken", token.AsJson());
+            await _localStorage.SetItemAsync("authToken", token);
+            //await _localStorage.SetItemAsync("token", response.TokenResponse.AsJson());
             await _localStorage.SetItemAsync("userId", response.UserId);
             await _localStorage.SetItemAsync("loginResult", response.Result.AsJson());
 
@@ -47,7 +48,7 @@ namespace OnlineShop.UI.Services.Implements
 
         public async Task<RegisterResponse> RegistrationAsync(RegisterRequest registerRequest)
         {
-            var response = await _httpClient.SendAsync<RegisterResponse>(HttpMethod.Post, "register",
+            var response = await _httpClient.SendAsync<RegisterResponse>(HttpMethod.Post, "api/Account/register",
                 registerRequest.AsJson(), CancellationToken.None);
 
             return response;
@@ -55,7 +56,7 @@ namespace OnlineShop.UI.Services.Implements
 
         public async Task<string> ForgetPasswordAsync(ForgotPasswordRequest forgotPasswordRequest)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "forgot-password",
+            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "api/Account/forgot-password",
                 forgotPasswordRequest.AsJson(), CancellationToken.None);
 
             return response;
@@ -63,7 +64,7 @@ namespace OnlineShop.UI.Services.Implements
 
         public async Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "reset-password",
+            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "api/Account/reset-password",
                 resetPasswordRequest.AsJson(), CancellationToken.None);
 
             return response;
@@ -71,7 +72,7 @@ namespace OnlineShop.UI.Services.Implements
 
         public async Task<string> ChangePasswordAsync(ChangePasswordRequest changePasswordRequest)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "change-password",
+            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "api/Account/change-password",
                 changePasswordRequest.AsJson(), CancellationToken.None);
 
             return response;

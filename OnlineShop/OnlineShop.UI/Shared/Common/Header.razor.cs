@@ -14,7 +14,7 @@ namespace OnlineShop.UI.Shared.Common
 
         protected override async Task OnInitializedAsync()
         {
-            categories = await CategoryService.GetCategoriesAsync(CancellationToken.None);
+            categories = await _categoryService.GetCategoriesAsync(CancellationToken.None);
         }
     }
 }

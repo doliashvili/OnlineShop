@@ -1,0 +1,13 @@
+﻿@attribute [Authorize]
+
+@if (cartProductsCount == null)
+{@*<LoadingScreen />*@
+                <h1>loading todo</h1> }
+            else
+            {
+<a href="/cart" class="widget-header mr-3">
+    <div class="icon">
+        <i class="icon-sm rounded-circle border fa fa-shopping-cart"></i>
+        <span class="notify">@cartProductsCount</span>
+    </div>
+</a>}

@@ -47,7 +47,15 @@ namespace OnlineShop.UI.Helpers
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var savedToken = await this.localStorage.GetItemAsync<string>("authToken");
+            var savedToken = string.Empty;
+            try
+            {
+                savedToken = await this.localStorage.GetItemAsync<string>("authToken");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             if (string.IsNullOrWhiteSpace(savedToken))
             {

@@ -34,8 +34,8 @@ namespace OnlineShop.UI.Extensions
         {
             var request = new HttpRequestMessage(httpMethod, relativePath)
             {
-                //  Version = HttpVersion.Version11,
-                // VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+                Version = HttpVersion.Version11,
+                VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
             };
 
             if (body is not null)

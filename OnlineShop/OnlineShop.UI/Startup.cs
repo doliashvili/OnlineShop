@@ -33,6 +33,7 @@ namespace OnlineShop.UI
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredLocalStorage();
+            services.AddAuthorizationCore();
             // services.AddBlazoredToast();
 
             services.AddScoped<ICartService, CartService>();
@@ -73,8 +74,9 @@ namespace OnlineShop.UI
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseAuthentication();
             app.UseRouting();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
