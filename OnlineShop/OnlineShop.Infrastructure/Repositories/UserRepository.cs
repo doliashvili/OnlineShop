@@ -38,7 +38,7 @@ WHERE Email=@email;";
         public async Task<ApplicationUser?> FindUserByEmailAsync(string email)
         {
             const string sql =
- @"SELECT [Id],[FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[EmailConfirmed],[IdentificationNumber],[Email],[CreatedAt],[DateOfBirth],[RefreshToken]
+ @"SELECT SELECT [Id],[FirstName],[LastName],[Country],[City],[Address],[EmailConfirmed],[Email],[CreatedAt],[DateOfBirth],[RefreshToken]
 FROM Users
 WHERE Email=@email AND RefreshToken != NULL;";
             await using var connection = new SqlConnection(_connectionString);
@@ -60,9 +60,14 @@ WHERE Email=@email AND RefreshToken != NULL;";
         public async Task<ApplicationUser?> FindUserByIdAsync(string userId)
         {
             const string sql =
- @"SELECT [Id],[FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[EmailConfirmed],[IdentificationNumber],[Email],[CreatedAt],[DateOfBirth],[RefreshToken]
+ @"SELECT [Id],[FirstName],[LastName],[Country],[City],[Address],[EmailConfirmed],[Email],[CreatedAt],[DateOfBirth],[RefreshToken]
 FROM Users
 WHERE Id=@id;";
+
+            //            const string sql =
+            //                @"SELECT [Id],[FirstName],[LastName],[PersonalNumber],[Country],[City],[Address],[EmailConfirmed],[IdentificationNumber],[Email],[CreatedAt],[DateOfBirth],[RefreshToken]
+            //FROM Users
+            //WHERE Id=@id;";
 
             await using var connection = new SqlConnection(_connectionString);
             await using var command = new SqlCommand(sql, connection);
@@ -103,12 +108,12 @@ WHERE Id=@id;";
             var id = reader.AsString(idx++);
             var firstName = reader.AsStringOrNull(idx++);
             var lastName = reader.AsStringOrNull(idx++);
-            var personalNumber = reader.AsStringOrNull(idx++);
+            //  var personalNumber = reader.AsStringOrNull(idx++);
             var country = reader.AsStringOrNull(idx++);
             var city = reader.AsStringOrNull(idx++);
             var address = reader.AsStringOrNull(idx++);
             var emailConfirmed = reader.AsBoolean(idx++);
-            var identificationNumber = reader.AsStringOrNull(idx++);
+            // var identificationNumber = reader.AsStringOrNull(idx++);
             var email = reader.AsString(idx++);
             var cratedAt = reader.AsDateTime(idx++);
             var dateOfBirth = reader.AsDateTimeOrNull(idx++);
@@ -119,12 +124,12 @@ WHERE Id=@id;";
                 Id = id,
                 FirstName = firstName,
                 LastName = lastName,
-                PersonalNumber = personalNumber,
+                //PersonalNumber = personalNumber,
                 Country = country,
                 City = city,
                 Address = address,
                 EmailConfirmed = emailConfirmed,
-                IdentificationNumber = identificationNumber,
+                //IdentificationNumber = identificationNumber,
                 Email = email,
                 CreatedAt = cratedAt,
                 DateOfBirth = dateOfBirth,

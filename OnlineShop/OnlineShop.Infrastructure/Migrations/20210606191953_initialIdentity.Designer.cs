@@ -10,8 +10,8 @@ using OnlineShop.Infrastructure.IdentityEF;
 namespace OnlineShop.Infrastructure.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20210506205525_initial_identity")]
-    partial class initial_identity
+    [Migration("20210606191953_initialIdentity")]
+    partial class initialIdentity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,21 +51,21 @@ namespace OnlineShop.Infrastructure.Migrations
                         new
                         {
                             Id = "f68ef0f8-1dfe-401b-89b6-8298fd827299",
-                            ConcurrencyStamp = "61466488-36a2-40c2-93f1-f59e51e7cd57",
+                            ConcurrencyStamp = "8c3984c7-e14d-449a-80ab-a5a8e0b7d12c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "3a93386e-133e-40da-aed7-bd2efd793fa8",
-                            ConcurrencyStamp = "f12fc5d9-3b8e-45df-af17-1f6f3b9f00b3",
+                            ConcurrencyStamp = "f85a5357-a5f8-4443-97d8-fa8055693f59",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
                             Id = "c5f7682f-3598-4a33-98b6-2a3fa7d89ead",
-                            ConcurrencyStamp = "80f6a873-0e70-4ff2-8490-fbacf8221358",
+                            ConcurrencyStamp = "aff948c5-074a-49a2-8902-317a3ce7538a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -194,11 +194,9 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -206,7 +204,6 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -224,9 +221,6 @@ namespace OnlineShop.Infrastructure.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdentificationNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -251,9 +245,6 @@ namespace OnlineShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PersonalNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -294,7 +285,7 @@ namespace OnlineShop.Infrastructure.Migrations
                             AccessFailedCount = 0,
                             Address = "sadgac",
                             City = "sadgac",
-                            ConcurrencyStamp = "93628260-2d54-4e14-8f23-16ff6dba4189",
+                            ConcurrencyStamp = "519cb191-12fb-447f-a6cb-88ae2fd4ec19",
                             Country = "sadgac",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
@@ -305,7 +296,7 @@ namespace OnlineShop.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKzYljg/aKRf87zwPeegx/uZbsxlmNCd5+MnFLJFLfb/O0ggk4l0wHGrFDMfs7WepQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAC3SblNGiDR22mb0ufgCFpi2FhOPyPfODDesPhObpdD2z5c/4H3vdDTQwqChWkfWg==",
                             PhoneNumber = "598788875",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "",

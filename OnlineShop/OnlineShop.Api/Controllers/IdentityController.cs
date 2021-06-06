@@ -83,11 +83,18 @@ namespace OnlineShop.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("change-password")]
+        [HttpPut("change-password")]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
             request.UserId = CurrentUserId;
             return Ok(await _identityService.ChangePasswordAsync(request).ConfigureAwait(false));
+        }
+
+        [HttpPut("add-personal-info")]
+        public async Task<IActionResult> AddPersonalInfoAsync(AddPersonalInfoRequest request)
+        {
+            request.UserId = CurrentUserId;
+            return Ok(await _identityService.AddPersonalInfoAsync(request).ConfigureAwait(false));
         }
     }
 }

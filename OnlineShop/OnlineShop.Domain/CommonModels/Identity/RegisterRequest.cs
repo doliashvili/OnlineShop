@@ -23,38 +23,47 @@ namespace OnlineShop.Domain.CommonModels.Identity
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
-        public string PhoneNumber { get; set; }
+        //[Required]
+        //public string PhoneNumber { get; set; }
 
-        public string? PersonalNumber { get; set; }
+        //public string? PersonalNumber { get; set; }
 
-        [Required]
-        public string Country { get; set; }
+        //[Required]
+        //public string Country { get; set; }
 
-        [Required]
-        public string City { get; set; }
+        //[Required]
+        //public string City { get; set; }
 
-        [Required]
-        public string Address { get; set; }
+        //[Required]
+        //public string Address { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+        // public DateTime? DateOfBirth { get; set; }
 
-        public string IdentificationNumber { get; set; }
+        // public string IdentificationNumber { get; set; }
 
-        public RegisterRequest(string firstName, string lastName, string email, string password, string confirmPassword, string phoneNumber, string? personalNumber, string country, string city, string address, DateTime? dateOfBirth, string identificationNumber)
+        //public RegisterRequest(string firstName, string lastName, string email, string password, string confirmPassword, string phoneNumber, string? personalNumber, string country, string city, string address, DateTime? dateOfBirth, string identificationNumber)
+        //{
+        //    FirstName = firstName;
+        //    LastName = lastName;
+        //    Email = email;
+        //    Password = password;
+        //    ConfirmPassword = confirmPassword;
+        //    PhoneNumber = phoneNumber;
+        //    PersonalNumber = personalNumber;
+        //    Country = country;
+        //    City = city;
+        //    Address = address;
+        //    DateOfBirth = dateOfBirth;
+        //    IdentificationNumber = identificationNumber;
+        //}
+
+        public RegisterRequest(string firstName, string lastName, string email, string password, string confirmPassword)
         {
             FirstName = firstName;
             LastName = lastName;
             Email = email;
             Password = password;
             ConfirmPassword = confirmPassword;
-            PhoneNumber = phoneNumber;
-            PersonalNumber = personalNumber;
-            Country = country;
-            City = city;
-            Address = address;
-            DateOfBirth = dateOfBirth;
-            IdentificationNumber = identificationNumber;
         }
 
         public RegisterRequest()

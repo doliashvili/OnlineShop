@@ -35,7 +35,7 @@ namespace OnlineShop.UI.Services.Implements
             var token = response.Token.Token;
 
             await _localStorage.SetItemAsync("authToken", token);
-            //await _localStorage.SetItemAsync("token", response.TokenResponse.AsJson());
+            await _localStorage.SetItemAsync("token", response.Token.AsJson());
             await _localStorage.SetItemAsync("userId", response.UserId);
             await _localStorage.SetItemAsync("loginResult", response.Result.AsJson());
 
@@ -48,6 +48,11 @@ namespace OnlineShop.UI.Services.Implements
 
         public async Task<RegisterResponse> RegistrationAsync(RegisterRequest registerRequest)
         {
+            var headers = new HeaderCollection();
+
+            headers.Add("origin", _httpClient.BaseAddress?.OriginalString);
+            headers.CopyTo(_httpClient.DefaultRequestHeaders);
+
             var response = await _httpClient.SendAsync<RegisterResponse>(HttpMethod.Post, "api/Account/register",
                 registerRequest.AsJson(), CancellationToken.None);
 

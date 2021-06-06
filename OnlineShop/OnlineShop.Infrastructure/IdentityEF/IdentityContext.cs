@@ -25,6 +25,9 @@ namespace OnlineShop.Infrastructure.IdentityEF
                         v => v.AsJson(),
                         v => v.FromJson<RefreshToken>(false)
                     );
+
+                entity.Property(x => x.Email).IsRequired();
+                entity.Property(x => x.UserName).IsRequired();
             });
 
             builder.Entity<IdentityRole>(entity =>

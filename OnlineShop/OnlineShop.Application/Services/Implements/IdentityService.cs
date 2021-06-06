@@ -139,14 +139,14 @@ namespace OnlineShop.Application.Services.Implements
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserName = request.Email,
-                DateOfBirth = request.DateOfBirth,
-                Address = request.Address,
+                //DateOfBirth = request.DateOfBirth,
+                //Address = request.Address,
                 CreatedAt = DateTime.UtcNow,
-                IdentificationNumber = request.IdentificationNumber,
-                City = request.City,
-                Country = request.Country,
-                PersonalNumber = request.PersonalNumber,
-                PhoneNumber = request.PhoneNumber
+                //IdentificationNumber = request.IdentificationNumber,
+                //City = request.City,
+                //Country = request.Country,
+                //PersonalNumber = request.PersonalNumber,
+                //PhoneNumber = request.PhoneNumber
             };
 
             var result = await _userManager.CreateAsync(user, request.Password).ConfigureAwait(false);
@@ -154,16 +154,31 @@ namespace OnlineShop.Application.Services.Implements
                 throw new ApiException($"{result.Errors}");
 
             await _userManager.AddToRoleAsync(user, nameof(Roles.User)).ConfigureAwait(false);
-            var verificationUri = await GenerateVerificationEmailAsync(user, origin).ConfigureAwait(false);
-
-            var mailRequest = new MailRequest()
+            try
             {
-                To = user.Email,
-                Body = _appSettings.ConfirmEmailHtml.Replace("{verificationUri}", verificationUri),
-                Subject = _appSettings.ConfirmEmailSubject
-            };
+                var verificationUri = await GenerateVerificationEmailAsync(user, origin).ConfigureAwait(false);
 
-            await _mailService.SendAsync(mailRequest).ConfigureAwait(false); //TODO we need resiliency
+                var mailRequest = new MailRequest()
+                {
+                    To = user.Email,
+                    Body = _appSettings.ConfirmEmailHtml.Replace("{verificationUri}", verificationUri),
+                    Subject = _appSettings.ConfirmEmailSubject
+                };
+
+                await _mailService.SendAsync(mailRequest).ConfigureAwait(false); //TODO we need resiliency
+            }
+            catch (Exception e)
+            {
+                // Remove user from role first!
+                var remFromRole = await _userManager.RemoveFromRoleAsync(user, nameof(Roles.User)).ConfigureAwait(false);
+
+                // Remove user from UserStore
+                await _userManager.DeleteAsync(user).ConfigureAwait(false);
+
+                Console.WriteLine(e);
+                return Result<string>.Fail(e.Message);
+            }
+
             return Result<string>.Success(user.Id,
                 "User Registered. Confirmation Mail has been delivered to your Mailbox.");
         }
@@ -171,7 +186,7 @@ namespace OnlineShop.Application.Services.Implements
         public async Task<Result<string>> ConfirmEmailAsync(string userId, string code)
         {
             //var user = await _userRepository.FindUserByIdAsync(userId).ConfigureAwait(false);
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId).ConfigureAwait(false);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -223,12 +238,29 @@ namespace OnlineShop.Application.Services.Implements
         public async Task<IResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.UserId).ConfigureAwait(false);
-            Throw.Exception.IfNotNull(user, "User not found");
+            Throw.Exception.IfNull(user, "User not found");
 
             var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword).ConfigureAwait(false);
             if (result.Succeeded)
             {
                 return Result.Success("Password changed successfully");
+            }
+
+            var errors = result.Errors.ToDictionary(x => x.Code, e => e.Description);
+            return Result.Fail(JsonConvert.SerializeObject(errors));
+        }
+
+        public async Task<IResult> AddPersonalInfoAsync(AddPersonalInfoRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.UserId).ConfigureAwait(false);
+            Throw.Exception.IfNull(user, "User not found");
+
+            user.UpdateUserInfoForOrder(request.DateOfBirth, request.Country, request.City, request.Address, request.PhoneNumber);
+            var result = await _userManager.UpdateAsync(user).ConfigureAwait(false);
+
+            if (result.Succeeded)
+            {
+                return Result.Success("user information updated successfully");
             }
 
             var errors = result.Errors.ToDictionary(x => x.Code, e => e.Description);

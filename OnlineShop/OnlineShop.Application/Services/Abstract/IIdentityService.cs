@@ -7,6 +7,7 @@ namespace OnlineShop.Application.Services.Abstract
     public interface IIdentityService
     {
         Task<AuthResult> GetTokenAsync(TokenRequest request, string ipAddress);
+
         Task<Result<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, string ipAddress);
 
         Task<Result<string>> RegisterAsync(RegisterRequest request, string origin);
@@ -16,6 +17,9 @@ namespace OnlineShop.Application.Services.Abstract
         Task ForgotPasswordAsync(ForgotPasswordRequest model, string origin);
 
         Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model);
+
         Task<IResult> ChangePasswordAsync(ChangePasswordRequest request);
+
+        Task<IResult> AddPersonalInfoAsync(AddPersonalInfoRequest request);
     }
 }

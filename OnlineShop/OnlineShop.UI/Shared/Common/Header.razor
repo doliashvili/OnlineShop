@@ -39,8 +39,8 @@
                     </li>*@
             </ul>
             <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-primary" type="submit" style="margin-left: 2px">Search</button>
+                <input class="form-control me-2" type="search" placeholder="საძიებო სიტყვა" aria-label="Search">
+                <button class="btn btn-outline-primary" type="submit" style="margin-left: 2px">ძებნა</button>
             </form>
             <div class="col-lg-5 col-xl-5 col-sm-8 col-md-4 col-7">
                 <div class="d-flex justify-content-end" style="margin-top: 5px">
@@ -82,7 +82,7 @@
                                    href="#"
                                    data-toggle="dropdown"
                                    class="dropdown-toggle"
-                                   data-offset="20,10">
+                                   data-offset="20,10" style="text-decoration: none">
                                     <div class="icon icon-sm rounded-circle border ">
                                         <i class="fa fa-user"></i>
                                     </div>
@@ -90,7 +90,7 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a class="dropdown-item" href="/account/settings">Profile setting</a>
-                                    <a class="dropdown-item" href="/orders/mine">My orders</a>
+                                    @*<a class="dropdown-item" href="/orders/mine">My orders</a> todo*@
                                     <hr class="dropdown-divider">
                                     <Logout />
                                 </div>

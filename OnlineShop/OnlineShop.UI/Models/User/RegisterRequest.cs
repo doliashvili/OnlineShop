@@ -26,22 +26,22 @@ namespace OnlineShop.UI.Models.User
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
-        public string PhoneNumber { get; set; }
+        //[Required]
+        //public string PhoneNumber { get; set; }
 
-        public string? PersonalNumber { get; set; }
+        //public string? PersonalNumber { get; set; }
 
-        [Required]
-        public string Country { get; set; }
+        //[Required]
+        //public string Country { get; set; }
 
-        [Required]
-        public string City { get; set; }
+        //[Required]
+        //public string City { get; set; }
 
-        [Required]
-        public string Address { get; set; }
+        //[Required]
+        //public string Address { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+        //public DateTime? DateOfBirth { get; set; }
 
-        public string IdentificationNumber { get; set; }
+        //public string IdentificationNumber { get; set; }
     }
 }

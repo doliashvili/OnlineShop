@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OnlineShop.Infrastructure.Migrations
 {
-    public partial class initial_identity : Migration
+    public partial class initialIdentity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,11 +30,9 @@ namespace OnlineShop.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PersonalNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdentificationNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActivatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -169,15 +167,15 @@ namespace OnlineShop.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "f68ef0f8-1dfe-401b-89b6-8298fd827299", "61466488-36a2-40c2-93f1-f59e51e7cd57", "Admin", "ADMIN" },
-                    { "3a93386e-133e-40da-aed7-bd2efd793fa8", "f12fc5d9-3b8e-45df-af17-1f6f3b9f00b3", "Moderator", "MODERATOR" },
-                    { "c5f7682f-3598-4a33-98b6-2a3fa7d89ead", "80f6a873-0e70-4ff2-8490-fbacf8221358", "User", "USER" }
+                    { "f68ef0f8-1dfe-401b-89b6-8298fd827299", "8c3984c7-e14d-449a-80ab-a5a8e0b7d12c", "Admin", "ADMIN" },
+                    { "3a93386e-133e-40da-aed7-bd2efd793fa8", "f85a5357-a5f8-4443-97d8-fa8055693f59", "Moderator", "MODERATOR" },
+                    { "c5f7682f-3598-4a33-98b6-2a3fa7d89ead", "aff948c5-074a-49a2-8902-317a3ce7538a", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AccessFailedCount", "ActivatedAt", "Address", "City", "ConcurrencyStamp", "Country", "CreatedAt", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "IdentificationNumber", "IsActive", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PersonalNumber", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "3f34424b-40c8-435b-85ea-064ac4534c9b", 0, null, "sadgac", "sadgac", "93628260-2d54-4e14-8f23-16ff6dba4189", "sadgac", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "admin@gmail.com", true, "levan", null, true, "doliashvili", false, null, "ADMIN@GMAIL.COM", "admin@gmail.com", "AQAAAAEAACcQAAAAEKzYljg/aKRf87zwPeegx/uZbsxlmNCd5+MnFLJFLfb/O0ggk4l0wHGrFDMfs7WepQ==", null, "598788875", true, null, "", false, "admin@gmail.com" });
+                columns: new[] { "Id", "AccessFailedCount", "ActivatedAt", "Address", "City", "ConcurrencyStamp", "Country", "CreatedAt", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "IsActive", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "3f34424b-40c8-435b-85ea-064ac4534c9b", 0, null, "sadgac", "sadgac", "519cb191-12fb-447f-a6cb-88ae2fd4ec19", "sadgac", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "admin@gmail.com", true, "levan", true, "doliashvili", false, null, "ADMIN@GMAIL.COM", "admin@gmail.com", "AQAAAAEAACcQAAAAEAC3SblNGiDR22mb0ufgCFpi2FhOPyPfODDesPhObpdD2z5c/4H3vdDTQwqChWkfWg==", "598788875", true, null, "", false, "admin@gmail.com" });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",
