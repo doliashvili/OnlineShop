@@ -14,7 +14,7 @@ namespace OnlineShop.Application.Services.Abstract
 
         Task<Result<string>> ConfirmEmailAsync(string userId, string code);
 
-        Task ForgotPasswordAsync(ForgotPasswordRequest model, string origin);
+        Task<Result<string>> ForgotPasswordAsync(ForgotPasswordRequest model, string origin);
 
         Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model);
 

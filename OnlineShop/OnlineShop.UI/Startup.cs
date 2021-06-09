@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
+using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Authorization;
 using OnlineShop.UI.Helpers;
 using OnlineShop.UI.Services.Abstract;
@@ -34,7 +35,7 @@ namespace OnlineShop.UI
             services.AddServerSideBlazor();
             services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
-            // services.AddBlazoredToast();
+            services.AddBlazoredToast();
 
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductService, ProductService>();

@@ -14,7 +14,7 @@ namespace OnlineShop.UI.Models.Common
             this.errors = errors;
         }
 
-        public bool Succeeded { get; }
+        public bool Succeeded { get; set; }
 
         public List<string> Errors
             => this.Succeeded
@@ -38,6 +38,10 @@ namespace OnlineShop.UI.Models.Common
 
         public static implicit operator bool(Result result)
             => result.Succeeded;
+
+        public Result()
+        {
+        }
     }
 
     public class Result<TData> : Result
@@ -71,5 +75,9 @@ namespace OnlineShop.UI.Models.Common
 
         public static implicit operator bool(Result<TData> result)
             => result.Succeeded;
+
+        public Result()
+        {
+        }
     }
 }

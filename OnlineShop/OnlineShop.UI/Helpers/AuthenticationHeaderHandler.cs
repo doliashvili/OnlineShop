@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,23 +9,30 @@ namespace OnlineShop.UI.Helpers
 {
     public class AuthenticationHeaderHandler : DelegatingHandler
     {
-        private readonly ILocalStorageService localStorage;
+        private readonly ILocalStorageService _localStorage;
 
         public AuthenticationHeaderHandler(ILocalStorageService localStorage)
-            => this.localStorage = localStorage;
+            => _localStorage = localStorage;
 
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            if (request.Headers.Authorization?.Scheme != "Bearer")
+            try
             {
-                var savedToken = await this.localStorage.GetItemAsync<string>("authToken");
-
-                if (!string.IsNullOrWhiteSpace(savedToken))
+                if (request.Headers.Authorization?.Scheme != "Bearer")
                 {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
+                    var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+
+                    if (!string.IsNullOrWhiteSpace(savedToken))
+                    {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
             return await base.SendAsync(request, cancellationToken);

@@ -68,8 +68,7 @@ namespace OnlineShop.Api.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordRequest model)
         {
-            await _identityService.ForgotPasswordAsync(model, Request.Headers["origin"]).ConfigureAwait(false);
-            return Ok();
+            return Ok(await _identityService.ForgotPasswordAsync(model, Request.Headers["origin"]).ConfigureAwait(false));
         }
 
         [HttpPost("reset-password")]
@@ -83,6 +82,7 @@ namespace OnlineShop.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {

@@ -6,7 +6,8 @@ namespace OnlineShop.UI.Pages.Account
     {
         private async Task SubmitAsync()
         {
-            //this.ToastService.ShowSuccess("You have successfully logged out.");
+            var name = await _localStorageService.GetItemAsync<string>("firstName");
+            _toastService.ShowSuccess($"ნახვამდის ძვირფასო {name}");
             await _userService.LogOutAsync();
         }
     }

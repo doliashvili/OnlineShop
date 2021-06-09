@@ -6,7 +6,7 @@ namespace OnlineShop.UI.Pages.Account
 {
     public partial class Register
     {
-        private readonly RegisterRequest model = new RegisterRequest();
+        private readonly RegisterRequest model = new();
 
         public bool ShowErrors { get; set; }
 
@@ -20,15 +20,15 @@ namespace OnlineShop.UI.Pages.Account
             {
                 this.ShowErrors = false;
 
-                //this.ToastService.ShowSuccess(
-                //    "You have successfully registered.\n Please login.",
-                //    "Congratulations!");
+                _toastService.ShowSuccess(
+                    "თქვენ წარმატებით დარეგისტრირდით. \n" +
+                    "გთხოვთ დაადასტუროთ მეილიდან თქვენი რეგისტრაცია");
 
                 _navigationManager.NavigateTo("/account/login");
             }
             else
             {
-                // this.Errors = result.Errors;
+                this.Errors = new List<string>() { "დაფიქსირდა შეცდომა" };
                 this.ShowErrors = true;
             }
         }

@@ -95,7 +95,7 @@ namespace OnlineShop.Application.Services.Implements
         {
             var user = await _userRepository.FindUserByEmailAsync(request.Email).ConfigureAwait(false);
 
-            var isValidRequest = user is not null && user.IsActive && user.EmailConfirmed;
+            var isValidRequest = user is not null && user.EmailConfirmed; //&& user.IsActive;
             Throw.Exception.IfFalse(isValidRequest, "User not found or restricted action");
 
             // ReSharper disable once PossibleNullReferenceException
@@ -173,7 +173,7 @@ namespace OnlineShop.Application.Services.Implements
                 var remFromRole = await _userManager.RemoveFromRoleAsync(user, nameof(Roles.User)).ConfigureAwait(false);
 
                 // Remove user from UserStore
-                await _userManager.DeleteAsync(user).ConfigureAwait(false);
+                var remUser = await _userManager.DeleteAsync(user).ConfigureAwait(false);
 
                 Console.WriteLine(e);
                 return Result<string>.Fail(e.Message);
@@ -204,12 +204,12 @@ namespace OnlineShop.Application.Services.Implements
                 $"Account Confirmed for {user.Email}. You can now use the /api/identity/token endpoint to generate JWT.");
         }
 
-        public async Task ForgotPasswordAsync(ForgotPasswordRequest model, string origin)
+        public async Task<Result<string>> ForgotPasswordAsync(ForgotPasswordRequest model, string origin)
         {
             var account = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
 
             // always return ok response to prevent email enumeration
-            if (account == null) return;
+            if (account == null) return Result<string>.Fail("invalid email");
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(account).ConfigureAwait(false);
             //var route = "api/v1/identity/reset-password/"; //TODO from configuration?
@@ -221,6 +221,8 @@ namespace OnlineShop.Application.Services.Implements
                 Subject = _appSettings.ResetTokenSubject,
             };
             await _mailService.SendAsync(emailRequest).ConfigureAwait(false);
+
+            return Result<string>.Success("We sent you message on the mail");
         }
 
         public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequest model)

@@ -5,9 +5,6 @@ namespace OnlineShop.Domain.CommonModels.Identity
 {
     public class ChangePasswordRequest
     {
-        [JsonIgnore]
-        public string UserId { get; set; }
-        
         [Required]
         public string OldPassword { get; set; }
 
@@ -17,5 +14,7 @@ namespace OnlineShop.Domain.CommonModels.Identity
         [Required]
         [Compare("NewPassword")]
         public string ConfirmNewPassword { get; set; }
+
+        public string? UserId { get; set; }
     }
 }

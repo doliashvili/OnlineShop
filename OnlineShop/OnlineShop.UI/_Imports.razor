@@ -1,5 +1,7 @@
 ﻿@using System.Net.Http
 @using Blazored.LocalStorage
+@using Blazored.Toast.Services
+@using Blazored.Toast;
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -13,6 +15,7 @@
 @using OnlineShop.UI.Shared
 @using OnlineShop.UI.Shared.Navigation
 @using OnlineShop.UI.Pages.Account
+@using OnlineShop.UI.Shared.Common
 
 @inject ApiAuthenticationStateProvider _authState
 @inject IProductService _productService
@@ -21,3 +24,4 @@
 @inject IUserService _userService
 @inject ILocalStorageService _localStorageService
 @inject NavigationManager _navigationManager
+@inject IToastService _toastService

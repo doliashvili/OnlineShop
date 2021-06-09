@@ -9,7 +9,6 @@ namespace OnlineShop.UI.Models.User
 {
     public class ChangePasswordRequest
     {
-        [JsonIgnore]
         public string UserId { get; set; }
 
         [Required]

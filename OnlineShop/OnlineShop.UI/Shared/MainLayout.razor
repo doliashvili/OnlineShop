@@ -1,4 +1,5 @@
 ﻿@using OnlineShop.UI.Shared.Common
+@using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
 
 <Header />
@@ -17,3 +18,10 @@
         </div>
     </div>
 </div>
+
+<BlazoredToasts IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="far fa-check-circle"
+                ShowProgressBar="true"
+                Timeout="3"
+                Position="ToastPosition.BottomRight" />

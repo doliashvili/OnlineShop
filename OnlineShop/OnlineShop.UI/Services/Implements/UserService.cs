@@ -11,6 +11,7 @@ using OnlineShop.UI.Models.User;
 using OnlineShop.UI.Services.Abstract;
 using OnlineShop.UI.Extensions;
 using OnlineShop.UI.Helpers;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace OnlineShop.UI.Services.Implements
 {
@@ -34,6 +35,12 @@ namespace OnlineShop.UI.Services.Implements
 
             var token = response.Token.Token;
 
+            var jwtToken = new JwtSecurityToken(token);
+            var firstName = jwtToken.Claims.Where(x => x.Type == "first_name").Select(x => x.Value).FirstOrDefault();
+            var lastName = jwtToken.Claims.Where(x => x.Type == "last_name").Select(x => x.Value).FirstOrDefault();
+
+            await _localStorage.SetItemAsync("firstName", firstName);
+            await _localStorage.SetItemAsync("lastName", lastName);
             await _localStorage.SetItemAsync("authToken", token);
             await _localStorage.SetItemAsync("token", response.Token.AsJson());
             await _localStorage.SetItemAsync("userId", response.UserId);
@@ -59,25 +66,34 @@ namespace OnlineShop.UI.Services.Implements
             return response;
         }
 
-        public async Task<string> ForgetPasswordAsync(ForgotPasswordRequest forgotPasswordRequest)
+        public async Task<Models.Common.Result<string>> ForgetPasswordAsync(ForgotPasswordRequest forgotPasswordRequest)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "api/Account/forgot-password",
+            var response = await _httpClient.SendAsync<Models.Common.Result<string>>(HttpMethod.Post, "api/Account/forgot-password",
                 forgotPasswordRequest.AsJson(), CancellationToken.None);
 
             return response;
         }
 
-        public async Task<string> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
+        public async Task<Models.Common.Result<string>> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "api/Account/reset-password",
+            var response = await _httpClient.SendAsync<Models.Common.Result<string>>(HttpMethod.Post, "api/Account/reset-password",
                 resetPasswordRequest.AsJson(), CancellationToken.None);
 
             return response;
         }
 
-        public async Task<string> ChangePasswordAsync(ChangePasswordRequest changePasswordRequest)
+        public async Task<Models.Common.Result<string>> ChangePasswordAsync(ChangePasswordRequest changePasswordRequest)
         {
-            var response = await _httpClient.SendAsync<string>(HttpMethod.Post, "api/Account/change-password",
+            var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+
+            if (!string.IsNullOrWhiteSpace(savedToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
+            }
+
+            // changePasswordRequest.UserId = await _localStorage.GetItemAsync<string>("userId");
+
+            var response = await _httpClient.SendAsync<Models.Common.Result<string>>(HttpMethod.Put, "api/Account/change-password",
                 changePasswordRequest.AsJson(), CancellationToken.None);
 
             return response;

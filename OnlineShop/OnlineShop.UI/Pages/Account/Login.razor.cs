@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineShop.UI.Models.User;
 
@@ -8,21 +9,24 @@ namespace OnlineShop.UI.Pages.Account
     {
         private readonly LoginRequest model = new LoginRequest();
 
-        public bool ShowErrors { get; set; }
+        private bool ShowErrors { get; set; }
 
-        public IEnumerable<string> Errors { get; set; }
+        private IEnumerable<string> Errors { get; set; }
 
         private async Task SubmitAsync()
         {
-            var result = await _userService.LoginAsync(model);
-
-            if (result.Result.Succeeded)
+            try
             {
-                ShowErrors = false;
-                //this.ToastService.ShowSuccess("You have successfully logged in");
-                _navigationManager.NavigateTo("/");
+                var result = await _userService.LoginAsync(model);
+                if (result.Result.Succeeded)
+                {
+                    ShowErrors = false;
+                    var name = await _localStorageService.GetItemAsync<string>("firstName");
+                    _toastService.ShowSuccess($"მოგესალმებით ძვირფასო {name}");
+                    _navigationManager.NavigateTo("/");
+                }
             }
-            else
+            catch (Exception e)
             {
                 Errors = new List<string>() { "invalid error" }; //todo
                 this.ShowErrors = true;
