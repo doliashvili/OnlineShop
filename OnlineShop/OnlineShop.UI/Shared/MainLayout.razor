@@ -1,23 +1,19 @@
 ﻿@using OnlineShop.UI.Shared.Common
 @using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
-
-<Header />
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
+@*<Header />
+    <div class="page">
         <div class="content px-4">
             @Body
         </div>
-    </div>
-</div>
+    </div>*@
+<main>
+    <Header />
+
+    @Body
+
+    @*<Footer />*@
+</main>
 
 <BlazoredToasts IconType="IconType.FontAwesome"
                 SuccessClass="success-toast-override"
