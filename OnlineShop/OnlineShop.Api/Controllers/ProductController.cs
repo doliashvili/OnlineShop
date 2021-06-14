@@ -52,7 +52,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("ChangeProductName")]
+        [HttpPut("ChangeProductName")]
         public async Task<IActionResult> ChangeProductNameAsync([FromBody] ChangeProductNameCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -60,7 +60,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("ChangeProductQuantity")]
+        [HttpPut("ChangeProductQuantity")]
         public async Task<IActionResult> UpdateProductQuantityAsync([FromBody] ChangeProductQuantityCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -68,7 +68,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("ChangeProductPrice")]
+        [HttpPut("ChangeProductPrice")]
         public async Task<IActionResult> ChangeProductPriceAsync([FromBody] ChangeProductPriceCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -76,7 +76,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("ChangeProductBrand")]
+        [HttpPut("ChangeProductBrand")]
         public async Task<IActionResult> ChangeProductBrandAsync([FromBody] ChangeProductBrandCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("ChangeProductColor")]
+        [HttpPut("ChangeProductColor")]
         public async Task<IActionResult> ChangeProductColorAsync([FromBody] ChangeProductColorCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -92,7 +92,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("ChangeProductType")]
+        [HttpPut("ChangeProductType")]
         public async Task<IActionResult> ChangeProductTypeAsync([FromBody] ChangeProductTypeCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -100,7 +100,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("ChangeProductDiscount")]
+        [HttpPut("ChangeProductDiscount")]
         public async Task<IActionResult> ChangeProductDiscountAsync([FromBody] ChangeProductDiscountCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);
@@ -108,7 +108,7 @@ namespace OnlineShop.Api.Controllers
         }
 
         [Authorize(Roles = "Moderator,Admin")]
-        [HttpPost("ChangeProductForBaby")]
+        [HttpPut("ChangeProductForBaby")]
         public async Task<IActionResult> ChangeProductForBabyAsync([FromBody] ChangeProductForBabyCommand command)
         {
             await Mediator.SendAsync(command).ConfigureAwait(false);

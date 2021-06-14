@@ -11,10 +11,10 @@ namespace OnlineShop.Domain.Products.Commands
     public class ChangeProductQuantityCommand : Command
     {
         public long Id { get; private set; }
-        public byte Quantity { get; private set; }
+        public short Quantity { get; private set; }
 
         [JsonConstructor]
-        public ChangeProductQuantityCommand(long id, byte quantity, CommandMeta commandMeta)
+        public ChangeProductQuantityCommand(long id, short quantity, CommandMeta commandMeta)
             : base(commandMeta)
         {
             Id = id;

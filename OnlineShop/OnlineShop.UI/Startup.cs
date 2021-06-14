@@ -41,6 +41,7 @@ namespace OnlineShop.UI
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             services.AddScoped<ApiAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();

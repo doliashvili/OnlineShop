@@ -19,7 +19,7 @@ namespace OnlineShop.UI.Models.Product
         public Gender? Gender { get; set; }
         public bool? ForBaby { get; set; }
         public string? Size { get; set; }
-        public byte Quantity { get; set; }
+        public short Quantity { get; set; }
         public float? Discount { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? Expiration { get; set; }
@@ -34,5 +34,9 @@ namespace OnlineShop.UI.Models.Product
         public bool IsMainImage { get; set; }
     }
 
-    public record Weight(WeightType WeightType, float Value);
+    public class Weight
+    {
+        public WeightType WeightType { get; set; }
+        public float Value { get; set; }
+    }
 }

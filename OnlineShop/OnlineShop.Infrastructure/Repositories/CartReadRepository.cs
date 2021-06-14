@@ -80,7 +80,7 @@ namespace OnlineShop.Infrastructure.Repositories
             var discountPrice = reader.AsDecimalOrNull(idx++);
             var imageUrl = reader.AsString(idx++);
             var id = reader.AsInt64(idx++);
-            var quantity = reader.AsByte(idx);
+            var quantity = reader.AsInt16(idx);
 
             var cartReadModel = new CartReadModel()
             {

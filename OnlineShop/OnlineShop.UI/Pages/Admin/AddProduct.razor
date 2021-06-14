@@ -1,0 +1,131 @@
+﻿@page "/products/add"
+@using OnlineShop.UI.Constants
+@using OnlineShop.UI.Enums
+@using OnlineShop.UI.Models.Product
+@attribute [Authorize(Roles = Role.Administrator)]
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <div class="row">
+            <div class="card mx-auto">
+                <article class="card-body">
+
+                    <EditForm Model="model" OnValidSubmit="SubmitAsync">
+
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="form-group">
+                            <label>Name</label>
+                            <InputText @bind-Value="model.Name" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Brand</label>
+                            <InputText @bind-Value="model.Brand" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Color</label>
+                            <InputText @bind-Value="model.Color" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <InputTextArea @bind-Value="model.Description" rows="2" class="form-control"></InputTextArea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Size</label>
+                            <InputText @bind-Value="model.Size" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>CreateTime</label>
+                            <InputDate @bind-Value="model.CreateTime" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Expiration</label>
+                            <InputDate @bind-Value="model.Expiration" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>ForBaby</label>
+                            <InputSelect @bind-Value="@forBaby" class="form-control">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                                <option value="null">All</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <InputSelect @bind-Value="@model.Gender" class="form-control">
+
+                                @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                                {
+            <option value="@gender">@gender</option>}
+                            </InputSelect>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Discount %</label>
+                            <InputNumber @bind-Value="model.Discount" type="text" class="form-control" />%
+                        </div>
+
+                        <div class="form-group">
+                            <label>New Product Type</label>
+                            <InputText @bind-Value="model.ProductType" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>WeightValue</label>
+                            <InputNumber @bind-Value="model.Weight.Value" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>WeightType</label>
+                            <InputSelect @bind-Value="@model.Weight.WeightType" class="form-control">
+
+                                @foreach (var weight in Enum.GetValues(typeof(WeightType)))
+                                {
+            <option value="@weight">@weight</option>}
+                            </InputSelect>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category</label>
+                            <InputSelect @bind-Value="model.ProductType" class="form-control">
+                                @foreach (var category in categories)
+                                {
+            <option value="@category.Category">@category.Category</option>}
+                            </InputSelect>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label>Price</label>
+                                <InputNumber @bind-Value="model.Price" type="number" class="form-control" />
+                            </div>
+                            <div class="col form-group">
+                                <label>Quantity</label>
+                                <InputNumber @bind-Value="model.Quantity" type="number" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <h3>@Message</h3>
+                            <label>Image</label>
+                            <InputFile OnChange="UploadImage" multiple class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-block btn-primary">Add</button>
+                        </div>
+                    </EditForm>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>

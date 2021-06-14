@@ -16,7 +16,7 @@ namespace OnlineShop.Domain.AbstractRepository
 
         public Task UpdateNameAsync(string name, long id);
 
-        public Task UpdateQuantityAsync(byte quantity, long id);
+        public Task UpdateQuantityAsync(short quantity, long id);
 
         public Task UpdatePriceAsync(decimal price, long id);
 

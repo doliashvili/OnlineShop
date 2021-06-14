@@ -32,7 +32,7 @@ VALUES (@id,@productId,@userId,@quantity)";
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = cart.Id;
             command.Parameters.Add("@productId", SqlDbType.BigInt).Value = cart.ProductId;
             command.Parameters.Add("@userId", SqlDbType.NVarChar, IdentityDbConstants.UserIdLength).Value = cart.UserId;
-            command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = cart.Quantity;
+            command.Parameters.Add("@quantity", SqlDbType.SmallInt).Value = cart.Quantity;
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -52,7 +52,7 @@ VALUES (@id,@productId,@userId,@quantity)";
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
-        public async Task UpdateCartQuantityAsync(long id, long productId, byte quantity)
+        public async Task UpdateCartQuantityAsync(long id, long productId, short quantity)
         {
             const string sql =
   @"IF(@quantity <= (SELECT Quantity FROM Products WHERE Id = @productId))
@@ -66,7 +66,7 @@ WHERE Id=@id";
 
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
             command.Parameters.Add("@productId", SqlDbType.BigInt).Value = productId;
-            command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = quantity;
+            command.Parameters.Add("@quantity", SqlDbType.SmallInt).Value = quantity;
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);

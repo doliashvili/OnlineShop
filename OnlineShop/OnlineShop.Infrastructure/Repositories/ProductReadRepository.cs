@@ -226,7 +226,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                 var isDeleted = reader.AsBooleanOrNull(idx++);
                 var name = reader.AsStringOrNull(idx++);
                 var price = reader.AsDecimal(idx++);
-                var quantity = reader.AsByte(idx++);
+                var quantity = reader.AsInt16(idx++);
                 var productType = reader.AsString(idx++);
                 var weight = reader.AsJsonOrNull<Weight>(idx++);
                 var size = reader.AsStringOrNull(idx++);

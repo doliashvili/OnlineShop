@@ -9,6 +9,6 @@ namespace OnlineShop.UI.Models.Cart
     {
         public long Id { get; set; }
         public long ProductId { get; set; }
-        public byte Quantity { get; set; }
+        public short Quantity { get; set; }
     }
 }

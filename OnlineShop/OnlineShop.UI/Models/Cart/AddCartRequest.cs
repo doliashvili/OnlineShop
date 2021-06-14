@@ -8,7 +8,7 @@ namespace OnlineShop.UI.Models.Cart
     public class AddCartRequest
     {
         public long ProductId { get; set; }
-        public byte Quantity { get; set; }
+        public short Quantity { get; set; }
         public string UserId { get; set; }
     }
 }

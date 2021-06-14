@@ -51,7 +51,7 @@ VALUES (@imgId,@mainImage,@url,@productId);";
             command.Parameters.Add("@isDeleted", SqlDbType.Bit).Value = product.IsDeleted;
             command.Parameters.Add("@name", SqlDbType.NVarChar, ProductDbConstants.Name).SetValue(product.Name);
             command.Parameters.Add("@price", SqlDbType.SmallMoney).Value = product.Price;
-            command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = product.Quantity;
+            command.Parameters.Add("@quantity", SqlDbType.SmallInt).Value = product.Quantity;
             command.Parameters.Add("@productType", SqlDbType.NVarChar, ProductDbConstants.ProductType).Value = product.ProductType;
             command.Parameters.Add("@weight", SqlDbType.NVarChar).SetValue(product.Weight.AsJson());
             command.Parameters.Add("@size", SqlDbType.NVarChar, ProductDbConstants.Size).SetValue(product.Size);
@@ -252,7 +252,7 @@ WHERE Id=@id;";
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
-        public async Task UpdateQuantityAsync(byte quantity, long id)
+        public async Task UpdateQuantityAsync(short quantity, long id)
         {
             const string sql =
  @"UPDATE Products
@@ -262,7 +262,7 @@ WHERE Id=@id;";
             await using var connection = new SqlConnection(_connectionString);
             await using var command = new SqlCommand(sql, connection);
 
-            command.Parameters.Add("@quantity", SqlDbType.TinyInt).Value = quantity;
+            command.Parameters.Add("@quantity", SqlDbType.SmallInt).Value = quantity;
             command.Parameters.Add("@id", SqlDbType.BigInt).Value = id;
 
             await connection.EnsureIsOpenAsync().ConfigureAwait(false);

@@ -9,6 +9,6 @@ namespace OnlineShop.Domain.AbstractRepository
 
         Task RemoveCartAsync(long id);
 
-        Task UpdateCartQuantityAsync(long id, long productId, byte quantity);
+        Task UpdateCartQuantityAsync(long id, long productId, short quantity);
     }
 }

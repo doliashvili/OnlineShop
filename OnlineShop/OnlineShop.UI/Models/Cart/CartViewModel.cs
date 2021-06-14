@@ -13,7 +13,7 @@ namespace OnlineShop.UI.Models.Cart
         public decimal Price { get; set; }
         public string Name { get; set; }
         public decimal? DiscountPrice { get; set; }
-        public byte Quantity { get; set; }
+        public short Quantity { get; set; }
         public string ImageUrl { get; set; }
     }
 }

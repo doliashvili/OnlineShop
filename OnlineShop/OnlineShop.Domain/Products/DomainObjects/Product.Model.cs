@@ -21,7 +21,7 @@ namespace OnlineShop.Domain.Products.DomainObjects
         public bool? ForBaby { get; private set; }
         public string? Size { get; private set; }
         public float? Discount { get; private set; }
-        public byte Quantity { get; set; }
+        public short Quantity { get; set; }
         public decimal? DiscountPrice => Discount.HasValue ? Price - (Price * (decimal)Discount.Value) : null;
         public DateTime? CreateTime { get; private set; }
         public DateTime? Expiration { get; private set; }

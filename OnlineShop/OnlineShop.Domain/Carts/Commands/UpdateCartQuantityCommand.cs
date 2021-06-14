@@ -11,9 +11,9 @@ namespace OnlineShop.Domain.Carts.Commands
     {
         public long Id { get; set; }
         public long ProductId { get; set; }
-        public byte Quantity { get; set; }
+        public short Quantity { get; set; }
 
-        public UpdateCartQuantityCommand(CommandMeta commandMeta, long id, long productId, byte quantity) : base(commandMeta)
+        public UpdateCartQuantityCommand(CommandMeta commandMeta, long id, long productId, short quantity) : base(commandMeta)
         {
             Id = id;
             ProductId = productId;
