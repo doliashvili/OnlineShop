@@ -8,6 +8,7 @@ namespace OnlineShop.UI.Models.Product.AdminProduct
     public class AddProductRequest
     {
         [Required(ErrorMessage = "გთხოთ მიუთითოთ თანხა")]
+        [Range(0.1, 922_337_203_685_477, ErrorMessage = "თანხა არ შეიძლება იყოს 0.1 ზე ნაკლები")]
         public decimal Price { get; set; }
 
         public string? Color { get; set; }
@@ -17,7 +18,10 @@ namespace OnlineShop.UI.Models.Product.AdminProduct
         public string ProductType { get; set; }
 
         public Weight? Weight { get; set; }
+
+        [Required(ErrorMessage = "გთხოთ მიუთითოთ სახელი")]
         public string? Name { get; set; }
+
         public string? Description { get; set; }
         public Gender? Gender { get; set; }
         public bool? ForBaby { get; set; }

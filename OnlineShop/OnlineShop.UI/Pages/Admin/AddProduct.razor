@@ -16,86 +16,88 @@
                         <ValidationSummary />
 
                         <div class="form-group">
-                            <label>Name</label>
+                            <label>სახელი</label>
                             <InputText @bind-Value="model.Name" type="text" class="form-control" />
                         </div>
+                        <div style='display: @(addMoreDetails ?  "": "none")'>
 
-                        <div class="form-group">
-                            <label>Brand</label>
-                            <InputText @bind-Value="model.Brand" type="text" class="form-control" />
+                            <div class="form-group">
+                                <label>ბრენდი</label>
+                                <InputText @bind-Value="model.Brand" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>ფერი</label>
+                                <InputText @bind-Value="model.Color" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>მოკლე აღწერა</label>
+                                <InputTextArea @bind-Value="model.Description" rows="2" class="form-control"></InputTextArea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ზომა</label>
+                                <InputText @bind-Value="model.Size" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>გამოშვების თარიღი</label>
+                                <InputDate @bind-Value="model.CreateTime" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>ვადა</label>
+                                <InputDate @bind-Value="model.Expiration" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>ბავშვის</label>
+                                <InputSelect @bind-Value="@forBaby" class="form-control">
+                                    <option value="null">All</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </InputSelect>
+                            </div>
+
+                            <div class="form-group">
+                                <label>სქესი</label>
+                                <InputSelect @bind-Value="@model.Gender" class="form-control">
+
+                                    @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                                    {
+                <option value="@gender">@gender</option>}
+                                </InputSelect>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ფასდაკლება %</label>
+                                <InputNumber @bind-Value="model.Discount" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>ახალი პროდუქტის კატეგორია</label>
+                                <InputText @bind-Value="model.ProductType" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>წონა</label>
+                                <InputNumber @bind-Value="model.Weight.Value" type="text" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>წონის ტიპი</label>
+                                <InputSelect @bind-Value="@model.Weight.WeightType" class="form-control">
+
+                                    @foreach (var weight in Enum.GetValues(typeof(WeightType)))
+                                    {
+                <option value="@weight">@weight</option>}
+                                </InputSelect>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Color</label>
-                            <InputText @bind-Value="model.Color" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>Description</label>
-                            <InputTextArea @bind-Value="model.Description" rows="2" class="form-control"></InputTextArea>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Size</label>
-                            <InputText @bind-Value="model.Size" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>CreateTime</label>
-                            <InputDate @bind-Value="model.CreateTime" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>Expiration</label>
-                            <InputDate @bind-Value="model.Expiration" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>ForBaby</label>
-                            <InputSelect @bind-Value="@forBaby" class="form-control">
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                                <option value="null">All</option>
-                            </InputSelect>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Gender</label>
-                            <InputSelect @bind-Value="@model.Gender" class="form-control">
-
-                                @foreach (var gender in Enum.GetValues(typeof(Gender)))
-                                {
-            <option value="@gender">@gender</option>}
-                            </InputSelect>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Discount %</label>
-                            <InputNumber @bind-Value="model.Discount" type="text" class="form-control" />%
-                        </div>
-
-                        <div class="form-group">
-                            <label>New Product Type</label>
-                            <InputText @bind-Value="model.ProductType" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>WeightValue</label>
-                            <InputNumber @bind-Value="model.Weight.Value" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>WeightType</label>
-                            <InputSelect @bind-Value="@model.Weight.WeightType" class="form-control">
-
-                                @foreach (var weight in Enum.GetValues(typeof(WeightType)))
-                                {
-            <option value="@weight">@weight</option>}
-                            </InputSelect>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Category</label>
+                            <label>კატეგორია</label>
                             <InputSelect @bind-Value="model.ProductType" class="form-control">
                                 @foreach (var category in categories)
                                 {
@@ -105,23 +107,54 @@
 
                         <div class="form-row">
                             <div class="col form-group">
-                                <label>Price</label>
+                                <label>ფასი</label>
                                 <InputNumber @bind-Value="model.Price" type="number" class="form-control" />
                             </div>
                             <div class="col form-group">
-                                <label>Quantity</label>
+                                <label>რაოდენობა</label>
                                 <InputNumber @bind-Value="model.Quantity" type="number" class="form-control" />
                             </div>
                         </div>
 
+                        <h1>სურათების ატვირთვა</h1>
+
+                        <p>
+                            <label>
+                                Upload up to @maxAllowedFiles files:
+                                <InputFile OnChange="@OnInputFileChangeAsync" multiple />
+                            </label>
+                        </p>
+
+                        @if (files.Count > 0)
+                        {
+        <div class="card">
+            <div class="card-body">
+                <ul>
+                    @foreach (var file in files)
+                    {
+<li>
+    <br>
+    @if (FileUpload(uploadResults, file.Name,
+out var result))
+    {
+<img width="70px" @onclick="@(() => ChangeMainImage(result))" class='@(result.MainImage ? "border border-success" :"border border-danger")' height="65px" src="@result.ImagePath" /> }
+else
+{
+<span>
+    There was an error uploading the file
+    (Error: @result.ErrorCode).
+</span>}
+</li>}
+                </ul>
+            </div>
+        </div>}
+
                         <div class="form-group">
-                            <h3>@Message</h3>
-                            <label>Image</label>
-                            <InputFile OnChange="UploadImage" multiple class="form-control" />
+                            <button @onclick="@(() => { addMoreDetails = !addMoreDetails; })" class="btn btn-block btn-primary">დამატებითი დეტალები</button>
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-block btn-primary">Add</button>
+                            <button type="submit" class="btn btn-block btn-primary">პროდუქტის ატვირთვა</button>
                         </div>
                     </EditForm>
                 </article>

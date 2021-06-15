@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,6 @@ namespace OnlineShop.UI.Services.Abstract
 
         Task<Result<string>> DeleteProductImageAsync(DeleteProductImageRequest request, CancellationToken cancellationToken);
 
-        Task<Result<string>> UploadImageAsync(UploadedFile file);
+        Task<HttpResponseMessage> UploadImageAsync(MultipartFormDataContent content);
     }
 }
