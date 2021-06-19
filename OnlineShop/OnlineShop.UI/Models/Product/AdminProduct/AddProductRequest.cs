@@ -31,7 +31,6 @@ namespace OnlineShop.UI.Models.Product.AdminProduct
         public short Quantity { get; set; }
 
         public float? Discount { get; set; }
-        public DateTime? CreateTime { get; set; }
 
         [Required(ErrorMessage = "გთხოვთ ატვირთოთ სურათი")]
         public List<Image> Images { get; set; }

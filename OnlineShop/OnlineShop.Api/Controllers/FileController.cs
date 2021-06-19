@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using OnlineShop.Api.Models;
 using OnlineShop.Application.Services;
 using OnlineShop.Application.Services.Abstract;
 using OnlineShop.Application.Settings;
@@ -124,14 +125,5 @@ namespace OnlineShop.Api.Controllers
             var imagePath = _fileService.CropImage(cropperData, path);
             return Ok(Result<string>.Success(imagePath));
         }
-    }
-
-    public class UploadResult
-    {
-        public string FileName { get; set; }
-        public int ErrorCode { get; set; }
-        public bool Uploaded { get; set; }
-        public string StoredFileName { get; set; }
-        public string ImageUrl { get; set; }
     }
 }

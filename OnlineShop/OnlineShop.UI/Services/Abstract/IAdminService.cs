@@ -13,13 +13,13 @@ namespace OnlineShop.UI.Services.Abstract
 {
     public interface IAdminService
     {
-        Task<Result<string>> AddProductAsync(AddProductRequest request, CancellationToken cancellationToken);
+        Task<bool> AddProductAsync(AddProductRequest request, CancellationToken cancellationToken);
 
-        Task<Result<string>> AddProductImageAsync(AddImageRequest request, CancellationToken cancellationToken);
+        Task<bool> AddProductImageAsync(AddImageRequest request, CancellationToken cancellationToken);
 
-        Task<Result<string>> DeleteProductAsync(DeleteProductRequest request, CancellationToken cancellationToken);
+        Task<bool> DeleteProductAsync(DeleteProductRequest request, CancellationToken cancellationToken);
 
-        Task<Result<string>> DeleteProductImageAsync(DeleteProductImageRequest request, CancellationToken cancellationToken);
+        Task<bool> DeleteProductImageAsync(DeleteProductImageRequest request, CancellationToken cancellationToken);
 
         Task<HttpResponseMessage> UploadImageAsync(MultipartFormDataContent content);
     }

@@ -73,8 +73,8 @@ VALUES (@imgId,@mainImage,@url,@productId);";
                     await command2.ExecuteNonQueryAsync().ConfigureAwait(false);
                 }
 
-                await transaction.CommitAsync().ConfigureAwait(false);
                 await _categoryRepository.AddCategoryAsync(new Category(new CreateCategoryCommand(null!, product.ProductType))).ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
             }
             catch (Exception)
             {

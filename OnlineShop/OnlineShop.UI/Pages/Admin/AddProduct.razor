@@ -1,8 +1,14 @@
-﻿@page "/products/add"
+﻿@page "/products-add"
 @using OnlineShop.UI.Constants
 @using OnlineShop.UI.Enums
-@using OnlineShop.UI.Models.Product
 @attribute [Authorize(Roles = Role.Administrator)]
+
+@if (categories is null)
+{
+<LoadingScreen />
+ }
+else
+{
 
 <section class="section-content padding-y bg">
     <div class="container">
@@ -19,7 +25,7 @@
                             <label>სახელი</label>
                             <InputText @bind-Value="model.Name" type="text" class="form-control" />
                         </div>
-                        <div style='display: @(addMoreDetails ?  "": "none")'>
+                        <div style='display: @(addMoreDetails ? "" : "none")'>
 
                             <div class="form-group">
                                 <label>ბრენდი</label>
@@ -42,12 +48,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>გამოშვების თარიღი</label>
-                                <InputDate @bind-Value="model.CreateTime" type="text" class="form-control" />
-                            </div>
-
-                            <div class="form-group">
-                                <label>ვადა</label>
+                                <label>ბოლო ვადა</label>
                                 <InputDate @bind-Value="model.Expiration" type="text" class="form-control" />
                             </div>
 
@@ -65,13 +66,13 @@
                                 <InputSelect @bind-Value="@model.Gender" class="form-control">
 
                                     @foreach (var gender in Enum.GetValues(typeof(Gender)))
-                                    {
+                                        {
                 <option value="@gender">@gender</option>}
                                 </InputSelect>
                             </div>
 
                             <div class="form-group">
-                                <label>ფასდაკლება %</label>
+                                <label>ფასდაკლება %   <bold>ფასდაკლებული ფასი</bold> @(model.Discount.HasValue ? $"{model.Price - (model.Price * (decimal)(model.Discount * (float)0.01))}" : model.Price)</label>
                                 <InputNumber @bind-Value="model.Discount" type="text" class="form-control" />
                             </div>
 
@@ -88,9 +89,8 @@
                             <div class="form-group">
                                 <label>წონის ტიპი</label>
                                 <InputSelect @bind-Value="@model.Weight.WeightType" class="form-control">
-
                                     @foreach (var weight in Enum.GetValues(typeof(WeightType)))
-                                    {
+                                        {
                 <option value="@weight">@weight</option>}
                                 </InputSelect>
                             </div>
@@ -99,8 +99,9 @@
                         <div class="form-group">
                             <label>კატეგორია</label>
                             <InputSelect @bind-Value="model.ProductType" class="form-control">
+                                <option>გთხოვთ აირჩიოთ კატეგორია</option>
                                 @foreach (var category in categories)
-                                {
+                                    {
             <option value="@category.Category">@category.Category</option>}
                             </InputSelect>
                         </div>
@@ -127,27 +128,28 @@
 
                         @if (files.Count > 0)
                         {
-        <div class="card">
-            <div class="card-body">
-                <ul>
-                    @foreach (var file in files)
-                    {
+    <div class="card">
+        <div class="card-body">
+            <ul>
+                @foreach (var file in files)
+                {
 <li>
     <br>
     @if (FileUpload(uploadResults, file.Name,
 out var result))
     {
-<img width="70px" @onclick="@(() => ChangeMainImage(result))" class='@(result.MainImage ? "border border-success" :"border border-danger")' height="65px" src="@result.ImagePath" /> }
+<img width="70px" @onclick="@(() => ChangeMainImage(result))" class='@(result.MainImage ? "border border-success" : "border border-danger")' height="65px" src="@result.ImagePath" /> }
 else
 {
 <span>
     There was an error uploading the file
     (Error: @result.ErrorCode).
 </span>}
-</li>}
-                </ul>
-            </div>
-        </div>}
+</li>
+}
+            </ul>
+        </div>
+    </div>}
 
                         <div class="form-group">
                             <button @onclick="@(() => { addMoreDetails = !addMoreDetails; })" class="btn btn-block btn-primary">დამატებითი დეტალები</button>
@@ -161,4 +163,5 @@ else
             </div>
         </div>
     </div>
-</section>
+</section>}
+@code{ }

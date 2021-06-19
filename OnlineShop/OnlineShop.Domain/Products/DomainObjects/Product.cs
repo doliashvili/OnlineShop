@@ -1,4 +1,5 @@
-﻿using IdGeneration.GeneratorWrapper;
+﻿using System;
+using IdGeneration.GeneratorWrapper;
 using OnlineShop.Domain.Products.Commands;
 
 namespace OnlineShop.Domain.Products.DomainObjects
@@ -23,7 +24,7 @@ namespace OnlineShop.Domain.Products.DomainObjects
             Size = command.Size;
             Quantity = command.Quantity;
             Discount = command.Discount;
-            CreateTime = command.CreateTime;
+            CreateTime = DateTime.Now;
             Expiration = command.Expiration;
             Images = command.Images;
         }

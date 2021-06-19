@@ -63,6 +63,26 @@ namespace OnlineShop.UI.Extensions
             return result;
         }
 
+        public static async Task<(bool IsSuccessStatusCode, HttpStatusCode statusCode)> PostAsync(this HttpClient httpClient, HttpMethod httpMethod, string relativePath, string body, CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestMessage(httpMethod, relativePath)
+            {
+                Version = HttpVersion.Version11,
+                VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+            };
+
+            if (body is not null)
+            {
+                request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            }
+
+            var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+
+            return (response.IsSuccessStatusCode, response.StatusCode);
+        }
+
         public static async Task EnsureSuccessAsync(this HttpResponseMessage response)
         {
             if (response.IsSuccessStatusCode)

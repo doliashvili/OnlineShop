@@ -12,7 +12,7 @@ namespace OnlineShop.UI.Shared.Common
 {
     public partial class Header : ComponentBase
     {
-        private List<CategoryViewModel> categories = new(10);
+        private List<CategoryViewModel> categories;
 
         [CascadingParameter]
         private Task<AuthenticationState> authenticationStateTask { get; set; }

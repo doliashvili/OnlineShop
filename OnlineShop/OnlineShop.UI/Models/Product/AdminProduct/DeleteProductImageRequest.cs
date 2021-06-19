@@ -7,7 +7,6 @@ namespace OnlineShop.UI.Models.Product.AdminProduct
 {
     public class DeleteProductImageRequest
     {
-        public long Id { get; set; }
         public long ImageId { get; set; }
     }
 }

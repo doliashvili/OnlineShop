@@ -1,17 +1,16 @@
 ﻿@page "/products"
+@using OnlineShop.UI.Constants
 
-@if (products.Products is null)
+@if (products?.Products is null)
 {
-    <h1>loading todo</h1>
+    <LoadingScreen />
 }
 else
 {
     foreach (var product in products.Products)
     {
-        var image = product.Images.FirstOrDefault();
-
-        <div class="card" style="width: 18rem;">
-            <img src="@image.Url" class="card-img-top" alt="...">
+        <div class="card" style="width: 18rem; display: @(product.IsHidden ? "none" : "")">
+            <img src="@product.MainImageUrl?.Url" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">@product.Name</h5>
                 <p class="card-text">@product.Description</p>
@@ -23,10 +22,14 @@ else
             <div class="card-body">
                 <button type="button" class="btn btn-outline-info">ნახეთ ვრცლად</button>
                 <button type="button" class="btn btn-outline-success">კალათაში დამატება</button>
+                @if (User.IsInRole(Role.Administrator))
+                {
+                    <button type="button" @onclick="@(async () => {product.IsHidden = await DeleteProductAsync(product.Id); })" class="btn btn-outline-danger">პროდუქტის წაშლა</button>
+                }
             </div>
         </div>
-
     }
+
 }
 
 @code {

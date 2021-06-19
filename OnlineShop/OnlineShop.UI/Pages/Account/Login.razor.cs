@@ -28,7 +28,7 @@ namespace OnlineShop.UI.Pages.Account
             }
             catch (Exception e)
             {
-                Errors = new List<string>() { "invalid error" }; //todo
+                Errors = new List<string>() { "ელფოსტა ან პაროლი არასწორია" }; //todo
                 this.ShowErrors = true;
             }
         }

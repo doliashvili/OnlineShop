@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.1.1" />
     <PackageReference Include="Blazored.Toast" Version="3.1.2" />
+    <PackageReference Include="SbSelect" Version="1.1.5" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.2" />
   </ItemGroup>
 

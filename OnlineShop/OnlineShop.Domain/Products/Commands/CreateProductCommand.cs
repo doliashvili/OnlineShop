@@ -21,7 +21,6 @@ namespace OnlineShop.Domain.Products.Commands
         public string? Size { get; }
         public short Quantity { get; }
         public float? Discount { get; }
-        public DateTime? CreateTime { get; }
         public List<ProductImage> Images { get; }
         public DateTime? Expiration { get; }
 
@@ -38,7 +37,6 @@ namespace OnlineShop.Domain.Products.Commands
             string? size,
             short quantity,
             float? discount,
-            DateTime? createTime,
             List<ProductImage> images,
             DateTime? expiration) : base(commandMeta)
         {
@@ -54,7 +52,6 @@ namespace OnlineShop.Domain.Products.Commands
             Size = size;
             Quantity = quantity;
             Discount = discount;
-            CreateTime = createTime;
             Images = images;
             Expiration = expiration;
         }

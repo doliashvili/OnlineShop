@@ -21,17 +21,18 @@ namespace OnlineShop.UI.Models.Product
         public string? Size { get; set; }
         public short Quantity { get; set; }
         public float? Discount { get; set; }
-        public DateTime? CreateTime { get; set; }
         public DateTime? Expiration { get; set; }
         public decimal? DiscountPrice { get; set; }
         public List<Image> Images { get; set; }
+        public Image MainImageUrl => Images.Find(x => x.MainImage);
+        public bool IsHidden { get; set; }
     }
 
     public class Image
     {
         public long Id { get; set; }
         public string Url { get; set; }
-        public bool IsMainImage { get; set; }
+        public bool MainImage { get; set; }
     }
 
     public class Weight
