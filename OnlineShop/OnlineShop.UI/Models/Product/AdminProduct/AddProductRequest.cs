@@ -28,6 +28,7 @@ namespace OnlineShop.UI.Models.Product.AdminProduct
         public string? Size { get; set; }
 
         [Required(ErrorMessage = "გთხოვთ მიუთითოთ პროდუქტის რაოდენობა")]
+        [Range(1, short.MaxValue, ErrorMessage = "პროდუქტის რაოდენობა არ შეიძლება იყოს 1 ზე ნაკლები")]
         public short Quantity { get; set; }
 
         public float? Discount { get; set; }

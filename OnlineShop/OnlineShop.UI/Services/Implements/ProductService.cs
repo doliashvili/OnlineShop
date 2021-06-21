@@ -45,7 +45,7 @@ namespace OnlineShop.UI.Services.Implements
                 {"priceTo", getFilteredProductsRequest.PriceTo},
                 {"productType", getFilteredProductsRequest.ProductType},
                 {"size", getFilteredProductsRequest.Size},
-            };
+            }.ToQueryString();
 
             var response = await _httpClient.SendAsync<ProductsViewModel>(HttpMethod.Get, $"v1/Product/GetFilteredProducts?{qpc}", null, cancellationToken);
             return response;
@@ -56,7 +56,7 @@ namespace OnlineShop.UI.Services.Implements
             var qpc = new QueryParamCollection
             {
                 {"id", getProductByIdRequest.Id},
-            };
+            }.ToQueryString();
 
             var response = await _httpClient.SendAsync<ProductViewModel>(HttpMethod.Get, $"v1/Product/GetProductById?{qpc}", null, cancellationToken);
             return response;

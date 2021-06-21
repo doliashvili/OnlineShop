@@ -297,7 +297,7 @@ SELECT dbo.Products.Id,Brand,Color,CreateTime,[Description],Discount,Expiration,
                 var description = reader.AsStringOrNull(idx++);
                 var discount = reader.AsFloatOrNull(idx++);
                 var expiration = reader.AsDateTimeOrNull(idx++);
-                var discountPrice = reader.AsDecimal(idx++);
+                var discountPrice = reader.AsDecimalOrNull(idx++);
                 var isBaby = reader.AsBooleanOrNull(idx++);
                 var gender = reader.AsEnumOrNull<Gender>(idx++);
                 var isDeleted = reader.AsBooleanOrNull(idx++);

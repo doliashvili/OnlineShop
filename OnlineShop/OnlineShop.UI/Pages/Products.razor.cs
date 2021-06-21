@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.WebUtilities;
+using OnlineShop.UI.Helpers;
 using OnlineShop.UI.Models.Product;
 using OnlineShop.UI.Models.Product.AdminProduct;
 
@@ -27,7 +29,7 @@ namespace OnlineShop.UI.Pages
             products = await _productService.GetProductsAsync(productsRequest, CancellationToken.None);
         }
 
-        public async Task<bool> DeleteProductAsync(long productId)
+        private async Task<bool> DeleteProductAsync(long productId)
         {
             var result = await _adminService.DeleteProductAsync(new DeleteProductRequest() { Id = productId }, CancellationToken.None);//todo dasamatebelia cancelltokenebi
             if (result)
@@ -38,6 +40,11 @@ namespace OnlineShop.UI.Pages
 
             _toastService.ShowError("პროდუქტი ვერ წაიშალა");
             return false;
+        }
+
+        private void NavigateToProductDetailsComponent(long productId)
+        {
+            _navigationManager.NavigateTo($"productDetails/{productId}");
         }
     }
 }
