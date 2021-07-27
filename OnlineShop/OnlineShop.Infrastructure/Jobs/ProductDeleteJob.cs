@@ -18,7 +18,7 @@ namespace OnlineShop.Infrastructure.Jobs
         public async Task ExecuteAsync()
         {
             string sql = @"DELETE FROM Products
-            WHERE IsDeleted = 1 AND CreateTime <= @datetime";
+            WHERE IsDeleted = 1 AND (CreateTime <= @datetime OR CreateTime IS NULL)";
             await using var connection = new SqlConnection(_connectionString);
             await using var command = new SqlCommand(sql, connection);
 

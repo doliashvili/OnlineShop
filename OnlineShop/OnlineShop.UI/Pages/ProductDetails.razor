@@ -61,7 +61,7 @@ else
             <li class="list-group-item">@product.Quantity <strong> პროდუქტის რაოდენობა </strong></li>
         </ul>
         <div class="card-body">
-            <button type="button" class="btn btn-outline-success">კალათაში დამატება</button>
+            <button type="button" class="btn btn-outline-success" @onclick="@(async() => await AddCartAsync(product.Id))">კალათაში დამატება</button>
         </div>
     </div>
 }
