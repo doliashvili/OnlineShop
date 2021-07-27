@@ -12,10 +12,19 @@ namespace OnlineShop.UI.Helpers
         {
             var query = HttpUtility.ParseQueryString(string.Empty);
 
-            foreach (var (key, value) in this)
+            foreach (var item in this)
             {
-                if (value.HasValue)
-                    query.Add(key, value.ToString());
+                var value = item.Value;
+                if (value.Value is not null)
+                    query.Add(item.Key, value.ToString());
+                else
+                if (value.Values is not null)
+                {
+                    foreach (var v in value.Values)
+                    {
+                        query.Add(item.Key, v.ToString());
+                    }
+                }
             }
 
             return query.ToString() ?? string.Empty;

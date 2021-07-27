@@ -5,22 +5,19 @@ namespace OnlineShop.UI.Shared.Navigation
 {
     public partial class NavCart
     {
-        private int? cartProductsCount = 0;
+        private int? cartProductsCount;
 
-        //protected override async Task OnAfterRenderAsync(bool firstRender)
-        //{
-        //    if (firstRender)
-        //    {
-        //        var userId = await LocalStorageService.GetItemAsync<string>("userId");
-        //        if (userId is null)
-        //        {
-        //            cartProductsCount = null; //todo null
-        //        }
-        //        else
-        //        {
-        //            cartProductsCount = await CartService.GetCartsCountAsync(userId, CancellationToken.None);
-        //        }
-        //    }
-        //}
+        protected override async Task OnInitializedAsync()
+        {
+            var userId = await _localStorageService.GetItemAsync<string>("userId");
+            if (userId is null)
+            {
+                cartProductsCount = 0;
+            }
+            else
+            {
+                cartProductsCount = await _cartService.GetCartsCountAsync(userId, CancellationToken.None);
+            }
+        }
     }
 }

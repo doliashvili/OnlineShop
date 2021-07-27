@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
 using OnlineShop.UI.Helpers;
+using OnlineShop.UI.Models.Cart;
 using OnlineShop.UI.Models.Product;
 using OnlineShop.UI.Models.Product.AdminProduct;
 
@@ -39,6 +40,30 @@ namespace OnlineShop.UI.Pages
             }
 
             _toastService.ShowError("პროდუქტი ვერ წაიშალა");
+            return false;
+        }
+
+        private async Task<bool> AddCartAsync(long productId)
+        {
+            var userId = await _localStorageService.GetItemAsync<string>("userId");
+
+            var request = new AddCartRequest()
+            {
+                ProductId = productId,
+                Quantity = 1,
+                UserId = userId
+            };
+
+            var isAdded = await _cartService.AddCartAsync(request, CancellationToken.None);
+
+            if (isAdded)
+            {
+                _toastService.ShowSuccess("პროდუქტი დაემატა კალათაში");
+                StateHasChanged();
+                return true;
+            }
+
+            _toastService.ShowError("სამწუხაროთ პროდუქტი კალათაში ვერ დაემატა");
             return false;
         }
 

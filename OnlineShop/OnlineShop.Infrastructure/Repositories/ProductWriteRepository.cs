@@ -62,6 +62,9 @@ VALUES (@imgId,@mainImage,@url,@productId);";
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
             try
             {
+                if (product.Images.Count < 1)
+                    throw new Exception("images is empty");
+
                 foreach (var item in product.Images)
                 {
                     await using var command2 = new SqlCommand(sql2, connection);

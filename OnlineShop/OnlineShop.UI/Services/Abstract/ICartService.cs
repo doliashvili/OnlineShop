@@ -10,11 +10,11 @@ namespace OnlineShop.UI.Services.Abstract
 {
     public interface ICartService
     {
-        Task<Result> AddCartAsync(AddCartRequest addCartRequest, CancellationToken cancellationToken);
+        Task<bool> AddCartAsync(AddCartRequest addCartRequest, CancellationToken cancellationToken);
 
-        Task<Result> DeleteCartAsync(long cartId, CancellationToken cancellationToken);
+        Task<bool> DeleteCartAsync(long cartId, CancellationToken cancellationToken);
 
-        Task<Result> UpdateCartAsync(UpdateCartRequest updateCartRequest, CancellationToken cancellationToken);
+        Task<bool> UpdateCartAsync(UpdateCartRequest updateCartRequest, CancellationToken cancellationToken);
 
         Task<List<CartViewModel>> GetCartsAsync(string userId, CancellationToken cancellationToken);
 

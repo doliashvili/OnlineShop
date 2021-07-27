@@ -138,18 +138,16 @@ namespace OnlineShop.UI.Pages.Admin
             {
                 uploadResults[0].MainImage = true;
             }
-            else
+
+            foreach (var uploadResult in uploadResults)
             {
-                foreach (var uploadResult in uploadResults)
+                var image = new Image()
                 {
-                    var image = new Image()
-                    {
-                        MainImage = uploadResult.MainImage,
-                        //todo ეს უნდა შეიცვალოს როცა პროდაქშენზე გავა უნდა მიეთითოს სწორი ფაილის მისამართი
-                        Url = uploadResult.ImagePath,
-                    };
-                    model.Images.Add(image);
-                }
+                    MainImage = uploadResult.MainImage,
+                    //todo ეს უნდა შეიცვალოს როცა პროდაქშენზე გავა უნდა მიეთითოს სწორი ფაილის მისამართი
+                    Url = uploadResult.ImagePath,
+                };
+                model.Images.Add(image);
             }
 
             var result = await _adminService.AddProductAsync(model, new CancellationToken());

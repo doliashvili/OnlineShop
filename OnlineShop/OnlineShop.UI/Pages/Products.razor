@@ -24,7 +24,7 @@ else
             </ul>
             <div class="card-body">
                 <button type="button" class="btn btn-outline-info" @onclick="@(() => NavigateToProductDetailsComponent(product.Id))">ნახეთ ვრცლად</button>
-                <button type="button" class="btn btn-outline-success">კალათაში დამატება</button>
+                <button type="button" class="btn btn-outline-success" @onclick="@(async() => await AddCartAsync(product.Id))">კალათაში დამატება</button>
                 @if (User.IsInRole(Role.Administrator))
                 {
                     <button type="button" @onclick="@(async () => {product.IsHidden = await DeleteProductAsync(product.Id); })" class="btn btn-outline-danger">პროდუქტის წაშლა</button>
